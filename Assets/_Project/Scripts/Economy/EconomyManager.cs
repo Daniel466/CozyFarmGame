@@ -7,7 +7,7 @@ using UnityEngine.Events;
 public class EconomyManager : MonoBehaviour
 {
     [Header("Starting Balance")]
-    [SerializeField] private int startingCoins = 100;
+    [SerializeField] private int startingCoins = 500;
 
     private int coins;
 
