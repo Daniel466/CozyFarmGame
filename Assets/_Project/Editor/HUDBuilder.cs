@@ -176,7 +176,7 @@ public class HUDBuilder : Editor
         rect.anchorMin = new Vector2(1, 1);
         rect.anchorMax = new Vector2(1, 1);
         rect.anchoredPosition = new Vector2(-120, -80);
-        rect.sizeDelta = new Vector2(220, 16);
+        rect.sizeDelta = new Vector2(220, 12);
 
         // Background
         var bg = new GameObject("Background");
@@ -190,25 +190,31 @@ public class HUDBuilder : Editor
         bgRect.offsetMax = Vector2.zero;
         slider.targetGraphic = bgImg;
 
-        // Fill area
+        // Fill area — inset slightly so fill stays within background
         var fillArea = new GameObject("Fill Area");
         fillArea.transform.SetParent(go.transform, false);
         var fillAreaRect = fillArea.AddComponent<RectTransform>();
-        fillAreaRect.anchorMin = Vector2.zero;
-        fillAreaRect.anchorMax = Vector2.one;
-        fillAreaRect.offsetMin = Vector2.zero;
-        fillAreaRect.offsetMax = Vector2.zero;
+        fillAreaRect.anchorMin = new Vector2(0, 0);
+        fillAreaRect.anchorMax = new Vector2(1, 1);
+        fillAreaRect.offsetMin = new Vector2(2, 2);
+        fillAreaRect.offsetMax = new Vector2(-2, -2);
 
         var fill = new GameObject("Fill");
         fill.transform.SetParent(fillArea.transform, false);
         var fillImg = fill.AddComponent<Image>();
         fillImg.color = new Color(0.4f, 0.8f, 0.4f);
-        slider.fillRect = fill.GetComponent<RectTransform>();
+        var fillRect = fill.GetComponent<RectTransform>();
+        fillRect.anchorMin = Vector2.zero;
+        fillRect.anchorMax = Vector2.one;
+        fillRect.offsetMin = Vector2.zero;
+        fillRect.offsetMax = Vector2.zero;
+        slider.fillRect = fillRect;
 
         slider.minValue = 0f;
         slider.maxValue = 1f;
         slider.value = 0f;
         slider.interactable = false;
+        slider.transition = Selectable.Transition.None;
         return slider;
     }
 
