@@ -59,7 +59,8 @@ public class PlayerController : MonoBehaviour
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
 
-        // Animation
-        animator?.SetBool(IsWalking, moveDir.magnitude > 0.1f);
+        // Animation (only if animator is assigned)
+        if (animator != null)
+            animator.SetBool(IsWalking, moveDir.magnitude > 0.1f);
     }
 }

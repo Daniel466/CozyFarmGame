@@ -31,7 +31,9 @@ public class SceneBootstrapper : MonoBehaviour
         // Create a large green ground plane
         GameObject ground = GameObject.CreatePrimitive(PrimitiveType.Plane);
         ground.name = "Ground";
-        ground.tag = "Ground";
+        // Only set tag if it exists in the project
+        try { ground.tag = "Ground"; }
+        catch { ground.tag = "Untagged"; }
         ground.transform.position = new Vector3(gridSize.x * 0.5f, 0f, gridSize.y * 0.5f);
         ground.transform.localScale = new Vector3(gridSize.x * 0.1f + 0.5f,
                                                    1f,
