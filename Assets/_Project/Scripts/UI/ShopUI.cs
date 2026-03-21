@@ -32,6 +32,11 @@ public class ShopUI : MonoBehaviour
 
     public void ToggleShop()
     {
+        if (shopPanel == null)
+        {
+            Debug.LogWarning("[ShopUI] Shop panel not assigned! Assign it in the Inspector.");
+            return;
+        }
         isOpen = !isOpen;
         shopPanel.SetActive(isOpen);
         if (isOpen) RefreshShop();
