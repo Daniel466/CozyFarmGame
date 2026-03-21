@@ -27,7 +27,16 @@ public class InventoryUI : MonoBehaviour
         sellAllText = sellBtnText;
 
         sellAllButton?.onClick.AddListener(SellAll);
-        GameManager.Instance.Inventory.OnInventoryChanged.AddListener(RefreshUI);
+
+        // Delay subscription by one frame to ensure GameManager is ready
+        StartCoroutine(SubscribeNextFrame());
+    }
+
+    private System.Collections.IEnumerator SubscribeNextFrame()
+    {
+        yield return null;
+        if (GameManager.Instance?.Inventory != null)
+            GameManager.Instance.Inventory.OnInventoryChanged.AddListener(RefreshUI);
     }
 
     private void Update()
