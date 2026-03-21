@@ -47,7 +47,7 @@ public class MainMenuUI : MonoBehaviour
         CreateText("GameTitle", canvas.transform,
             new Vector2(0.5f, 1f), new Vector2(0.5f, 1f),
             new Vector2(0f, -160f), new Vector2(800f, 120f),
-            "🌾 Cozy Farm", 72, new Color(1f, 0.95f, 0.7f),
+            "Cozy Farm", 72, new Color(1f, 0.95f, 0.7f),
             TextAlignmentOptions.Center, FontStyles.Bold);
 
         // Subtitle
@@ -73,19 +73,19 @@ public class MainMenuUI : MonoBehaviour
         vlg.childAlignment = TextAnchor.MiddleCenter;
 
         // Play button
-        CreateMenuButton(btnContainer.transform, "🌱  Play", new Color(0.3f, 0.65f, 0.3f), () =>
+        CreateMenuButton(btnContainer.transform, "Play", new Color(0.3f, 0.65f, 0.3f), () =>
         {
             SceneManager.LoadScene(farmSceneName);
         });
 
         // Settings button
-        CreateMenuButton(btnContainer.transform, "⚙️  Settings", new Color(0.35f, 0.45f, 0.55f), () =>
+        CreateMenuButton(btnContainer.transform, "Settings", new Color(0.35f, 0.45f, 0.55f), () =>
         {
             SettingsUI.Instance?.Show();
         });
 
         // Quit button
-        CreateMenuButton(btnContainer.transform, "🚪  Quit", new Color(0.55f, 0.25f, 0.25f), () =>
+        CreateMenuButton(btnContainer.transform, "Quit", new Color(0.55f, 0.25f, 0.25f), () =>
         {
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;

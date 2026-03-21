@@ -101,7 +101,7 @@ public class HUDManager : MonoBehaviour
 
     private void UpdateCoins(int coins)
     {
-        if (coinsText) coinsText.text = $"🪙 {coins:N0}";
+        if (coinsText) coinsText.text = $"{coins:N0} coins";
     }
 
     private void UpdateXP(int xp, int level)

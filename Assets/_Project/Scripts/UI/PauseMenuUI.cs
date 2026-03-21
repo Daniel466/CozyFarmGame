@@ -95,26 +95,26 @@ public class PauseMenuUI : MonoBehaviour
         vlg.childAlignment = TextAnchor.UpperCenter;
 
         // Title
-        AddLabel(window.transform, "⏸️ Paused", 36f, new Color(1f, 0.9f, 0.6f), FontStyles.Bold);
+        AddLabel(window.transform, "Paused", 36f, new Color(1f, 0.9f, 0.6f), FontStyles.Bold);
 
         // Buttons
-        AddButton(window.transform, "▶️  Resume", new Color(0.3f, 0.65f, 0.3f), Resume);
-        AddButton(window.transform, "⚙️  Settings", new Color(0.35f, 0.45f, 0.55f), () =>
+        AddButton(window.transform, "Resume", new Color(0.3f, 0.65f, 0.3f), Resume);
+        AddButton(window.transform, "Settings", new Color(0.35f, 0.45f, 0.55f), () =>
         {
             SettingsUI.Instance?.Show();
         });
-        AddButton(window.transform, "💾  Save Game", new Color(0.4f, 0.35f, 0.55f), () =>
+        AddButton(window.transform, "Save Game", new Color(0.4f, 0.35f, 0.55f), () =>
         {
             GameManager.Instance?.SaveManager?.SaveGame();
-            HUDManager.Instance?.ShowNotification("Game saved! 💾");
+            HUDManager.Instance?.ShowNotification("Game saved!");
         });
-        AddButton(window.transform, "🏠  Main Menu", new Color(0.45f, 0.35f, 0.25f), () =>
+        AddButton(window.transform, "Main Menu", new Color(0.45f, 0.35f, 0.25f), () =>
         {
             GameManager.Instance?.SaveManager?.SaveGame();
             Time.timeScale = 1f;
             SceneManager.LoadScene(mainMenuSceneName);
         });
-        AddButton(window.transform, "🚪  Quit", new Color(0.55f, 0.25f, 0.25f), () =>
+        AddButton(window.transform, "Quit", new Color(0.55f, 0.25f, 0.25f), () =>
         {
             GameManager.Instance?.SaveManager?.SaveGame();
 #if UNITY_EDITOR

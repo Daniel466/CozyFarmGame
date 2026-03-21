@@ -143,7 +143,7 @@ public class HUDBootstrapper : MonoBehaviour
         CreateText("ControlsHint", canvas.transform,
             new Vector2(0.5f, 1f), new Vector2(0.5f, 1f),
             new Vector2(0f, -30f), new Vector2(700f, 40f),
-            "LClick: Till/Plant/Harvest  |  RClick: Water  |  B: Shop  |  Tab: Inventory  |  G: Build Mode",
+            "LClick: Till / Plant / Harvest   |   RClick: Water   |   B: Shop   |   Tab: Inventory   |   G: Build",
             16, new Color(1f, 1f, 1f, 0.6f), TextAlignmentOptions.Center);
     }
 
@@ -175,7 +175,7 @@ public class HUDBootstrapper : MonoBehaviour
         CreateText("InventoryTitle", invWindow.transform,
             new Vector2(0f, 1f), new Vector2(1f, 1f),
             new Vector2(0f, -30f), new Vector2(0f, 50f),
-            "🎒 Inventory", 32, new Color(1f, 0.9f, 0.6f), TextAlignmentOptions.Center);
+            "Inventory", 32, new Color(1f, 0.9f, 0.6f), TextAlignmentOptions.Center);
 
         // Slots info text
         var slotsText = CreateText("SlotsText", invWindow.transform,
@@ -232,7 +232,7 @@ public class HUDBootstrapper : MonoBehaviour
 
         var sellBtnText = CreateText("SellBtnText", sellBtn.transform,
             Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero,
-            "💰 Sell All", 24, Color.white, TextAlignmentOptions.Center);
+            "Sell All", 24, Color.white, TextAlignmentOptions.Center);
 
         // Close hint
         CreateText("CloseHint", invWindow.transform,
@@ -263,13 +263,13 @@ public class HUDBootstrapper : MonoBehaviour
         CreateText("ShopTitle", shopWindow.transform,
             new Vector2(0f, 1f), new Vector2(1f, 1f),
             new Vector2(0f, -30f), new Vector2(0f, 50f),
-            "🛒 Seed Shop", 26, new Color(1f, 0.9f, 0.6f), TextAlignmentOptions.Center);
+            "Seed Shop", 26, new Color(1f, 0.9f, 0.6f), TextAlignmentOptions.Center);
 
         // Coins display
         CreateText("ShopCoins", shopWindow.transform,
             new Vector2(0f, 1f), new Vector2(1f, 1f),
             new Vector2(0f, -65f), new Vector2(0f, 30f),
-            "Your coins: 500 🪙", 16, new Color(1f, 0.85f, 0.3f), TextAlignmentOptions.Center);
+            "Your coins: 500 coins", 16, new Color(1f, 0.85f, 0.3f), TextAlignmentOptions.Center);
 
         // Scroll view
         GameObject scrollView = new GameObject("ScrollView");
@@ -335,13 +335,13 @@ public class HUDBootstrapper : MonoBehaviour
         CreateText("BuildTitle", sidePanel.transform,
             new Vector2(0f, 1f), new Vector2(1f, 1f),
             new Vector2(0f, -30f), new Vector2(0f, 50f),
-            "🏗️ Build Mode", 26, new Color(1f, 0.9f, 0.6f), TextAlignmentOptions.Center);
+            "Build Mode", 26, new Color(1f, 0.9f, 0.6f), TextAlignmentOptions.Center);
 
         // Controls hint
         CreateText("BuildHint", sidePanel.transform,
             new Vector2(0f, 1f), new Vector2(1f, 1f),
             new Vector2(0f, -65f), new Vector2(0f, 30f),
-            "R: Rotate | Del: Remove | Esc: Cancel", 13,
+            "R: Rotate  |  Del: Remove  |  Esc: Cancel", 13,
             new Color(0.6f, 0.6f, 0.6f), TextAlignmentOptions.Center);
 
         // Scroll view for items

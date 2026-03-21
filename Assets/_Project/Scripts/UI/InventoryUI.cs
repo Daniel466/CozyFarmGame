@@ -92,19 +92,19 @@ public class InventoryUI : MonoBehaviour
                 new Color(0.8f, 0.9f, 0.8f), TextAnchor.MiddleCenter, false);
 
             // Value
-            CreateRowText(row.transform, $"{item.crop.SellValue * item.quantity} 🪙", 20,
+            CreateRowText(row.transform, $"{item.crop.SellValue * item.quantity} coins", 20,
                 new Color(1f, 0.85f, 0.3f), TextAnchor.MiddleRight, false);
         }
 
         // Empty state
         if (items.Count == 0)
         {
-            CreateRowText(itemGrid, "Nothing in inventory — go harvest some crops! 🌱",
+            CreateRowText(itemGrid, "Nothing in inventory - go harvest some crops!",
                 20, new Color(0.6f, 0.6f, 0.6f), TextAnchor.MiddleCenter, false);
         }
 
         // Update sell button
-        if (sellAllText) sellAllText.text = $"💰 Sell All ({totalValue} 🪙)";
+        if (sellAllText) sellAllText.text = $"Sell All ({totalValue} coins)";
 
         // Update slots
         var inv = GameManager.Instance.Inventory;
@@ -131,7 +131,7 @@ public class InventoryUI : MonoBehaviour
     {
         int earned = GameManager.Instance.Inventory.SellAll();
         if (earned > 0)
-            HUDManager.Instance?.ShowNotification($"Sold everything for {earned} 🪙!");
+            HUDManager.Instance?.ShowNotification($"Sold everything for {earned} coins!");
         else
             HUDManager.Instance?.ShowNotification("Nothing to sell!");
         RefreshUI();

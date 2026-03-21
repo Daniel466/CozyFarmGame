@@ -62,7 +62,7 @@ public class BuildingManager : MonoBehaviour
         currentRotation = 0;
         CreateGhost();
         HUDManager.Instance?.ShowNotification($"Placing {building.BuildingName} | R: Rotate | RClick/Esc: Cancel");
-        HUDManager.Instance?.UpdateToolIndicator($"🏗️ {building.BuildingName}");
+        HUDManager.Instance?.UpdateToolIndicator($"{building.BuildingName}");
     }
 
     public void ExitBuildMode()
@@ -70,7 +70,7 @@ public class BuildingManager : MonoBehaviour
         IsInBuildMode = false;
         selectedBuilding = null;
         DestroyGhost();
-        HUDManager.Instance?.UpdateToolIndicator("🌱 Farming Mode");
+        HUDManager.Instance?.UpdateToolIndicator("Farming Mode");
         HUDManager.Instance?.ShowNotification("Exited build mode");
     }
 
@@ -162,7 +162,7 @@ public class BuildingManager : MonoBehaviour
         // Check cost
         if (!GameManager.Instance.Economy.SpendCoins(selectedBuilding.Cost))
         {
-            HUDManager.Instance?.ShowNotification($"Not enough coins! Need {selectedBuilding.Cost} 🪙");
+            HUDManager.Instance?.ShowNotification($"Not enough coins! Need {selectedBuilding.Cost} coins");
             return false;
         }
 
@@ -209,7 +209,7 @@ public class BuildingManager : MonoBehaviour
         // Refund 50% of cost
         int refund = building.data.Cost / 2;
         GameManager.Instance.Economy.AddCoins(refund);
-        HUDManager.Instance?.ShowNotification($"{building.data.BuildingName} removed. Refunded {refund} 🪙");
+        HUDManager.Instance?.ShowNotification($"{building.data.BuildingName} removed. Refunded {refund} coins");
         return true;
     }
 

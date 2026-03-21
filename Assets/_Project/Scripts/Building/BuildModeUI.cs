@@ -99,7 +99,7 @@ public class BuildModeUI : MonoBehaviour
             GameObject costGO = new GameObject("Cost");
             costGO.transform.SetParent(btn.transform, false);
             var costTMP = costGO.AddComponent<TextMeshProUGUI>();
-            costTMP.text = unlocked ? $"{building.Cost} 🪙" : $"Lv.{building.UnlockLevel}";
+            costTMP.text = unlocked ? $"{building.Cost} coins" : $"Lv.{building.UnlockLevel}";
             costTMP.fontSize = 13f;
             costTMP.color = unlocked ? new Color(1f, 0.85f, 0.3f) : new Color(0.5f, 0.5f, 0.5f);
             costTMP.alignment = TextAlignmentOptions.Center;

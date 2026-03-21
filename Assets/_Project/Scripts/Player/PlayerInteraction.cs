@@ -73,7 +73,7 @@ public class PlayerInteraction : MonoBehaviour
         int earned = GameManager.Instance.Inventory.SellAll();
         if (earned > 0)
         {
-            HUDManager.Instance?.ShowNotification($"Sold everything for {earned} 🪙!");
+            HUDManager.Instance?.ShowNotification($"Sold everything for {earned} coins!");
             Debug.Log($"[PlayerInteraction] Sold all crops for {earned} coins!");
         }
         else

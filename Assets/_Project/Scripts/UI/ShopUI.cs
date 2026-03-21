@@ -107,7 +107,7 @@ public class ShopUI : MonoBehaviour
 
             // Grow time & cost
             string details = unlocked
-                ? $"{crop.GrowTimeSeconds / 60f:0.0} min  •  Sells for {crop.SellValue} 🪙"
+                ? $"{crop.GrowTimeSeconds / 60f:0.0} min  •  Sells for {crop.SellValue} coins"
                 : $"Unlocks at Level {crop.UnlockLevel}";
             AddText(info.transform, details, 14f, new Color(0.6f, 0.6f, 0.6f), FontStyles.Normal);
 
@@ -123,7 +123,7 @@ public class ShopUI : MonoBehaviour
             btnLE.preferredWidth = 90f;
             btnLE.flexibleWidth = 0f;
 
-            var btnText = AddText(btnGO.transform, unlocked ? $"{crop.SeedCost} 🪙" : "🔒",
+            var btnText = AddText(btnGO.transform, unlocked ? $"{crop.SeedCost} coins" : "[Locked]",
                 16f, Color.white, FontStyles.Bold);
             btnText.alignment = TextAlignmentOptions.Center;
 
@@ -145,8 +145,8 @@ public class ShopUI : MonoBehaviour
         if (interaction != null)
         {
             interaction.SetSelectedCrop(crop);
-            HUDManager.Instance?.ShowNotification($"🌱 {crop.CropName} selected! Left-click a tilled tile to plant.");
-            HUDManager.Instance?.UpdateToolIndicator($"🌱 {crop.CropName}");
+            HUDManager.Instance?.ShowNotification($"{crop.CropName} selected! Left-click a tilled tile to plant.");
+            HUDManager.Instance?.UpdateToolIndicator($"{crop.CropName}");
         }
         CloseShop();
     }

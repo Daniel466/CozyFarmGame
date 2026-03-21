@@ -59,29 +59,29 @@ public class SettingsUI : MonoBehaviour
         vlg.childAlignment = TextAnchor.UpperCenter;
 
         // Title
-        AddLabel(window.transform, "⚙️ Settings", 32f, new Color(1f, 0.9f, 0.6f), FontStyles.Bold);
+        AddLabel(window.transform, "Settings", 32f, new Color(1f, 0.9f, 0.6f), FontStyles.Bold);
 
         // Music volume
-        AddLabel(window.transform, "🎵 Music Volume", 20f, Color.white, FontStyles.Normal);
+        AddLabel(window.transform, "Music Volume", 20f, Color.white, FontStyles.Normal);
         musicSlider = AddSlider(window.transform, 0.4f, (val) =>
             AudioManager.Instance?.SetMusicVolume(val));
 
         // SFX volume
-        AddLabel(window.transform, "🔊 Sound Effects", 20f, Color.white, FontStyles.Normal);
+        AddLabel(window.transform, "Sound Effects", 20f, Color.white, FontStyles.Normal);
         sfxSlider = AddSlider(window.transform, 0.8f, (val) =>
             AudioManager.Instance?.SetSFXVolume(val));
 
         // Ambience volume
-        AddLabel(window.transform, "🌿 Ambience", 20f, Color.white, FontStyles.Normal);
+        AddLabel(window.transform, "Ambience", 20f, Color.white, FontStyles.Normal);
         ambienceSlider = AddSlider(window.transform, 0.25f, (val) =>
             AmbienceManager.Instance?.SetVolume(val));
 
         // Growth speed (debug)
-        AddLabel(window.transform, "⏱️ Crop Growth Speed (1=normal, 60=fast)", 16f,
+        AddLabel(window.transform, "Crop Growth Speed (1=normal, 60=fast)", 16f,
             new Color(0.6f, 0.6f, 0.6f), FontStyles.Italic);
 
         // Close button
-        AddButton(window.transform, "✅  Close", new Color(0.3f, 0.65f, 0.3f), Hide);
+        AddButton(window.transform, "Close", new Color(0.3f, 0.65f, 0.3f), Hide);
 
         settingsPanel.SetActive(false);
     }
