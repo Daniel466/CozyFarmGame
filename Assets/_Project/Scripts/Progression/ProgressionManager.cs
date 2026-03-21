@@ -7,7 +7,11 @@ using UnityEngine.Events;
 public class ProgressionManager : MonoBehaviour
 {
     private static readonly int[] XPThresholds = {
-        0, 100, 250, 450, 700, 1000, 1400, 1900, 2500, 3200, 4000, 5000, 6200, 7500, 9000
+        // Level 1→2: easy start, feel progress quickly
+        // Level 2→5: steady pace, unlocking basics
+        // Level 6→10: meaningful grind, unlocking good stuff
+        // Level 11→15: end game, prestige crops
+        0, 80, 200, 380, 600, 900, 1300, 1800, 2450, 3200, 4100, 5200, 6500, 8000, 10000
     };
 
     private int currentXP;

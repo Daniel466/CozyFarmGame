@@ -7,7 +7,7 @@ using UnityEngine.Events;
 public class EconomyManager : MonoBehaviour
 {
     [Header("Starting Balance")]
-    [SerializeField] private int startingCoins = 500;
+    [SerializeField] private int startingCoins = 150; // Enough for ~10 carrots — feels like a fresh start
 
     private int coins;
 
@@ -31,19 +31,13 @@ public class EconomyManager : MonoBehaviour
     {
         coins += amount;
         OnCoinsChanged?.Invoke(coins);
-        Debug.Log($"[Economy] +{amount} coins. Total: {coins}");
     }
 
     public bool SpendCoins(int amount)
     {
-        if (coins < amount)
-        {
-            Debug.Log($"[Economy] Not enough coins. Have {coins}, need {amount}.");
-            return false;
-        }
+        if (coins < amount) return false;
         coins -= amount;
         OnCoinsChanged?.Invoke(coins);
-        Debug.Log($"[Economy] -{amount} coins. Total: {coins}");
         return true;
     }
 
