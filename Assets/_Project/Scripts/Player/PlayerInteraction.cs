@@ -124,20 +124,24 @@ public class PlayerInteraction : MonoBehaviour
     {
         if (mainCamera == null) return null;
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f, groundLayer))
+
+        // Use groundLayer if set, otherwise fall back to Everything so farming always works
+        LayerMask mask = groundLayer.value == 0 ? ~0 : groundLayer;
+
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f, mask))
         {
             float dist = Vector3.Distance(transform.position, hit.point);
+            Debug.Log($"[PlayerInteraction] Hit '{hit.collider.name}' on layer '{LayerMask.LayerToName(hit.collider.gameObject.layer)}' dist={dist:F1}m");
+
             if (dist > interactionRange)
             {
-                Debug.Log($"[PlayerInteraction] Hit ground but too far away ({dist:F1}m, max {interactionRange}m)");
+                Debug.Log($"[PlayerInteraction] Too far ({dist:F1}m, max {interactionRange}m) — walk closer!");
                 return null;
             }
             return grid.WorldToGrid(hit.point);
         }
 
-        // No hit — log what layer the ground is on vs what we're looking for
-        Debug.Log($"[PlayerInteraction] Raycast missed. Ground layer mask: {groundLayer.value}. " +
-                  $"Make sure Ground object layer matches PlayerInteraction's Ground Layer mask.");
+        Debug.Log($"[PlayerInteraction] Raycast missed completely. Ground layer mask value: {groundLayer.value}");
         return null;
     }
 
