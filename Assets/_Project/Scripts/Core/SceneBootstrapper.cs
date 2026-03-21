@@ -39,7 +39,9 @@ public class SceneBootstrapper : MonoBehaviour
 
         // Warm green URP material
         var mat = new Material(Shader.Find("Universal Render Pipeline/Lit"));
-        mat.color = new Color(0.44f, 0.71f, 0.35f);
+        Color green = new Color(0.44f, 0.71f, 0.35f);
+        mat.SetColor("_BaseColor", green);
+        mat.color = green;
         mat.SetFloat("_Smoothness", 0.1f);
         ground.GetComponent<Renderer>().material = mat;
 
@@ -75,9 +77,11 @@ public class SceneBootstrapper : MonoBehaviour
         player.name = "Player";
         player.transform.position = playerStartPosition;
 
-        // Apply a friendly blue colour
+        // Apply a friendly blue colour (URP requires _BaseColor not _Color)
         var mat = new Material(Shader.Find("Universal Render Pipeline/Lit"));
-        mat.color = new Color(0.3f, 0.55f, 0.9f);
+        Color blue = new Color(0.3f, 0.55f, 0.9f);
+        mat.SetColor("_BaseColor", blue);
+        mat.color = blue;
         player.GetComponent<Renderer>().material = mat;
 
         // Remove default collider, add CharacterController
@@ -90,6 +94,12 @@ public class SceneBootstrapper : MonoBehaviour
         // Add player scripts
         player.AddComponent<PlayerController>();
         var interaction = player.AddComponent<PlayerInteraction>();
+
+        // Set ground layer mask on PlayerInteraction — use Everything as fallback so clicks always register
+        int groundLayerIndex = LayerMask.NameToLayer("Ground");
+        interaction.SetGroundLayer(groundLayerIndex == -1
+            ? ~0  // Everything
+            : 1 << groundLayerIndex);
 
         // Add camera targeting
         var cam = Camera.main;
@@ -111,7 +121,9 @@ public class SceneBootstrapper : MonoBehaviour
         hat.transform.localScale = new Vector3(0.6f, 0.25f, 0.6f);
         Destroy(hat.GetComponent<Collider>());
         var hatMat = new Material(Shader.Find("Universal Render Pipeline/Lit"));
-        hatMat.color = new Color(0.4f, 0.25f, 0.1f); // Brown hat
+        Color brown = new Color(0.4f, 0.25f, 0.1f);
+        hatMat.SetColor("_BaseColor", brown);
+        hatMat.color = brown;
         hat.GetComponent<Renderer>().material = hatMat;
 
         Debug.Log("[Bootstrapper] Placeholder player created.");

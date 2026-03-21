@@ -99,6 +99,7 @@ public class PlaceholderAssetGenerator : MonoBehaviour
         var renderer = obj.GetComponent<Renderer>();
         if (renderer == null) return;
         var mat = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+        mat.SetColor("_BaseColor", color);
         mat.color = color;
         renderer.material = mat;
     }

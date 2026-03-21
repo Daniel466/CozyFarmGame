@@ -83,4 +83,5 @@ public class PlayerInteraction : MonoBehaviour
 
     public void SetTool(PlayerTool tool) => CurrentTool = tool;
     public void SetSelectedCrop(CropData crop) => selectedCrop = crop;
+    public void SetGroundLayer(LayerMask mask) => groundLayer = mask;
 }
