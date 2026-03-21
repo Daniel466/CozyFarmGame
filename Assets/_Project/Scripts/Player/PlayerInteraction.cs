@@ -62,6 +62,23 @@ public class PlayerInteraction : MonoBehaviour
 
         if (Input.GetMouseButtonDown(1)) // Right click
             HandleRightClick();
+
+        if (Input.GetKeyDown(KeyCode.F)) // F = Sell all instantly
+            SellAll();
+    }
+
+    private void SellAll()
+    {
+        int earned = GameManager.Instance.Inventory.SellAll();
+        if (earned > 0)
+        {
+            HUDManager.Instance?.ShowNotification($"Sold everything for {earned} 🪙!");
+            Debug.Log($"[PlayerInteraction] Sold all crops for {earned} coins!");
+        }
+        else
+        {
+            HUDManager.Instance?.ShowNotification("Nothing to sell!");
+        }
     }
 
     private void HandleLeftClick()
