@@ -26,8 +26,9 @@ public class BuildModeController : MonoBehaviour
 
     private void Update()
     {
-        // Toggle build mode UI with F5
-        if (Input.GetKeyDown(KeyCode.F5))
+        // Toggle build mode UI with B key (Mac-friendly)
+        // Note: B is also used for shop — build mode takes priority when not farming
+        if (Input.GetKeyDown(KeyCode.G))
         {
             if (buildingManager.IsInBuildMode)
                 buildingManager.ExitBuildMode();

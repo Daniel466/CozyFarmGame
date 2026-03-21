@@ -141,8 +141,8 @@ public class HUDBootstrapper : MonoBehaviour
         // --- CONTROLS HINT (top centre, small) ---
         CreateText("ControlsHint", canvas.transform,
             new Vector2(0.5f, 1f), new Vector2(0.5f, 1f),
-            new Vector2(0f, -30f), new Vector2(600f, 40f),
-            "LClick: Till/Plant/Harvest  |  RClick: Water  |  B: Shop  |  Tab: Inventory",
+            new Vector2(0f, -30f), new Vector2(700f, 40f),
+            "LClick: Till/Plant/Harvest  |  RClick: Water  |  B: Shop  |  Tab: Inventory  |  G: Build Mode",
             16, new Color(1f, 1f, 1f, 0.6f), TextAlignmentOptions.Center);
     }
 
