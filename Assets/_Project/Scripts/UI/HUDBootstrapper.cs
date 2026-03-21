@@ -42,13 +42,24 @@ public class HUDBootstrapper : MonoBehaviour
 
     private System.Collections.IEnumerator ForceFont()
     {
-        yield return null; // Wait one frame for all components to initialise
-        foreach (var tmp in FindObjectsByType<TextMeshProUGUI>(FindObjectsSortMode.None))
+        // Wait 2 frames for ALL UI to be built (Inventory, Shop, BuildMode all build in Awake too)
+        yield return null;
+        yield return null;
+
+        // Find ALL TMP components including inactive objects
+        var allTMP = Resources.FindObjectsOfTypeAll<TextMeshProUGUI>();
+        int count = 0;
+        foreach (var tmp in allTMP)
         {
-            tmp.font = fontAsset;
-            tmp.SetAllDirty();
+            // Only apply to scene objects, not prefab assets
+            if (tmp.gameObject.scene.isLoaded)
+            {
+                tmp.font = fontAsset;
+                tmp.SetAllDirty();
+                count++;
+            }
         }
-        Debug.Log($"[HUDBootstrapper] Applied font to {FindObjectsByType<TextMeshProUGUI>(FindObjectsSortMode.None).Length} TMP components.");
+        Debug.Log($"[HUDBootstrapper] Applied font to {count} TMP components.");
     }
 
     private void BuildCanvas()
