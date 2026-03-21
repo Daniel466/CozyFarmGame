@@ -702,7 +702,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08cb81772983b4f6c8737c1e79bfce6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FarmingManager
-  cropVisualPrefab: {fileID: 0}
+  cropVisualPrefab: {fileID: 8905606864023788519, guid: bf34193840c304f9e9b5ba522c9d516d, type: 3}
   harvestParticles: {fileID: 0}
   waterParticles: {fileID: 0}
   growthSpeedMultiplier: 1
@@ -914,7 +914,7 @@ MonoBehaviour:
   gridSize: {x: 20, y: 20}
   createPlayer: 0
   playerStartPosition: {x: 10, y: 1, z: 10}
-  setupLighting: 1
+  setupLighting: 0
 --- !u!4 &386677362
 Transform:
   m_ObjectHideFlags: 0
@@ -1343,6 +1343,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HUDBootstrapper
   buildingDatabase: {fileID: 11400000, guid: 86a62bf2828b54914950a8f9c0ca4e48, type: 2}
+  cropDatabase: {fileID: 11400000, guid: 583ce83ef71ab4cd1a0eefb5a3219a3c, type: 2}
 --- !u!1 &724314222
 GameObject:
   m_ObjectHideFlags: 0
