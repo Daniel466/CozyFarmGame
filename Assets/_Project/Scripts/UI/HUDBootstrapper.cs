@@ -384,13 +384,8 @@ public class HUDBootstrapper : MonoBehaviour
         if (buildingDatabase == null)
             Debug.LogWarning("[HUDBootstrapper] BuildingDatabase not assigned — build catalogue will be empty.");
 
-        // Add BuildingManager to GameManager if not already there
-        if (BuildingManager.Instance == null)
-        {
-            var gm = FindFirstObjectByType<GameManager>();
-            if (gm != null)
-                gm.gameObject.AddComponent<BuildingManager>();
-        }
+        // BuildingManager should be manually added to GameManager in the scene
+        // Don't auto-add here to avoid duplicates
     }
 
     // --- Helpers ---
