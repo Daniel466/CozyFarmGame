@@ -30,6 +30,7 @@ public class ProgressionManager : MonoBehaviour
             currentLevel++;
             Debug.Log($"[Progression] Level Up! Now level {currentLevel}");
             OnLevelUp?.Invoke(currentLevel);
+            AudioManager.Instance?.PlayLevelUp();
         }
 
         OnXPChanged?.Invoke(currentXP, currentLevel);

@@ -69,6 +69,7 @@ public class PlayerInteraction : MonoBehaviour
 
     private void SellAll()
     {
+        AudioManager.Instance?.PlaySell();
         int earned = GameManager.Instance.Inventory.SellAll();
         if (earned > 0)
         {

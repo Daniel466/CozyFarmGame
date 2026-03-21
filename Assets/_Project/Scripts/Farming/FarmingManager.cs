@@ -64,7 +64,8 @@ public class FarmingManager : MonoBehaviour
         if (tile == null || tile.IsTilled) return false;
 
         tile.Till();
-        SpawnTileMarker(tile.WorldPosition, new Color(0.28f, 0.17f, 0.09f)); // Dark brown = tilled
+        SpawnTileMarker(tile.WorldPosition, new Color(0.28f, 0.17f, 0.09f));
+        AudioManager.Instance?.PlayTill();
         return true;
     }
 
@@ -138,6 +139,7 @@ public class FarmingManager : MonoBehaviour
 
             // Award XP
             GameManager.Instance.Progression.AddXP(crop.PlantXP);
+            AudioManager.Instance?.PlayPlant();
         }
         return planted;
     }
@@ -151,6 +153,7 @@ public class FarmingManager : MonoBehaviour
         int xp = tile.PlantedCrop?.WaterXP ?? 1;
 
         tile.Water();
+        AudioManager.Instance?.PlayWater();
 
         // Update tile marker to blue = watered
         UpdateTileMarkerColor(tile.WorldPosition, new Color(0.15f, 0.35f, 0.9f));
@@ -188,6 +191,8 @@ public class FarmingManager : MonoBehaviour
 
             // Award XP
             GameManager.Instance.Progression.AddXP(xp);
+
+            AudioManager.Instance?.PlayHarvest();
 
             // Reset tile marker back to tilled brown
             UpdateTileMarkerColor(tile.WorldPosition, new Color(0.28f, 0.17f, 0.09f));

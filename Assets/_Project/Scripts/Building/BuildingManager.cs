@@ -191,6 +191,7 @@ public class BuildingManager : MonoBehaviour
 
         // Award XP
         GameManager.Instance.Progression.AddXP(selectedBuilding.PlaceXP);
+        AudioManager.Instance?.PlayBuild();
 
         HUDManager.Instance?.ShowNotification($"{selectedBuilding.BuildingName} placed! +{selectedBuilding.PlaceXP} XP");
         return true;
@@ -203,6 +204,7 @@ public class BuildingManager : MonoBehaviour
         Destroy(building.gameObject);
         FreeCells(coord, building.data);
         placedBuildings.Remove(coord);
+        AudioManager.Instance?.PlayRemove();
 
         // Refund 50% of cost
         int refund = building.data.Cost / 2;
