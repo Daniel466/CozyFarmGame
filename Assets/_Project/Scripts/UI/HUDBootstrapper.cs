@@ -12,6 +12,9 @@ public class HUDBootstrapper : MonoBehaviour
     [SerializeField] private BuildingDatabase buildingDatabase;
     [SerializeField] private CropDatabase cropDatabase;
 
+    [Header("Font")]
+    [SerializeField] private TMP_FontAsset fontAsset; // Drag your TMP font here in Inspector
+
     private Canvas canvas;
     private HUDManager hudManager;
 
@@ -402,6 +405,9 @@ public class HUDBootstrapper : MonoBehaviour
         tmp.color = color;
         tmp.alignment = alignment;
         tmp.fontStyle = FontStyles.Bold;
+
+        // Assign font if provided, otherwise use TMP default
+        if (fontAsset != null) tmp.font = fontAsset;
 
         var rect = go.GetComponent<RectTransform>();
         rect.anchorMin = anchorMin;
