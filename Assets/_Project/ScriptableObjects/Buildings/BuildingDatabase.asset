@@ -14,8 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BuildingDatabase
   buildings:
   - {fileID: 11400000, guid: fbc59f5fdc90e45bd9e862fad8be0786, type: 2}
-  - {fileID: 11400000, guid: 6556da52045f64227b9695c39991e748, type: 2}
+  - {fileID: 11400000, guid: 5f5fd5785ff754bf78c76865aec12c91, type: 2}
   - {fileID: 11400000, guid: f0bb8002fc9f64689b6d61548e0f171c, type: 2}
+  - {fileID: 11400000, guid: 9680a4bc8565e4a299893f352767636e, type: 2}
+  - {fileID: 11400000, guid: c0eb23256888d4e2291bd619be46f2bb, type: 2}
   - {fileID: 11400000, guid: 4e27aaa2a40dc47fbab64119ca85f371, type: 2}
-  - {fileID: 11400000, guid: df07c4e8614b04c02ba8f7aab91bbf17, type: 2}
-  - {fileID: 11400000, guid: 67049e5ab5a644266af4d1ca81062bd2, type: 2}
+  - {fileID: 11400000, guid: 8cff3ab4a453245879b17d91799a8585, type: 2}
+  - {fileID: 11400000, guid: 4ad6387124ed44c3aba0583174008582, type: 2}
+  - {fileID: 11400000, guid: 55dd672721a8c4868866ce1dc2da5966, type: 2}
+  - {fileID: 11400000, guid: 01dae3e2ec70f4f33accc76ad68e1b33, type: 2}
+  - {fileID: 11400000, guid: b529f21ba2e594c85a0ab8e205a0762d, type: 2}

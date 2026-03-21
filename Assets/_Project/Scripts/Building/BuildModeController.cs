@@ -21,15 +21,28 @@ public class BuildModeController : MonoBehaviour
         buildingManager = BuildingManager.Instance;
         grid = GameManager.Instance?.FarmGrid;
         mainCamera = Camera.main;
-        groundMask = ~0; // Everything for now
+        groundMask = ~0;
+
+        if (buildingManager == null)
+            Debug.LogError("[BuildModeController] BuildingManager.Instance is null! Add BuildingManager to GameManager.");
+        if (BuildModeUI.Instance == null)
+            Debug.LogError("[BuildModeController] BuildModeUI.Instance is null! Make sure HUDBootstrapper has BuildingDatabase assigned.");
+
+        Debug.Log($"[BuildModeController] Ready. BuildingManager={buildingManager != null}, BuildModeUI={BuildModeUI.Instance != null}");
     }
 
     private void Update()
     {
-        // Toggle build mode UI with B key (Mac-friendly)
-        // Note: B is also used for shop — build mode takes priority when not farming
         if (Input.GetKeyDown(KeyCode.G))
         {
+            Debug.Log($"[BuildModeController] G pressed. buildingManager={buildingManager != null}, BuildModeUI={BuildModeUI.Instance != null}");
+
+            if (buildingManager == null)
+            {
+                buildingManager = BuildingManager.Instance; // Retry
+                if (buildingManager == null) { Debug.LogError("Still no BuildingManager!"); return; }
+            }
+
             if (buildingManager.IsInBuildMode)
                 buildingManager.ExitBuildMode();
             else
