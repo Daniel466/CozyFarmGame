@@ -14,6 +14,9 @@ public class FarmingManager : MonoBehaviour
     [SerializeField] private ParticleSystem harvestParticles;
     [SerializeField] private ParticleSystem waterParticles;
 
+    [Header("Debug")]
+    [SerializeField] private float growthSpeedMultiplier = 1f; // Set to 60 in Inspector for fast testing
+
     private FarmGrid grid;
 
     private void Awake()
@@ -50,7 +53,7 @@ public class FarmingManager : MonoBehaviour
         // Tick growth for all planted tiles
         foreach (var tile in tileCache.Values)
         {
-            if (tile.IsPlanted) tile.UpdateGrowth(Time.deltaTime);
+            if (tile.IsPlanted) tile.UpdateGrowth(Time.deltaTime * growthSpeedMultiplier);
         }
     }
 
