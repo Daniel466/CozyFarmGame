@@ -26,7 +26,14 @@ public class BuildModeController : MonoBehaviour
         if (buildingManager == null)
             Debug.LogError("[BuildModeController] BuildingManager.Instance is null! Add BuildingManager to GameManager.");
         if (BuildModeUI.Instance == null)
-            Debug.LogError("[BuildModeController] BuildModeUI.Instance is null! Make sure HUDBootstrapper has BuildingDatabase assigned.");
+        {
+            // Try to find it in scene in case Awake order was off
+            var found = FindFirstObjectByType<BuildModeUI>();
+            if (found != null)
+                Debug.Log("[BuildModeController] Found BuildModeUI via FindFirstObjectByType.");
+            else
+                Debug.LogError("[BuildModeController] BuildModeUI not found! Make sure HUDBootstrapper has BuildingDatabase assigned and HUD GameObject is in scene.");
+        }
 
         Debug.Log($"[BuildModeController] Ready. BuildingManager={buildingManager != null}, BuildModeUI={BuildModeUI.Instance != null}");
     }
@@ -35,18 +42,21 @@ public class BuildModeController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.G))
         {
-            Debug.Log($"[BuildModeController] G pressed. buildingManager={buildingManager != null}, BuildModeUI={BuildModeUI.Instance != null}");
-
+            // Lazy lookup in case systems weren't ready at Start
             if (buildingManager == null)
-            {
-                buildingManager = BuildingManager.Instance; // Retry
-                if (buildingManager == null) { Debug.LogError("Still no BuildingManager!"); return; }
-            }
+                buildingManager = BuildingManager.Instance;
+
+            var buildUI = BuildModeUI.Instance ?? FindFirstObjectByType<BuildModeUI>();
+
+            Debug.Log($"[BuildModeController] G pressed. buildingManager={buildingManager != null}, BuildModeUI={buildUI != null}");
+
+            if (buildingManager == null) { Debug.LogError("[BuildModeController] No BuildingManager!"); return; }
+            if (buildUI == null) { Debug.LogError("[BuildModeController] No BuildModeUI! Is HUD in scene with BuildingDatabase assigned?"); return; }
 
             if (buildingManager.IsInBuildMode)
                 buildingManager.ExitBuildMode();
             else
-                BuildModeUI.Instance?.ToggleBuildPanel();
+                buildUI.ToggleBuildPanel();
         }
 
         // Remove building with Delete key

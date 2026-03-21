@@ -154,7 +154,7 @@ public class HUDBootstrapper : MonoBehaviour
         // Build and wire inventory UI
         BuildInventoryUI();
 
-        // Build and wire build mode UI
+        // Build and wire build mode UI (always build panel, database optional)
         BuildBuildModeUI();
     }
 
