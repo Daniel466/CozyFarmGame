@@ -3,28 +3,29 @@ using UnityEngine.UI;
 using TMPro;
 
 /// <summary>
-/// Displays the player's inventory in a scrollable grid panel.
+/// Displays the player's inventory in a scrollable list.
 /// Toggle with Tab key. Includes a Sell All button.
 /// </summary>
 public class InventoryUI : MonoBehaviour
 {
-    [Header("Panel")]
-    [SerializeField] private GameObject inventoryPanel;
-    [SerializeField] private Transform itemGrid;
-    [SerializeField] private GameObject inventoryItemPrefab;
-
-    [Header("Sell")]
-    [SerializeField] private Button sellAllButton;
-    [SerializeField] private TextMeshProUGUI sellAllText;
-
-    [Header("Slots Info")]
-    [SerializeField] private TextMeshProUGUI slotsText;
+    private GameObject inventoryPanel;
+    private Transform itemGrid;
+    private TextMeshProUGUI slotsText;
+    private Button sellAllButton;
+    private TextMeshProUGUI sellAllText;
 
     private bool isOpen = false;
 
-    private void Start()
+    /// <summary>Called by HUDBootstrapper to wire up all references at runtime.</summary>
+    public void Setup(GameObject panel, Transform grid, TextMeshProUGUI slots,
+                      Button sellBtn, TextMeshProUGUI sellBtnText)
     {
-        inventoryPanel.SetActive(false);
+        inventoryPanel = panel;
+        itemGrid = grid;
+        slotsText = slots;
+        sellAllButton = sellBtn;
+        sellAllText = sellBtnText;
+
         sellAllButton?.onClick.AddListener(SellAll);
         GameManager.Instance.Inventory.OnInventoryChanged.AddListener(RefreshUI);
     }
@@ -38,15 +39,15 @@ public class InventoryUI : MonoBehaviour
     public void ToggleInventory()
     {
         isOpen = !isOpen;
-        inventoryPanel.SetActive(isOpen);
+        inventoryPanel?.SetActive(isOpen);
         if (isOpen) RefreshUI();
     }
 
     private void RefreshUI()
     {
-        if (!isOpen) return;
+        if (!isOpen || itemGrid == null) return;
 
-        // Clear existing items
+        // Clear existing item rows
         foreach (Transform child in itemGrid)
             Destroy(child.gameObject);
 
@@ -58,39 +59,72 @@ public class InventoryUI : MonoBehaviour
             var item = kvp.Value;
             totalValue += item.crop.SellValue * item.quantity;
 
-            if (inventoryItemPrefab != null)
-            {
-                GameObject slot = Instantiate(inventoryItemPrefab, itemGrid);
-                // Set icon
-                var icon = slot.transform.Find("Icon")?.GetComponent<Image>();
-                if (icon && item.crop.Icon) icon.sprite = item.crop.Icon;
+            // Create a row for each item
+            GameObject row = new GameObject($"Item_{item.crop.CropId}");
+            row.transform.SetParent(itemGrid, false);
 
-                // Set name
-                var nameText = slot.transform.Find("Name")?.GetComponent<TextMeshProUGUI>();
-                if (nameText) nameText.text = item.crop.CropName;
+            var rowImg = row.AddComponent<Image>();
+            rowImg.color = new Color(0.25f, 0.2f, 0.13f, 0.9f);
 
-                // Set quantity
-                var qtyText = slot.transform.Find("Quantity")?.GetComponent<TextMeshProUGUI>();
-                if (qtyText) qtyText.text = $"x{item.quantity}";
+            var rowRect = row.GetComponent<RectTransform>();
+            rowRect.sizeDelta = new Vector2(0f, 55f);
 
-                // Set value
-                var valText = slot.transform.Find("Value")?.GetComponent<TextMeshProUGUI>();
-                if (valText) valText.text = $"{item.crop.SellValue * item.quantity}🪙";
-            }
+            var hlg = row.AddComponent<HorizontalLayoutGroup>();
+            hlg.padding = new RectOffset(15, 15, 10, 10);
+            hlg.spacing = 15f;
+            hlg.childAlignment = TextAnchor.MiddleLeft;
+            hlg.childForceExpandHeight = true;
+
+            // Crop name
+            CreateRowText(row.transform, item.crop.CropName, 22, Color.white, TextAnchor.MiddleLeft, true);
+
+            // Quantity
+            CreateRowText(row.transform, $"x{item.quantity}", 20,
+                new Color(0.8f, 0.9f, 0.8f), TextAnchor.MiddleCenter, false);
+
+            // Value
+            CreateRowText(row.transform, $"{item.crop.SellValue * item.quantity} 🪙", 20,
+                new Color(1f, 0.85f, 0.3f), TextAnchor.MiddleRight, false);
         }
 
-        // Update sell button text
-        if (sellAllText) sellAllText.text = $"Sell All ({totalValue}🪙)";
+        // Empty state
+        if (items.Count == 0)
+        {
+            CreateRowText(itemGrid, "Nothing in inventory — go harvest some crops! 🌱",
+                20, new Color(0.6f, 0.6f, 0.6f), TextAnchor.MiddleCenter, false);
+        }
 
-        // Update slots text
+        // Update sell button
+        if (sellAllText) sellAllText.text = $"💰 Sell All ({totalValue} 🪙)";
+
+        // Update slots
         var inv = GameManager.Instance.Inventory;
         if (slotsText) slotsText.text = $"Slots: {inv.UsedSlots}/{inv.MaxSlots}";
+    }
+
+    private void CreateRowText(Transform parent, string text, float size,
+                                Color color, TextAnchor anchor, bool expand)
+    {
+        GameObject go = new GameObject("Text");
+        go.transform.SetParent(parent, false);
+        var tmp = go.AddComponent<TextMeshProUGUI>();
+        tmp.text = text;
+        tmp.fontSize = size;
+        tmp.color = color;
+        tmp.alignment = TextAlignmentOptions.Left;
+
+        var le = go.AddComponent<LayoutElement>();
+        le.flexibleWidth = expand ? 1f : 0f;
+        le.minWidth = expand ? 0f : 100f;
     }
 
     private void SellAll()
     {
         int earned = GameManager.Instance.Inventory.SellAll();
-        HUDManager.Instance?.ShowNotification($"Sold everything for {earned} 🪙!");
+        if (earned > 0)
+            HUDManager.Instance?.ShowNotification($"Sold everything for {earned} 🪙!");
+        else
+            HUDManager.Instance?.ShowNotification("Nothing to sell!");
         RefreshUI();
     }
 }

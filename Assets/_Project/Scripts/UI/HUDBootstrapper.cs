@@ -145,9 +145,99 @@ public class HUDBootstrapper : MonoBehaviour
 
     private void WireUpHUDManager()
     {
-        // Use reflection-free approach — set public fields via a setup method
         hudManager.Setup(coinsText, levelText, xpSlider, xpText,
                          levelUpPanel, levelUpText, notificationPanel, notificationText, toolText);
+
+        // Build and wire inventory UI
+        BuildInventoryUI();
+    }
+
+    private void BuildInventoryUI()
+    {
+        // Full screen dimmed background
+        GameObject invPanel = CreatePanel("InventoryPanel", canvas.transform,
+            Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero,
+            new Color(0f, 0f, 0f, 0.75f));
+        invPanel.SetActive(false);
+
+        // Inventory window (centred)
+        GameObject invWindow = CreatePanel("InventoryWindow", invPanel.transform,
+            new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),
+            Vector2.zero, new Vector2(700f, 500f),
+            new Color(0.15f, 0.12f, 0.08f, 0.97f));
+
+        // Title
+        CreateText("InventoryTitle", invWindow.transform,
+            new Vector2(0f, 1f), new Vector2(1f, 1f),
+            new Vector2(0f, -30f), new Vector2(0f, 50f),
+            "🎒 Inventory", 32, new Color(1f, 0.9f, 0.6f), TextAlignmentOptions.Center);
+
+        // Slots info text
+        var slotsText = CreateText("SlotsText", invWindow.transform,
+            new Vector2(0f, 1f), new Vector2(1f, 1f),
+            new Vector2(0f, -70f), new Vector2(0f, 30f),
+            "Slots: 0/20", 18, new Color(0.7f, 0.7f, 0.7f), TextAlignmentOptions.Center);
+
+        // Scroll view for items
+        GameObject scrollView = new GameObject("ScrollView");
+        scrollView.transform.SetParent(invWindow.transform, false);
+        var scrollRect = scrollView.AddComponent<ScrollRect>();
+        var scrollRectTransform = scrollView.GetComponent<RectTransform>();
+        scrollRectTransform.anchorMin = new Vector2(0f, 0.15f);
+        scrollRectTransform.anchorMax = new Vector2(1f, 0.85f);
+        scrollRectTransform.offsetMin = new Vector2(20f, 0f);
+        scrollRectTransform.offsetMax = new Vector2(-20f, 0f);
+
+        // Content container
+        GameObject content = new GameObject("Content");
+        content.transform.SetParent(scrollView.transform, false);
+        var contentRect = content.AddComponent<RectTransform>();
+        contentRect.anchorMin = new Vector2(0f, 1f);
+        contentRect.anchorMax = new Vector2(1f, 1f);
+        contentRect.pivot = new Vector2(0.5f, 1f);
+        contentRect.sizeDelta = new Vector2(0f, 0f);
+
+        var vlg = content.AddComponent<VerticalLayoutGroup>();
+        vlg.spacing = 8f;
+        vlg.padding = new RectOffset(10, 10, 10, 10);
+        vlg.childForceExpandWidth = true;
+        vlg.childForceExpandHeight = false;
+
+        var csf = content.AddComponent<ContentSizeFitter>();
+        csf.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+        scrollRect.content = contentRect;
+        scrollRect.vertical = true;
+        scrollRect.horizontal = false;
+
+        // Sell All button
+        GameObject sellBtn = new GameObject("SellAllButton");
+        sellBtn.transform.SetParent(invWindow.transform, false);
+        var sellBtnRect = sellBtn.GetComponent<RectTransform>();
+        if (sellBtnRect == null) sellBtnRect = sellBtn.AddComponent<RectTransform>();
+        sellBtnRect.anchorMin = new Vector2(0.5f, 0f);
+        sellBtnRect.anchorMax = new Vector2(0.5f, 0f);
+        sellBtnRect.anchoredPosition = new Vector2(0f, 40f);
+        sellBtnRect.sizeDelta = new Vector2(250f, 55f);
+
+        var sellBtnImg = sellBtn.AddComponent<Image>();
+        sellBtnImg.color = new Color(0.3f, 0.7f, 0.3f);
+        var sellBtnComponent = sellBtn.AddComponent<Button>();
+        sellBtnComponent.targetGraphic = sellBtnImg;
+
+        var sellBtnText = CreateText("SellBtnText", sellBtn.transform,
+            Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero,
+            "💰 Sell All", 24, Color.white, TextAlignmentOptions.Center);
+
+        // Close hint
+        CreateText("CloseHint", invWindow.transform,
+            new Vector2(0f, 0f), new Vector2(1f, 0f),
+            new Vector2(0f, 15f), new Vector2(0f, 25f),
+            "Press TAB to close", 16, new Color(0.6f, 0.6f, 0.6f), TextAlignmentOptions.Center);
+
+        // Wire up InventoryUI component
+        var invUI = canvas.gameObject.AddComponent<InventoryUI>();
+        invUI.Setup(invPanel, content.transform, slotsText, sellBtnComponent, sellBtnText);
     }
 
     // --- Helpers ---
