@@ -402,7 +402,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &197887117
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1881,7 +1881,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 591079835}
   m_FillRect: {fileID: 1826459148}
   m_HandleRect: {fileID: 591079834}
@@ -2514,7 +2514,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2006033419
 RectTransform:
   m_ObjectHideFlags: 0

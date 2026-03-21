@@ -69,4 +69,6 @@ public class FarmCamera : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.E))
             targetRotation += rotationStep;
     }
+
+    public void SetTarget(Transform newTarget) => target = newTarget;
 }
