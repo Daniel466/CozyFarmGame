@@ -17,6 +17,13 @@ public class EconomyManager : MonoBehaviour
     private void Start()
     {
         coins = startingCoins;
+        // Delay the initial event by one frame so HUDManager has time to subscribe
+        StartCoroutine(FireInitialEvent());
+    }
+
+    private System.Collections.IEnumerator FireInitialEvent()
+    {
+        yield return null;
         OnCoinsChanged?.Invoke(coins);
     }
 

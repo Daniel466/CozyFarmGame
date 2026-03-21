@@ -49,6 +49,18 @@ public class ProgressionManager : MonoBehaviour
         return (float)(currentXP - prevThreshold) / (nextThreshold - prevThreshold);
     }
 
+    private void Start()
+    {
+        // Fire initial event after one frame so HUDManager has time to subscribe
+        StartCoroutine(FireInitialEvent());
+    }
+
+    private System.Collections.IEnumerator FireInitialEvent()
+    {
+        yield return null;
+        OnXPChanged?.Invoke(currentXP, currentLevel);
+    }
+
     public void SetState(int xp, int level)
     {
         currentXP = xp;
