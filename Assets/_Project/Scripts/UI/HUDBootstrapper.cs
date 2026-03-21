@@ -31,13 +31,24 @@ public class HUDBootstrapper : MonoBehaviour
 
     private void Awake()
     {
-        // Set font globally for ALL TMP components created at runtime
-        if (fontAsset != null)
-            TMP_Settings.defaultFontAsset = fontAsset;
-
         BuildCanvas();
         BuildHUD();
         WireUpHUDManager();
+
+        // Force font on ALL TMP components after everything is built
+        if (fontAsset != null)
+            StartCoroutine(ForceFont());
+    }
+
+    private System.Collections.IEnumerator ForceFont()
+    {
+        yield return null; // Wait one frame for all components to initialise
+        foreach (var tmp in FindObjectsByType<TextMeshProUGUI>(FindObjectsSortMode.None))
+        {
+            tmp.font = fontAsset;
+            tmp.SetAllDirty();
+        }
+        Debug.Log($"[HUDBootstrapper] Applied font to {FindObjectsByType<TextMeshProUGUI>(FindObjectsSortMode.None).Length} TMP components.");
     }
 
     private void BuildCanvas()

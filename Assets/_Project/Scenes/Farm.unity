@@ -1254,16 +1254,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c3c4e6eefb5c4230a7dcf7298ae2664, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HUDManager
-  coinsText: {fileID: 1168841064}
-  levelText: {fileID: 1114800192}
-  xpSlider: {fileID: 1121973178}
-  xpText: {fileID: 1915206189}
-  levelUpPanel: {fileID: 197887116}
-  levelUpText: {fileID: 891258278}
+  coinsText: {fileID: 0}
+  levelText: {fileID: 0}
+  xpSlider: {fileID: 0}
+  xpText: {fileID: 0}
+  levelUpPanel: {fileID: 0}
+  levelUpText: {fileID: 0}
   levelUpDisplayTime: 3
-  toolText: {fileID: 106112923}
-  notificationPanel: {fileID: 2006033418}
-  notificationText: {fileID: 724314223}
+  toolText: {fileID: 0}
+  notificationPanel: {fileID: 0}
+  notificationText: {fileID: 0}
 --- !u!1 &591079833
 GameObject:
   m_ObjectHideFlags: 0
