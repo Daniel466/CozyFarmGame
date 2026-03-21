@@ -45,6 +45,8 @@ public class GameManager : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-        SaveManager?.SaveGame();
+        // Only save if player has actually played (has coins or XP)
+        if (Economy != null && (Economy.Coins != 500 || Progression.CurrentXP > 0))
+            SaveManager?.SaveGame();
     }
 }
