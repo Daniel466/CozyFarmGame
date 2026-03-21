@@ -248,6 +248,7 @@ public class HUDBootstrapper : MonoBehaviour
 
     private void BuildBuildModeUI()
     {
+        Debug.Log("[HUDBootstrapper] BuildBuildModeUI() called.");
         // Full screen panel
         GameObject buildPanel = CreatePanel("BuildModePanel", canvas.transform,
             Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero,
@@ -306,15 +307,24 @@ public class HUDBootstrapper : MonoBehaviour
         scrollRect.vertical = true;
         scrollRect.horizontal = false;
 
-        // Wire up BuildModeUI
+        // Wire up BuildModeUI — always created, database can be null
         var buildUI = canvas.gameObject.AddComponent<BuildModeUI>();
         buildUI.Setup(buildPanel, content.transform, buildingDatabase);
+
+        if (buildingDatabase == null)
+            Debug.LogWarning("[HUDBootstrapper] BuildingDatabase not assigned — build catalogue will be empty. Assign it in the Inspector.");
+        else
+            Debug.Log($"[HUDBootstrapper] BuildModeUI created with {buildingDatabase.GetAll().Count} buildings.");
 
         // Add BuildingManager to GameManager if not already there
         if (BuildingManager.Instance == null)
         {
             var gm = FindFirstObjectByType<GameManager>();
-            if (gm != null) gm.gameObject.AddComponent<BuildingManager>();
+            if (gm != null)
+            {
+                gm.gameObject.AddComponent<BuildingManager>();
+                Debug.Log("[HUDBootstrapper] Added BuildingManager to GameManager.");
+            }
         }
     }
 
