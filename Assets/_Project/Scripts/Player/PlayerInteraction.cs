@@ -8,7 +8,7 @@ using UnityEngine;
 public class PlayerInteraction : MonoBehaviour
 {
     [Header("Settings")]
-    [SerializeField] private float interactionRange = 3f;
+    [SerializeField] private float interactionRange = 10f;
     [SerializeField] private LayerMask groundLayer;
 
     [Header("Tool")]
