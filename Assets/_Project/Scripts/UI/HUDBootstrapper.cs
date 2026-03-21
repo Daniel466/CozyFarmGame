@@ -152,14 +152,27 @@ public class HUDBootstrapper : MonoBehaviour
 
     private void WireUpHUDManager()
     {
-        hudManager.Setup(coinsText, levelText, xpSlider, xpText,
-                         levelUpPanel, levelUpText, notificationPanel, notificationText, toolText);
+        try
+        {
+            hudManager.Setup(coinsText, levelText, xpSlider, xpText,
+                             levelUpPanel, levelUpText, notificationPanel, notificationText, toolText);
+            Debug.Log("[HUDBootstrapper] HUDManager wired.");
+        }
+        catch (System.Exception e) { Debug.LogError($"[HUDBootstrapper] HUDManager.Setup failed: {e.Message}"); }
 
-        // Build and wire inventory UI
-        BuildInventoryUI();
+        try
+        {
+            BuildInventoryUI();
+            Debug.Log("[HUDBootstrapper] InventoryUI built.");
+        }
+        catch (System.Exception e) { Debug.LogError($"[HUDBootstrapper] BuildInventoryUI failed: {e.Message}\n{e.StackTrace}"); }
 
-        // Build and wire build mode UI (always build panel, database optional)
-        BuildBuildModeUI();
+        try
+        {
+            BuildBuildModeUI();
+            Debug.Log("[HUDBootstrapper] BuildModeUI built.");
+        }
+        catch (System.Exception e) { Debug.LogError($"[HUDBootstrapper] BuildBuildModeUI failed: {e.Message}\n{e.StackTrace}"); }
     }
 
     private void BuildInventoryUI()
