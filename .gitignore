@@ -98,6 +98,10 @@ InitTestScene*.unity*
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
 
+# Large font atlas files (can exceed 100MB)
+*NotoEmoji*.asset
+*NotoEmoji*.asset.meta
+
 # Large audio files — store locally, not in Git
 # Use Git LFS or a shared drive for audio assets
 *.mp3
