@@ -24,18 +24,7 @@ public class BuildModeController : MonoBehaviour
         groundMask = ~0;
 
         if (buildingManager == null)
-            Debug.LogError("[BuildModeController] BuildingManager.Instance is null! Add BuildingManager to GameManager.");
-        if (BuildModeUI.Instance == null)
-        {
-            // Try to find it in scene in case Awake order was off
-            var found = FindFirstObjectByType<BuildModeUI>();
-            if (found != null)
-                Debug.Log("[BuildModeController] Found BuildModeUI via FindFirstObjectByType.");
-            else
-                Debug.LogError("[BuildModeController] BuildModeUI not found! Make sure HUDBootstrapper has BuildingDatabase assigned and HUD GameObject is in scene.");
-        }
-
-        Debug.Log($"[BuildModeController] Ready. BuildingManager={buildingManager != null}, BuildModeUI={BuildModeUI.Instance != null}");
+            Debug.LogError("[BuildModeController] BuildingManager not found! Add BuildingManager to GameManager.");
     }
 
     private void Update()
@@ -47,11 +36,8 @@ public class BuildModeController : MonoBehaviour
                 buildingManager = BuildingManager.Instance;
 
             var buildUI = BuildModeUI.Instance ?? FindFirstObjectByType<BuildModeUI>();
-
-            Debug.Log($"[BuildModeController] G pressed. buildingManager={buildingManager != null}, BuildModeUI={buildUI != null}");
-
             if (buildingManager == null) { Debug.LogError("[BuildModeController] No BuildingManager!"); return; }
-            if (buildUI == null) { Debug.LogError("[BuildModeController] No BuildModeUI! Is HUD in scene with BuildingDatabase assigned?"); return; }
+            if (buildUI == null) { Debug.LogError("[BuildModeController] No BuildModeUI!"); return; }
 
             if (buildingManager.IsInBuildMode)
                 buildingManager.ExitBuildMode();

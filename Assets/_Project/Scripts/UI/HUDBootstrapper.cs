@@ -27,13 +27,9 @@ public class HUDBootstrapper : MonoBehaviour
 
     private void Awake()
     {
-        Debug.Log("[HUDBootstrapper] Awake started.");
         BuildCanvas();
-        Debug.Log("[HUDBootstrapper] Canvas built.");
         BuildHUD();
-        Debug.Log("[HUDBootstrapper] HUD built.");
         WireUpHUDManager();
-        Debug.Log("[HUDBootstrapper] Awake complete.");
     }
 
     private void BuildCanvas()
@@ -152,27 +148,10 @@ public class HUDBootstrapper : MonoBehaviour
 
     private void WireUpHUDManager()
     {
-        try
-        {
-            hudManager.Setup(coinsText, levelText, xpSlider, xpText,
-                             levelUpPanel, levelUpText, notificationPanel, notificationText, toolText);
-            Debug.Log("[HUDBootstrapper] HUDManager wired.");
-        }
-        catch (System.Exception e) { Debug.LogError($"[HUDBootstrapper] HUDManager.Setup failed: {e.Message}"); }
-
-        try
-        {
-            BuildInventoryUI();
-            Debug.Log("[HUDBootstrapper] InventoryUI built.");
-        }
-        catch (System.Exception e) { Debug.LogError($"[HUDBootstrapper] BuildInventoryUI failed: {e.Message}\n{e.StackTrace}"); }
-
-        try
-        {
-            BuildBuildModeUI();
-            Debug.Log("[HUDBootstrapper] BuildModeUI built.");
-        }
-        catch (System.Exception e) { Debug.LogError($"[HUDBootstrapper] BuildBuildModeUI failed: {e.Message}\n{e.StackTrace}"); }
+        hudManager.Setup(coinsText, levelText, xpSlider, xpText,
+                         levelUpPanel, levelUpText, notificationPanel, notificationText, toolText);
+        BuildInventoryUI();
+        BuildBuildModeUI();
     }
 
     private void BuildInventoryUI()
@@ -265,7 +244,6 @@ public class HUDBootstrapper : MonoBehaviour
 
     private void BuildBuildModeUI()
     {
-        Debug.Log("[HUDBootstrapper] BuildBuildModeUI() called.");
         // Full screen panel
         GameObject buildPanel = CreatePanel("BuildModePanel", canvas.transform,
             Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero,
@@ -329,19 +307,14 @@ public class HUDBootstrapper : MonoBehaviour
         buildUI.Setup(buildPanel, content.transform, buildingDatabase);
 
         if (buildingDatabase == null)
-            Debug.LogWarning("[HUDBootstrapper] BuildingDatabase not assigned — build catalogue will be empty. Assign it in the Inspector.");
-        else
-            Debug.Log($"[HUDBootstrapper] BuildModeUI created with {buildingDatabase.GetAll().Count} buildings.");
+            Debug.LogWarning("[HUDBootstrapper] BuildingDatabase not assigned — build catalogue will be empty.");
 
         // Add BuildingManager to GameManager if not already there
         if (BuildingManager.Instance == null)
         {
             var gm = FindFirstObjectByType<GameManager>();
             if (gm != null)
-            {
                 gm.gameObject.AddComponent<BuildingManager>();
-                Debug.Log("[HUDBootstrapper] Added BuildingManager to GameManager.");
-            }
         }
     }
 
