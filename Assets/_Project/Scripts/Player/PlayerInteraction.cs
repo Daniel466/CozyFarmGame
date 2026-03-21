@@ -67,31 +67,57 @@ public class PlayerInteraction : MonoBehaviour
     private void HandleLeftClick()
     {
         Vector2Int? coord = GetClickedTileCoord();
-        if (!coord.HasValue) return;
+        if (!coord.HasValue)
+        {
+            Debug.Log("[PlayerInteraction] Left click — no tile hit (missed ground or out of range)");
+            return;
+        }
+
+        Debug.Log($"[PlayerInteraction] Left click on tile {coord.Value}");
 
         FarmTile tile = grid.GetTile(coord.Value);
-        if (tile == null) return;
+        if (tile == null)
+        {
+            Debug.Log($"[PlayerInteraction] Tile {coord.Value} not found in grid");
+            return;
+        }
 
         if (!tile.IsTilled)
         {
-            farming.TillTile(coord.Value);
+            bool result = farming.TillTile(coord.Value);
+            Debug.Log($"[PlayerInteraction] Till result: {result}");
         }
         else if (!tile.IsPlanted && selectedCrop != null)
         {
-            farming.PlantCrop(coord.Value, selectedCrop);
+            bool result = farming.PlantCrop(coord.Value, selectedCrop);
+            Debug.Log($"[PlayerInteraction] Plant result: {result}");
+        }
+        else if (!tile.IsPlanted && selectedCrop == null)
+        {
+            Debug.Log("[PlayerInteraction] Tile tilled but no crop selected — press B to open shop!");
         }
         else if (tile.IsReadyToHarvest)
         {
             farming.HarvestTile(coord.Value);
+            Debug.Log("[PlayerInteraction] Harvested!");
+        }
+        else
+        {
+            Debug.Log($"[PlayerInteraction] Tile state: Tilled={tile.IsTilled}, Planted={tile.IsPlanted}, Growth={tile.GrowthProgress:P0}");
         }
     }
 
     private void HandleRightClick()
     {
         Vector2Int? coord = GetClickedTileCoord();
-        if (!coord.HasValue) return;
+        if (!coord.HasValue)
+        {
+            Debug.Log("[PlayerInteraction] Right click — no tile hit");
+            return;
+        }
 
-        farming.WaterTile(coord.Value);
+        bool result = farming.WaterTile(coord.Value);
+        Debug.Log($"[PlayerInteraction] Water result: {result}");
     }
 
     private Vector2Int? GetClickedTileCoord()
@@ -100,12 +126,18 @@ public class PlayerInteraction : MonoBehaviour
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit, 100f, groundLayer))
         {
-            // Check interaction range
-            if (Vector3.Distance(transform.position, hit.point) > interactionRange)
+            float dist = Vector3.Distance(transform.position, hit.point);
+            if (dist > interactionRange)
+            {
+                Debug.Log($"[PlayerInteraction] Hit ground but too far away ({dist:F1}m, max {interactionRange}m)");
                 return null;
-
+            }
             return grid.WorldToGrid(hit.point);
         }
+
+        // No hit — log what layer the ground is on vs what we're looking for
+        Debug.Log($"[PlayerInteraction] Raycast missed. Ground layer mask: {groundLayer.value}. " +
+                  $"Make sure Ground object layer matches PlayerInteraction's Ground Layer mask.");
         return null;
     }
 
