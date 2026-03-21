@@ -27,9 +27,13 @@ public class HUDBootstrapper : MonoBehaviour
 
     private void Awake()
     {
+        Debug.Log("[HUDBootstrapper] Awake started.");
         BuildCanvas();
+        Debug.Log("[HUDBootstrapper] Canvas built.");
         BuildHUD();
+        Debug.Log("[HUDBootstrapper] HUD built.");
         WireUpHUDManager();
+        Debug.Log("[HUDBootstrapper] Awake complete.");
     }
 
     private void BuildCanvas()
