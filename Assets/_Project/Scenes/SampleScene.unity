@@ -136,6 +136,7 @@ GameObject:
   - component: {fileID: 59783850}
   - component: {fileID: 59783858}
   - component: {fileID: 59783857}
+  - component: {fileID: 59783859}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -279,6 +280,21 @@ MonoBehaviour:
   harvestParticles: {fileID: 0}
   waterParticles: {fileID: 0}
   growthSpeedMultiplier: 60
+--- !u!114 &59783859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 59783849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b358ebd01a5934521aa373720ce7f323, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingManager
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!1 &82276949
 GameObject:
   m_ObjectHideFlags: 0
@@ -293,6 +309,7 @@ GameObject:
   - component: {fileID: 82276952}
   - component: {fileID: 82276951}
   - component: {fileID: 82276950}
+  - component: {fileID: 82276956}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -430,6 +447,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &82276956
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 82276949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cde5fb06fd1e241a6bd76c0305e74c8c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BuildModeController
+  buildingDatabase: {fileID: 11400000, guid: 86a62bf2828b54914950a8f9c0ca4e48, type: 2}
 --- !u!1 &106112921
 GameObject:
   m_ObjectHideFlags: 0
@@ -1312,6 +1342,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cb3faef27aeb4ee69c242fadbfb300a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HUDBootstrapper
+  buildingDatabase: {fileID: 11400000, guid: 86a62bf2828b54914950a8f9c0ca4e48, type: 2}
 --- !u!1 &724314222
 GameObject:
   m_ObjectHideFlags: 0
