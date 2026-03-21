@@ -262,7 +262,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ba87bba4ab894d8497f3e01d8ed9571, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlaceholderAssetGenerator
-  generateOnStart: 1
+  generateOnStart: 0
 --- !u!114 &59783858
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -311,11 +311,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a68c167a4ebf34fce8dd17e2232dcf89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInteraction
-  interactionRange: 3
+  interactionRange: 10
   groundLayer:
     serializedVersion: 2
     m_Bits: 256
-  selectedCrop: {fileID: 0}
+  selectedCrop: {fileID: 11400000, guid: 421c59334e8b74855a57aeacfbb518ca, type: 2}
 --- !u!114 &82276951
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1481,7 +1481,7 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 4294967295
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0

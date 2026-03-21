@@ -23,6 +23,7 @@ public class FarmingManager : MonoBehaviour
     }
 
     private Dictionary<Vector2Int, FarmTile> tileCache;
+    private Dictionary<Vector3, GameObject> tileMarkers = new Dictionary<Vector3, GameObject>();
 
     private void Start()
     {
@@ -59,7 +60,43 @@ public class FarmingManager : MonoBehaviour
         if (tile == null || tile.IsTilled) return false;
 
         tile.Till();
+        SpawnTileMarker(tile.WorldPosition, new Color(0.28f, 0.17f, 0.09f)); // Dark brown = tilled
         return true;
+    }
+
+    /// <summary>
+    /// Spawns a flat quad on the ground to visually mark a tilled or watered tile.
+    /// </summary>
+    private void SpawnTileMarker(Vector3 worldPos, Color color)
+    {
+        GameObject marker = GameObject.CreatePrimitive(PrimitiveType.Quad);
+        marker.name = "TileMarker";
+        marker.transform.position = worldPos + Vector3.up * 0.01f; // Slightly above ground
+        marker.transform.rotation = Quaternion.Euler(90f, 0f, 0f); // Lie flat
+        marker.transform.localScale = new Vector3(0.9f, 0.9f, 1f); // Slightly smaller than tile
+
+        // Remove collider so it doesn't block raycasts
+        Destroy(marker.GetComponent<Collider>());
+
+        // URP material
+        var mat = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+        mat.SetColor("_BaseColor", color);
+        mat.color = color;
+        mat.SetFloat("_Smoothness", 0f);
+        marker.GetComponent<Renderer>().material = mat;
+
+        // Store reference on the tile for later updates (watering)
+        tileMarkers[worldPos] = marker;
+    }
+
+    public void UpdateTileMarkerColor(Vector3 worldPos, Color color)
+    {
+        if (tileMarkers.TryGetValue(worldPos, out GameObject marker) && marker != null)
+        {
+            var mat = marker.GetComponent<Renderer>().material;
+            mat.SetColor("_BaseColor", color);
+            mat.color = color;
+        }
     }
 
     public bool PlantCrop(Vector2Int coord, CropData crop)
@@ -103,6 +140,9 @@ public class FarmingManager : MonoBehaviour
 
         tile.Water();
 
+        // Update tile marker to blue = watered
+        UpdateTileMarkerColor(tile.WorldPosition, new Color(0.2f, 0.4f, 0.8f));
+
         // Particles
         if (waterParticles != null)
             Instantiate(waterParticles, tile.WorldPosition + Vector3.up * 0.5f, Quaternion.identity);
@@ -129,6 +169,9 @@ public class FarmingManager : MonoBehaviour
 
             // Award XP
             GameManager.Instance.Progression.AddXP(xp);
+
+            // Reset tile marker back to tilled brown
+            UpdateTileMarkerColor(tile.WorldPosition, new Color(0.28f, 0.17f, 0.09f));
 
             // Particles
             if (harvestParticles != null)
