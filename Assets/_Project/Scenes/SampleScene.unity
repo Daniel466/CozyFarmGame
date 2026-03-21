@@ -185,7 +185,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a04e34ad0c081452b8329703d370a96c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EconomyManager
-  startingCoins: 100
+  startingCoins: 500
   OnCoinsChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -278,7 +278,7 @@ MonoBehaviour:
   cropVisualPrefab: {fileID: 8905606864023788519, guid: bf34193840c304f9e9b5ba522c9d516d, type: 3}
   harvestParticles: {fileID: 0}
   waterParticles: {fileID: 0}
-  growthSpeedMultiplier: 1
+  growthSpeedMultiplier: 60
 --- !u!1 &82276949
 GameObject:
   m_ObjectHideFlags: 0

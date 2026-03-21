@@ -8,6 +8,9 @@ using TMPro;
 /// </summary>
 public class HUDBootstrapper : MonoBehaviour
 {
+    [Header("Building")]
+    [SerializeField] private BuildingDatabase buildingDatabase;
+
     private Canvas canvas;
     private HUDManager hudManager;
 
@@ -150,6 +153,9 @@ public class HUDBootstrapper : MonoBehaviour
 
         // Build and wire inventory UI
         BuildInventoryUI();
+
+        // Build and wire build mode UI
+        BuildBuildModeUI();
     }
 
     private void BuildInventoryUI()
@@ -238,6 +244,78 @@ public class HUDBootstrapper : MonoBehaviour
         // Wire up InventoryUI component
         var invUI = canvas.gameObject.AddComponent<InventoryUI>();
         invUI.Setup(invPanel, content.transform, slotsText, sellBtnComponent, sellBtnText);
+    }
+
+    private void BuildBuildModeUI()
+    {
+        // Full screen panel
+        GameObject buildPanel = CreatePanel("BuildModePanel", canvas.transform,
+            Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero,
+            new Color(0f, 0f, 0f, 0.75f));
+        buildPanel.SetActive(false);
+
+        // Side panel (right side)
+        GameObject sidePanel = CreatePanel("BuildSidePanel", buildPanel.transform,
+            new Vector2(1f, 0f), new Vector2(1f, 1f),
+            new Vector2(-110f, 0f), new Vector2(220f, 0f),
+            new Color(0.12f, 0.1f, 0.07f, 0.97f));
+
+        // Title
+        CreateText("BuildTitle", sidePanel.transform,
+            new Vector2(0f, 1f), new Vector2(1f, 1f),
+            new Vector2(0f, -30f), new Vector2(0f, 50f),
+            "🏗️ Build Mode", 26, new Color(1f, 0.9f, 0.6f), TextAlignmentOptions.Center);
+
+        // Controls hint
+        CreateText("BuildHint", sidePanel.transform,
+            new Vector2(0f, 1f), new Vector2(1f, 1f),
+            new Vector2(0f, -65f), new Vector2(0f, 30f),
+            "R: Rotate | Del: Remove | Esc: Cancel", 13,
+            new Color(0.6f, 0.6f, 0.6f), TextAlignmentOptions.Center);
+
+        // Scroll view for items
+        GameObject scrollView = new GameObject("ScrollView");
+        scrollView.transform.SetParent(sidePanel.transform, false);
+        var scrollRect = scrollView.AddComponent<ScrollRect>();
+        var scrollRectTransform = scrollView.GetComponent<RectTransform>();
+        scrollRectTransform.anchorMin = new Vector2(0f, 0f);
+        scrollRectTransform.anchorMax = new Vector2(1f, 1f);
+        scrollRectTransform.offsetMin = new Vector2(5f, 5f);
+        scrollRectTransform.offsetMax = new Vector2(-5f, -90f);
+
+        // Content with grid layout
+        GameObject content = new GameObject("Content");
+        content.transform.SetParent(scrollView.transform, false);
+        var contentRect = content.AddComponent<RectTransform>();
+        contentRect.anchorMin = new Vector2(0f, 1f);
+        contentRect.anchorMax = new Vector2(1f, 1f);
+        contentRect.pivot = new Vector2(0.5f, 1f);
+        contentRect.sizeDelta = new Vector2(0f, 0f);
+
+        var glg = content.AddComponent<GridLayoutGroup>();
+        glg.cellSize = new Vector2(90f, 110f);
+        glg.spacing = new Vector2(5f, 5f);
+        glg.padding = new RectOffset(5, 5, 5, 5);
+        glg.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+        glg.constraintCount = 2;
+
+        var csf = content.AddComponent<ContentSizeFitter>();
+        csf.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+        scrollRect.content = contentRect;
+        scrollRect.vertical = true;
+        scrollRect.horizontal = false;
+
+        // Wire up BuildModeUI
+        var buildUI = canvas.gameObject.AddComponent<BuildModeUI>();
+        buildUI.Setup(buildPanel, content.transform, buildingDatabase);
+
+        // Add BuildingManager to GameManager if not already there
+        if (BuildingManager.Instance == null)
+        {
+            var gm = FindFirstObjectByType<GameManager>();
+            if (gm != null) gm.gameObject.AddComponent<BuildingManager>();
+        }
     }
 
     // --- Helpers ---
