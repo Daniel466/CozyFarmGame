@@ -152,9 +152,9 @@ public class HUDBootstrapper : MonoBehaviour
         hudManager.Setup(coinsText, levelText, xpSlider, xpText,
                          levelUpPanel, levelUpText, notificationPanel, notificationText, toolText);
 
-        try { BuildInventoryUI(); } catch (System.Exception e) { Debug.LogError($"[HUD] InventoryUI failed: {e.Message}\n{e.StackTrace}"); }
-        try { BuildShopUI(); } catch (System.Exception e) { Debug.LogError($"[HUD] ShopUI failed: {e.Message}\n{e.StackTrace}"); }
-        try { BuildBuildModeUI(); } catch (System.Exception e) { Debug.LogError($"[HUD] BuildModeUI failed: {e.Message}\n{e.StackTrace}"); }
+        BuildInventoryUI();
+        BuildShopUI();
+        BuildBuildModeUI();
     }
 
     private void BuildInventoryUI()
