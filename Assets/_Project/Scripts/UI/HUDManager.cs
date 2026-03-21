@@ -74,6 +74,31 @@ public class HUDManager : MonoBehaviour
         GameManager.Instance.Progression.OnLevelUp.RemoveListener(ShowLevelUp);
     }
 
+    /// <summary>
+    /// Called by HUDBootstrapper to wire up all UI references at runtime.
+    /// </summary>
+    public void Setup(
+        TextMeshProUGUI coins,
+        TextMeshProUGUI level,
+        Slider xp,
+        TextMeshProUGUI xpLabel,
+        GameObject levelUp,
+        TextMeshProUGUI levelUpLabel,
+        GameObject notification,
+        TextMeshProUGUI notificationLabel,
+        TextMeshProUGUI tool)
+    {
+        coinsText = coins;
+        levelText = level;
+        xpSlider = xp;
+        xpText = xpLabel;
+        levelUpPanel = levelUp;
+        levelUpText = levelUpLabel;
+        notificationPanel = notification;
+        notificationText = notificationLabel;
+        toolText = tool;
+    }
+
     private void UpdateCoins(int coins)
     {
         if (coinsText) coinsText.text = $"🪙 {coins:N0}";
