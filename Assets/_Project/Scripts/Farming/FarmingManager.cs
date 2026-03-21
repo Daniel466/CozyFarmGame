@@ -96,9 +96,16 @@ public class FarmingManager : MonoBehaviour
     {
         if (tileMarkers.TryGetValue(worldPos, out GameObject marker) && marker != null)
         {
-            var mat = marker.GetComponent<Renderer>().material;
-            mat.SetColor("_BaseColor", color);
-            mat.color = color;
+            var renderer = marker.GetComponent<Renderer>();
+            if (renderer != null)
+            {
+                // Create a new material instance to avoid shared material modification
+                var mat = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+                mat.SetColor("_BaseColor", color);
+                mat.color = color;
+                mat.SetFloat("_Smoothness", 0f);
+                renderer.material = mat;
+            }
         }
     }
 
@@ -144,7 +151,7 @@ public class FarmingManager : MonoBehaviour
         tile.Water();
 
         // Update tile marker to blue = watered
-        UpdateTileMarkerColor(tile.WorldPosition, new Color(0.2f, 0.4f, 0.8f));
+        UpdateTileMarkerColor(tile.WorldPosition, new Color(0.15f, 0.35f, 0.9f));
 
         // Particles
         if (waterParticles != null)
