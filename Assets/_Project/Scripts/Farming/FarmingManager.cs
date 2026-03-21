@@ -27,6 +27,7 @@ public class FarmingManager : MonoBehaviour
 
     private Dictionary<Vector2Int, FarmTile> tileCache;
     private Dictionary<Vector3, GameObject> tileMarkers = new Dictionary<Vector3, GameObject>();
+    private Dictionary<Vector2Int, GameObject> cropVisuals = new Dictionary<Vector2Int, GameObject>();
 
     private void Start()
     {
@@ -127,11 +128,12 @@ public class FarmingManager : MonoBehaviour
         bool planted = tile.Plant(crop);
         if (planted)
         {
-            // Spawn visual
+            // Spawn visual and track it
             if (cropVisualPrefab != null)
             {
                 GameObject visual = Instantiate(cropVisualPrefab, tile.WorldPosition, Quaternion.identity);
                 visual.GetComponent<CropGrowthVisual>()?.Initialise(tile);
+                cropVisuals[coord] = visual;
             }
 
             // Award XP
@@ -174,6 +176,13 @@ public class FarmingManager : MonoBehaviour
         CropData harvested = tile.Harvest();
         if (harvested != null)
         {
+            // Destroy crop visual
+            if (cropVisuals.TryGetValue(coord, out GameObject visual) && visual != null)
+            {
+                Destroy(visual);
+                cropVisuals.Remove(coord);
+            }
+
             // Add to inventory
             GameManager.Instance.Inventory.AddItem(harvested, 1);
 
