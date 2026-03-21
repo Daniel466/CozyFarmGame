@@ -23,9 +23,36 @@ public class PlayerInteraction : MonoBehaviour
 
     private void Start()
     {
+        if (GameManager.Instance == null)
+        {
+            Debug.LogError("[PlayerInteraction] GameManager not found! Disabling.");
+            enabled = false;
+            return;
+        }
+
         farming = FarmingManager.Instance;
+        if (farming == null)
+        {
+            Debug.LogError("[PlayerInteraction] FarmingManager not found! Disabling.");
+            enabled = false;
+            return;
+        }
+
         grid = GameManager.Instance.FarmGrid;
+        if (grid == null)
+        {
+            Debug.LogError("[PlayerInteraction] FarmGrid not found! Disabling.");
+            enabled = false;
+            return;
+        }
+
         mainCamera = Camera.main;
+        if (mainCamera == null)
+        {
+            Debug.LogError("[PlayerInteraction] Main Camera not found! Disabling.");
+            enabled = false;
+            return;
+        }
     }
 
     private void Update()
@@ -69,6 +96,7 @@ public class PlayerInteraction : MonoBehaviour
 
     private Vector2Int? GetClickedTileCoord()
     {
+        if (mainCamera == null) return null;
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit, 100f, groundLayer))
         {

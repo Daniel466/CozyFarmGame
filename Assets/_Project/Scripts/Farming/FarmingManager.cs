@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -21,17 +22,34 @@ public class FarmingManager : MonoBehaviour
         Instance = this;
     }
 
+    private Dictionary<Vector2Int, FarmTile> tileCache;
+
     private void Start()
     {
+        if (GameManager.Instance == null)
+        {
+            Debug.LogError("[FarmingManager] GameManager not found!");
+            enabled = false;
+            return;
+        }
         grid = GameManager.Instance.FarmGrid;
+        if (grid == null)
+        {
+            Debug.LogError("[FarmingManager] FarmGrid not found!");
+            enabled = false;
+            return;
+        }
+        // Cache tile dictionary to avoid repeated GetAllTiles() calls in Update
+        tileCache = grid.GetAllTiles();
     }
 
     private void Update()
     {
+        if (tileCache == null) return;
         // Tick growth for all planted tiles
-        foreach (var tile in grid.GetAllTiles().Values)
+        foreach (var tile in tileCache.Values)
         {
-            tile.UpdateGrowth(Time.deltaTime);
+            if (tile.IsPlanted) tile.UpdateGrowth(Time.deltaTime);
         }
     }
 
@@ -80,14 +98,17 @@ public class FarmingManager : MonoBehaviour
         FarmTile tile = grid.GetTile(coord);
         if (tile == null || !tile.IsPlanted || tile.IsWatered) return false;
 
+        // Cache crop reference BEFORE watering (tile state changes after Water())
+        int xp = tile.PlantedCrop?.WaterXP ?? 1;
+
         tile.Water();
 
         // Particles
         if (waterParticles != null)
             Instantiate(waterParticles, tile.WorldPosition + Vector3.up * 0.5f, Quaternion.identity);
 
-        // Award XP
-        GameManager.Instance.Progression.AddXP(GameManager.Instance.FarmGrid.GetTile(coord).PlantedCrop.WaterXP);
+        // Award XP using cached value
+        GameManager.Instance.Progression.AddXP(xp);
 
         return true;
     }

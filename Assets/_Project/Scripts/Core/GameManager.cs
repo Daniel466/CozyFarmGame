@@ -24,12 +24,18 @@ public class GameManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        // Grab system references
-        FarmGrid = GetComponentInChildren<FarmGrid>();
-        Inventory = GetComponentInChildren<InventoryManager>();
-        Economy = GetComponentInChildren<EconomyManager>();
-        Progression = GetComponentInChildren<ProgressionManager>();
-        SaveManager = GetComponentInChildren<SaveManager>();
+        // Grab system references (all on same GameObject)
+        FarmGrid = GetComponent<FarmGrid>();
+        Inventory = GetComponent<InventoryManager>();
+        Economy = GetComponent<EconomyManager>();
+        Progression = GetComponent<ProgressionManager>();
+        SaveManager = GetComponent<SaveManager>();
+
+        if (FarmGrid == null) Debug.LogError("[GameManager] FarmGrid component missing!");
+        if (Inventory == null) Debug.LogError("[GameManager] InventoryManager component missing!");
+        if (Economy == null) Debug.LogError("[GameManager] EconomyManager component missing!");
+        if (Progression == null) Debug.LogError("[GameManager] ProgressionManager component missing!");
+        if (SaveManager == null) Debug.LogWarning("[GameManager] SaveManager component missing — saves disabled.");
     }
 
     private void Start()

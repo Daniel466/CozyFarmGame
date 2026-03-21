@@ -86,8 +86,8 @@ public class SceneBootstrapper : MonoBehaviour
         mat.color = blue;
         player.GetComponent<Renderer>().material = mat;
 
-        // Remove default collider, add CharacterController
-        Destroy(player.GetComponent<CapsuleCollider>());
+        // Remove default collider, add CharacterController (DestroyImmediate needed for sync)
+        DestroyImmediate(player.GetComponent<CapsuleCollider>());
         var cc = player.AddComponent<CharacterController>();
         cc.height = 2f;
         cc.radius = 0.4f;

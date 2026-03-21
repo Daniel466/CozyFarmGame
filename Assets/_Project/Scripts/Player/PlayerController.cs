@@ -22,6 +22,11 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
+        if (controller == null)
+        {
+            Debug.LogError("[PlayerController] CharacterController missing! Disabling.", gameObject);
+            enabled = false;
+        }
     }
 
     private void Update()
@@ -31,12 +36,16 @@ public class PlayerController : MonoBehaviour
 
     private void HandleMovement()
     {
+        if (controller == null) return;
+
         // Read input
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
 
         // Relative to camera
-        Transform cam = Camera.main.transform;
+        Camera mainCam = Camera.main;
+        if (mainCam == null) return;
+        Transform cam = mainCam.transform;
         Vector3 camForward = Vector3.ProjectOnPlane(cam.forward, Vector3.up).normalized;
         Vector3 camRight = Vector3.ProjectOnPlane(cam.right, Vector3.up).normalized;
 
