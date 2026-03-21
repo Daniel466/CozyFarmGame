@@ -8,8 +8,9 @@ using TMPro;
 /// </summary>
 public class HUDBootstrapper : MonoBehaviour
 {
-    [Header("Building")]
+    [Header("Databases")]
     [SerializeField] private BuildingDatabase buildingDatabase;
+    [SerializeField] private CropDatabase cropDatabase;
 
     private Canvas canvas;
     private HUDManager hudManager;
@@ -151,6 +152,7 @@ public class HUDBootstrapper : MonoBehaviour
         hudManager.Setup(coinsText, levelText, xpSlider, xpText,
                          levelUpPanel, levelUpText, notificationPanel, notificationText, toolText);
         BuildInventoryUI();
+        BuildShopUI();
         BuildBuildModeUI();
     }
 
@@ -240,6 +242,78 @@ public class HUDBootstrapper : MonoBehaviour
         // Wire up InventoryUI component
         var invUI = canvas.gameObject.AddComponent<InventoryUI>();
         invUI.Setup(invPanel, content.transform, slotsText, sellBtnComponent, sellBtnText);
+    }
+
+    private void BuildShopUI()
+    {
+        // Full screen dim
+        GameObject shopPanel = CreatePanel("ShopPanel", canvas.transform,
+            Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero,
+            new Color(0f, 0f, 0f, 0.75f));
+        shopPanel.SetActive(false);
+
+        // Shop window (left side)
+        GameObject shopWindow = CreatePanel("ShopWindow", shopPanel.transform,
+            new Vector2(0f, 0f), new Vector2(0f, 1f),
+            new Vector2(110f, 0f), new Vector2(340f, 0f),
+            new Color(0.12f, 0.1f, 0.07f, 0.97f));
+
+        // Title
+        CreateText("ShopTitle", shopWindow.transform,
+            new Vector2(0f, 1f), new Vector2(1f, 1f),
+            new Vector2(0f, -30f), new Vector2(0f, 50f),
+            "🛒 Seed Shop", 26, new Color(1f, 0.9f, 0.6f), TextAlignmentOptions.Center);
+
+        // Coins display
+        CreateText("ShopCoins", shopWindow.transform,
+            new Vector2(0f, 1f), new Vector2(1f, 1f),
+            new Vector2(0f, -65f), new Vector2(0f, 30f),
+            "Your coins: 500 🪙", 16, new Color(1f, 0.85f, 0.3f), TextAlignmentOptions.Center);
+
+        // Scroll view
+        GameObject scrollView = new GameObject("ScrollView");
+        scrollView.transform.SetParent(shopWindow.transform, false);
+        var scrollRect = scrollView.AddComponent<ScrollRect>();
+        var scrollRectTransform = scrollView.GetComponent<RectTransform>();
+        scrollRectTransform.anchorMin = new Vector2(0f, 0f);
+        scrollRectTransform.anchorMax = new Vector2(1f, 1f);
+        scrollRectTransform.offsetMin = new Vector2(5f, 40f);
+        scrollRectTransform.offsetMax = new Vector2(-5f, -90f);
+
+        // Content
+        GameObject content = new GameObject("Content");
+        content.transform.SetParent(scrollView.transform, false);
+        var contentRect = content.AddComponent<RectTransform>();
+        contentRect.anchorMin = new Vector2(0f, 1f);
+        contentRect.anchorMax = new Vector2(1f, 1f);
+        contentRect.pivot = new Vector2(0.5f, 1f);
+        contentRect.sizeDelta = new Vector2(0f, 0f);
+
+        var vlg = content.AddComponent<VerticalLayoutGroup>();
+        vlg.spacing = 5f;
+        vlg.padding = new RectOffset(5, 5, 5, 5);
+        vlg.childForceExpandWidth = true;
+        vlg.childForceExpandHeight = false;
+
+        var csf = content.AddComponent<ContentSizeFitter>();
+        csf.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+        scrollRect.content = contentRect;
+        scrollRect.vertical = true;
+        scrollRect.horizontal = false;
+
+        // Close hint
+        CreateText("CloseHint", shopWindow.transform,
+            new Vector2(0f, 0f), new Vector2(1f, 0f),
+            new Vector2(0f, 15f), new Vector2(0f, 25f),
+            "Press B to close", 16, new Color(0.6f, 0.6f, 0.6f), TextAlignmentOptions.Center);
+
+        // Wire up ShopUI
+        var shopUI = canvas.gameObject.AddComponent<ShopUI>();
+        shopUI.Setup(shopPanel, content.transform, cropDatabase);
+
+        if (cropDatabase == null)
+            Debug.LogWarning("[HUDBootstrapper] CropDatabase not assigned — shop will be empty.");
     }
 
     private void BuildBuildModeUI()
