@@ -44,8 +44,21 @@ public class SceneBootstrapper : MonoBehaviour
         ground.GetComponent<Renderer>().material = mat;
 
         // Set layer to Ground so raycasts work
-        ground.layer = LayerMask.NameToLayer("Default");
-        Debug.Log("[Bootstrapper] Ground plane created.");
+        int groundLayer = LayerMask.NameToLayer("Ground");
+        if (groundLayer == -1)
+        {
+            // "Ground" layer doesn't exist yet — fall back to Default
+            // (Add a "Ground" layer in Edit > Project Settings > Tags and Layers)
+            Debug.LogWarning("[Bootstrapper] 'Ground' layer not found! Using Default layer. " +
+                             "Please add a 'Ground' layer in Edit > Project Settings > Tags and Layers, " +
+                             "then set the PlayerInteraction Ground Layer mask to match.");
+            ground.layer = LayerMask.NameToLayer("Default");
+        }
+        else
+        {
+            ground.layer = groundLayer;
+            Debug.Log("[Bootstrapper] Ground plane created on 'Ground' layer.");
+        }
     }
 
     private void SetupPlayer()
