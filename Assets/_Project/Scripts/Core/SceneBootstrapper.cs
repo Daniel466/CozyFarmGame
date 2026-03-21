@@ -21,8 +21,9 @@ public class SceneBootstrapper : MonoBehaviour
 
     private void Awake()
     {
-        if (createGround) SetupGround();
-        if (createPlayer) SetupPlayer();
+        // Only create if not already in scene (so permanent scene objects take priority)
+        if (createGround && GameObject.Find("Ground") == null) SetupGround();
+        if (createPlayer && FindFirstObjectByType<PlayerController>() == null) SetupPlayer();
         if (setupLighting) SetupLighting();
     }
 
