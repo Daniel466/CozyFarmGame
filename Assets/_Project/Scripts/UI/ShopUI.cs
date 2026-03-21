@@ -86,7 +86,7 @@ public class ShopUI : MonoBehaviour
     private void BuySeed(CropData crop)
     {
         // Set as selected crop on PlayerInteraction
-        var interaction = FindObjectOfType<PlayerInteraction>();
+        var interaction = FindFirstObjectByType<PlayerInteraction>();
         if (interaction != null)
         {
             interaction.SetSelectedCrop(crop);

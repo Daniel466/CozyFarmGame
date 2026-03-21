@@ -38,19 +38,40 @@ public class HUDManager : MonoBehaviour
 
     private void Start()
     {
+        // Hide panels first (safe before GameManager is ready)
+        if (levelUpPanel) levelUpPanel.SetActive(false);
+        if (notificationPanel) notificationPanel.SetActive(false);
+    }
+
+    private void OnEnable()
+    {
+        // Delay subscription by one frame to ensure all systems are initialised
+        StartCoroutine(SubscribeNextFrame());
+    }
+
+    private System.Collections.IEnumerator SubscribeNextFrame()
+    {
+        yield return null; // Wait one frame
+
+        if (GameManager.Instance == null) yield break;
+
         // Subscribe to events
         GameManager.Instance.Economy.OnCoinsChanged.AddListener(UpdateCoins);
         GameManager.Instance.Progression.OnXPChanged.AddListener(UpdateXP);
         GameManager.Instance.Progression.OnLevelUp.AddListener(ShowLevelUp);
 
-        // Hide panels
-        if (levelUpPanel) levelUpPanel.SetActive(false);
-        if (notificationPanel) notificationPanel.SetActive(false);
-
         // Initial update
         UpdateCoins(GameManager.Instance.Economy.Coins);
         UpdateXP(GameManager.Instance.Progression.CurrentXP,
                  GameManager.Instance.Progression.CurrentLevel);
+    }
+
+    private void OnDisable()
+    {
+        if (GameManager.Instance == null) return;
+        GameManager.Instance.Economy.OnCoinsChanged.RemoveListener(UpdateCoins);
+        GameManager.Instance.Progression.OnXPChanged.RemoveListener(UpdateXP);
+        GameManager.Instance.Progression.OnLevelUp.RemoveListener(ShowLevelUp);
     }
 
     private void UpdateCoins(int coins)
