@@ -87,11 +87,23 @@ public class PlaceholderAssetGenerator : MonoBehaviour
         if (visual != null)
         {
             visual.transform.SetParent(go.transform, false);
-            // Remove collider from visual — only parent needs it
-            Destroy(visual.GetComponent<Collider>());
+            // Remove ALL colliders so raycasts pass through to the ground
+            foreach (var col in go.GetComponentsInChildren<Collider>())
+                Destroy(col);
         }
 
+        // Set entire crop visual to Ignore Raycast layer
+        SetLayerRecursively(go, LayerMask.NameToLayer("Ignore Raycast"));
+
         return go;
+    }
+
+    private static void SetLayerRecursively(GameObject obj, int layer)
+    {
+        if (layer == -1) return; // Layer not found, skip
+        obj.layer = layer;
+        foreach (Transform child in obj.transform)
+            SetLayerRecursively(child.gameObject, layer);
     }
 
     private static void SetMaterialColor(GameObject obj, Color color)
