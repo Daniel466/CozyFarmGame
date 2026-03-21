@@ -31,6 +31,10 @@ public class HUDBootstrapper : MonoBehaviour
 
     private void Awake()
     {
+        // Set font globally for ALL TMP components created at runtime
+        if (fontAsset != null)
+            TMP_Settings.defaultFontAsset = fontAsset;
+
         BuildCanvas();
         BuildHUD();
         WireUpHUDManager();

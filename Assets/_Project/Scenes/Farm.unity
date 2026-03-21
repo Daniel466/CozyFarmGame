@@ -596,8 +596,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\U0001F331 Carrot"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 028f1075d8bb341a484ac862664536a0, type: 2}
+  m_sharedMaterial: {fileID: -3341279421661511436, guid: 028f1075d8bb341a484ac862664536a0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1421,6 +1421,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HUDBootstrapper
   buildingDatabase: {fileID: 11400000, guid: 86a62bf2828b54914950a8f9c0ca4e48, type: 2}
   cropDatabase: {fileID: 11400000, guid: 583ce83ef71ab4cd1a0eefb5a3219a3c, type: 2}
+  fontAsset: {fileID: 11400000, guid: 028f1075d8bb341a484ac862664536a0, type: 2}
 --- !u!1 &724314222
 GameObject:
   m_ObjectHideFlags: 0
@@ -1995,8 +1996,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Lv. 1
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 028f1075d8bb341a484ac862664536a0, type: 2}
+  m_sharedMaterial: {fileID: -3341279421661511436, guid: 028f1075d8bb341a484ac862664536a0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2223,8 +2224,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\U0001FA99 100"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 028f1075d8bb341a484ac862664536a0, type: 2}
+  m_sharedMaterial: {fileID: -3341279421661511436, guid: 028f1075d8bb341a484ac862664536a0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2561,8 +2562,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: New Text
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 028f1075d8bb341a484ac862664536a0, type: 2}
+  m_sharedMaterial: {fileID: -3341279421661511436, guid: 028f1075d8bb341a484ac862664536a0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
