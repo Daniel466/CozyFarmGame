@@ -97,3 +97,18 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+
+# Large audio files — store locally, not in Git
+# Use Git LFS or a shared drive for audio assets
+*.mp3
+*.wav
+*.ogg
+*.aiff
+*.aif
+*.flac
+*.mp3.meta
+*.wav.meta
+*.ogg.meta
+*.aiff.meta
+*.aif.meta
+*.flac.meta
