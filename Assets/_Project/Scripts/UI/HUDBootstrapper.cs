@@ -43,12 +43,24 @@ public class HUDBootstrapper : MonoBehaviour
         }
         else
         {
-            // Panel-only mode — reuse existing canvas, only build Shop/Inventory/BuildMode
-            canvas = FindFirstObjectByType<Canvas>();
-            if (canvas == null)
+            // Panel-only mode — create a dedicated canvas for panels with high sort order
+            GameObject panelCanvasGO = new GameObject("PanelsCanvas");
+            canvas = panelCanvasGO.AddComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            canvas.sortingOrder = 50; // Above Editor-built HUD Canvas (which is 10)
+            var scaler = panelCanvasGO.AddComponent<CanvasScaler>();
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(1920, 1080);
+            scaler.matchWidthOrHeight = 0.5f;
+            panelCanvasGO.AddComponent<GraphicRaycaster>();
+
+            // Ensure EventSystem exists
+            if (FindFirstObjectByType<UnityEngine.EventSystems.EventSystem>() == null)
             {
-                Debug.LogError("[HUDBootstrapper] No Canvas found in scene! Enable Build Main HUD or add a Canvas.");
-                return;
+                var es = new GameObject("EventSystem");
+                es.AddComponent<UnityEngine.EventSystems.EventSystem>();
+                es.AddComponent<UnityEngine.EventSystems.StandaloneInputModule>();
+                Debug.Log("[HUDBootstrapper] Created EventSystem.");
             }
 
             try { BuildInventoryUI(); } catch (System.Exception e) { Debug.LogError($"[HUD] InventoryUI: {e.Message}"); }

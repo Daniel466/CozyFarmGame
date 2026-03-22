@@ -12744,6 +12744,54 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4564330767020790, guid: e96ccf468607246dea6230263a2b10ef, type: 3}
   m_PrefabInstance: {fileID: 387839958}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &388144116
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 388144118}
+  - component: {fileID: 388144117}
+  m_Layer: 0
+  m_Name: HUD
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &388144117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 388144116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cb3faef27aeb4ee69c242fadbfb300a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HUDBootstrapper
+  buildingDatabase: {fileID: 11400000, guid: 86a62bf2828b54914950a8f9c0ca4e48, type: 2}
+  cropDatabase: {fileID: 11400000, guid: 583ce83ef71ab4cd1a0eefb5a3219a3c, type: 2}
+  fontAsset: {fileID: 11400000, guid: f58cf094ea6454f8aa4c4e9cbf86f80e, type: 2}
+  buildMainHUD: 0
+--- !u!4 &388144118
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 388144116}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &390153067
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -73422,3 +73470,4 @@ SceneRoots:
   - {fileID: 1685129396}
   - {fileID: 112115802}
   - {fileID: 1076315327}
+  - {fileID: 388144118}
