@@ -34,7 +34,11 @@ public class BuildModeUI : MonoBehaviour
     {
         isOpen = !isOpen;
         buildPanel?.SetActive(isOpen);
-        if (isOpen) RefreshCatalogue();
+        if (isOpen)
+        {
+            buildPanel?.transform.SetAsLastSibling();
+            RefreshCatalogue();
+        }
     }
 
     public void CloseBuildPanel()

@@ -41,7 +41,12 @@ public class ShopUI : MonoBehaviour
         if (shopPanel == null) { Debug.LogWarning("[ShopUI] Panel not assigned!"); return; }
         isOpen = !isOpen;
         shopPanel.SetActive(isOpen);
-        if (isOpen) RefreshShop();
+        if (isOpen)
+        {
+            // Bring to front so buttons are clickable
+            shopPanel.transform.SetAsLastSibling();
+            RefreshShop();
+        }
     }
 
     public void CloseShop()
@@ -107,7 +112,7 @@ public class ShopUI : MonoBehaviour
 
             // Grow time & cost
             string details = unlocked
-                ? $"{crop.GrowTimeSeconds / 60f:0.0} min  •  Sells for {crop.SellValue} coins"
+                ? $"{crop.GrowTimeSeconds / 60f:0.0} min | Sells for {crop.SellValue} coins"
                 : $"Unlocks at Level {crop.UnlockLevel}";
             AddText(info.transform, details, 14f, new Color(0.6f, 0.6f, 0.6f), FontStyles.Normal);
 
