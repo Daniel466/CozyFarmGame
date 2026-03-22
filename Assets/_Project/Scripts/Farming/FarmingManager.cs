@@ -49,6 +49,120 @@ public class FarmingManager : MonoBehaviour
         }
         // Cache tile dictionary to avoid repeated GetAllTiles() calls in Update
         tileCache = grid.GetAllTiles();
+
+        // Build particle systems procedurally if not assigned in Inspector
+        if (waterParticles   == null) waterParticles   = CreateWaterParticles();
+        if (harvestParticles == null) harvestParticles = CreateHarvestParticles();
+    }
+
+    private ParticleSystem CreateWaterParticles()
+    {
+        var go = new GameObject("WaterParticleTemplate");
+        go.SetActive(false); // keep inactive — we Instantiate copies at runtime
+        var ps = go.AddComponent<ParticleSystem>();
+
+        var main = ps.main;
+        main.duration         = 0.6f;
+        main.loop             = false;
+        main.startLifetime    = new ParticleSystem.MinMaxCurve(0.4f, 0.8f);
+        main.startSpeed       = new ParticleSystem.MinMaxCurve(2.5f, 5f);
+        main.startSize        = new ParticleSystem.MinMaxCurve(0.03f, 0.07f);
+        main.startColor       = new ParticleSystem.MinMaxGradient(
+                                    new Color(0.4f, 0.75f, 1.0f, 0.9f),
+                                    new Color(0.7f, 0.92f, 1.0f, 0.7f));
+        main.gravityModifier  = 1.2f;
+        main.simulationSpace  = ParticleSystemSimulationSpace.World;
+        main.stopAction       = ParticleSystemStopAction.Destroy;
+
+        var emission = ps.emission;
+        emission.SetBursts(new[] { new ParticleSystem.Burst(0f, 22) });
+        emission.rateOverTime = 0;
+
+        var shape = ps.shape;
+        shape.enabled      = true;
+        shape.shapeType    = ParticleSystemShapeType.Cone;
+        shape.angle        = 35f;
+        shape.radius       = 0.3f;
+        shape.rotation     = new Vector3(-90f, 0f, 0f); // spray upward
+
+        var colorOverLifetime = ps.colorOverLifetime;
+        colorOverLifetime.enabled = true;
+        var grad = new Gradient();
+        grad.SetKeys(
+            new[] { new GradientColorKey(new Color(0.5f, 0.8f, 1f), 0f),
+                    new GradientColorKey(new Color(0.7f, 0.95f, 1f), 1f) },
+            new[] { new GradientAlphaKey(1f, 0f), new GradientAlphaKey(0f, 1f) });
+        colorOverLifetime.color = grad;
+
+        var sizeOverLifetime = ps.sizeOverLifetime;
+        sizeOverLifetime.enabled = true;
+        var sizeCurve = new AnimationCurve(
+            new Keyframe(0f, 1f), new Keyframe(0.5f, 0.8f), new Keyframe(1f, 0f));
+        sizeOverLifetime.size = new ParticleSystem.MinMaxCurve(1f, sizeCurve);
+
+        var renderer = go.GetComponent<ParticleSystemRenderer>();
+        renderer.renderMode = ParticleSystemRenderMode.Billboard;
+        var mat = new Material(Shader.Find("Universal Render Pipeline/Particles/Unlit"));
+        mat.SetColor("_BaseColor", new Color(0.4f, 0.75f, 1.0f, 0.9f));
+        renderer.material = mat;
+
+        return ps;
+    }
+
+    private ParticleSystem CreateHarvestParticles()
+    {
+        var go = new GameObject("HarvestParticleTemplate");
+        go.SetActive(false);
+        var ps = go.AddComponent<ParticleSystem>();
+
+        var main = ps.main;
+        main.duration         = 0.5f;
+        main.loop             = false;
+        main.startLifetime    = new ParticleSystem.MinMaxCurve(0.5f, 1.1f);
+        main.startSpeed       = new ParticleSystem.MinMaxCurve(1.5f, 4f);
+        main.startSize        = new ParticleSystem.MinMaxCurve(0.08f, 0.22f);
+        main.startColor       = new ParticleSystem.MinMaxGradient(
+                                    new Color(1.0f, 0.88f, 0.2f, 1f),
+                                    new Color(0.6f, 1.0f, 0.3f, 1f));
+        main.startRotation    = new ParticleSystem.MinMaxCurve(0f, 360f * Mathf.Deg2Rad);
+        main.gravityModifier  = 0.3f;
+        main.simulationSpace  = ParticleSystemSimulationSpace.World;
+        main.stopAction       = ParticleSystemStopAction.Destroy;
+
+        var emission = ps.emission;
+        emission.SetBursts(new[] { new ParticleSystem.Burst(0f, 30) });
+        emission.rateOverTime = 0;
+
+        var shape = ps.shape;
+        shape.enabled   = true;
+        shape.shapeType = ParticleSystemShapeType.Sphere;
+        shape.radius    = 0.25f;
+
+        var colorOverLifetime = ps.colorOverLifetime;
+        colorOverLifetime.enabled = true;
+        var grad = new Gradient();
+        grad.SetKeys(
+            new[] { new GradientColorKey(new Color(1f, 0.9f, 0.3f), 0f),
+                    new GradientColorKey(new Color(0.8f, 1f, 0.4f), 0.5f),
+                    new GradientColorKey(new Color(1f, 0.8f, 0.2f), 1f) },
+            new[] { new GradientAlphaKey(1f, 0f), new GradientAlphaKey(0.8f, 0.4f), new GradientAlphaKey(0f, 1f) });
+        colorOverLifetime.color = grad;
+
+        var sizeOverLifetime = ps.sizeOverLifetime;
+        sizeOverLifetime.enabled = true;
+        var sizeCurve = new AnimationCurve(
+            new Keyframe(0f, 0.3f), new Keyframe(0.2f, 1f), new Keyframe(1f, 0f));
+        sizeOverLifetime.size = new ParticleSystem.MinMaxCurve(1f, sizeCurve);
+
+        var rotationOverLifetime = ps.rotationOverLifetime;
+        rotationOverLifetime.enabled = true;
+        rotationOverLifetime.z = new ParticleSystem.MinMaxCurve(-120f * Mathf.Deg2Rad, 120f * Mathf.Deg2Rad);
+
+        var mat = new Material(Shader.Find("Universal Render Pipeline/Particles/Unlit"));
+        mat.SetColor("_BaseColor", new Color(1f, 0.88f, 0.2f, 1f));
+        go.GetComponent<ParticleSystemRenderer>().material = mat;
+
+        return ps;
     }
 
     private void Update()
@@ -84,18 +198,24 @@ public class FarmingManager : MonoBehaviour
 
         GameObject marker = GameObject.CreatePrimitive(PrimitiveType.Quad);
         marker.name = "TileMarker";
-        marker.transform.position = worldPos + Vector3.up * 0.05f; // Sits on flower bed surface
+        marker.transform.position = worldPos + Vector3.up * 0.02f;
         marker.transform.rotation = Quaternion.Euler(90f, 0f, 0f); // Lie flat
-        marker.transform.localScale = new Vector3(3.5f, 3.5f, 1f); // Slightly smaller than 4-unit tile
+        marker.transform.localScale = new Vector3(2.0f, 2.0f, 1f);
 
         // Remove collider so it doesn't block raycasts
         Destroy(marker.GetComponent<Collider>());
 
-        // URP material
-        var mat = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+        // URP transparent material
+        var mat = new Material(Shader.Find("Universal Render Pipeline/Unlit"));
+        mat.SetFloat("_Surface", 1f);
+        mat.SetFloat("_Blend", 0f);
+        mat.SetFloat("_SrcBlend", (float)UnityEngine.Rendering.BlendMode.SrcAlpha);
+        mat.SetFloat("_DstBlend", (float)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+        mat.SetFloat("_ZWrite", 0f);
+        mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+        mat.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
         mat.SetColor("_BaseColor", color);
         mat.color = color;
-        mat.SetFloat("_Smoothness", 0f);
         marker.GetComponent<Renderer>().material = mat;
 
         tileMarkers[coord] = marker;
@@ -168,8 +288,6 @@ public class FarmingManager : MonoBehaviour
             cropVisuals[coord] = visual;
         }
 
-        if (tile.IsWatered)
-            SpawnTileMarker(coord, worldPos, new Color(0.15f, 0.35f, 0.9f));
     }
 
     public bool WaterTile(Vector2Int coord)
@@ -185,11 +303,22 @@ public class FarmingManager : MonoBehaviour
 
         // Always use grid.GridToWorld so Grid Origin is respected
         Vector3 worldPos = grid.GridToWorld(coord);
-        SpawnTileMarker(coord, worldPos, new Color(0.15f, 0.35f, 0.9f));
 
-        // Particles
+        // Subtle blue marker — alpha 0.2, scale 2.0
+        SpawnTileMarker(coord, worldPos, new Color(0.15f, 0.35f, 0.9f, 0.2f));
+
+        // Crop bounce
+        if (cropVisuals.TryGetValue(coord, out GameObject visual) && visual != null)
+            visual.GetComponent<CropGrowthVisual>()?.PlayWaterBounce();
+
+        // Particles — clone plays once then self-destructs
         if (waterParticles != null)
-            Instantiate(waterParticles, worldPos + Vector3.up * 0.5f, Quaternion.identity);
+        {
+            var ps = Instantiate(waterParticles, worldPos + Vector3.up * 0.5f, Quaternion.identity);
+            ps.gameObject.SetActive(true);
+            ps.Play();
+            Destroy(ps.gameObject, 2f); // fallback: force destroy after 2s regardless
+        }
 
         // Award XP using cached value
         GameManager.Instance.Progression.AddXP(xp);
@@ -233,7 +362,11 @@ public class FarmingManager : MonoBehaviour
 
             // Particles
             if (harvestParticles != null)
-                Instantiate(harvestParticles, worldPos + Vector3.up * 0.5f, Quaternion.identity);
+            {
+                var ps = Instantiate(harvestParticles, worldPos + Vector3.up * 0.5f, Quaternion.identity);
+                ps.gameObject.SetActive(true);
+                ps.Play();
+            }
         }
 
         return harvested;

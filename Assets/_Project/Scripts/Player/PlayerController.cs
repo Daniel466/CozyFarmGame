@@ -59,10 +59,11 @@ public class PlayerController : MonoBehaviour
 
         Camera mainCam = Camera.main;
         if (mainCam == null) return;
-        Transform cam = mainCam.transform;
 
-        Vector3 camForward = Vector3.ProjectOnPlane(cam.forward, Vector3.up).normalized;
-        Vector3 camRight = Vector3.ProjectOnPlane(cam.right, Vector3.up).normalized;
+        // Use camera yaw only — ignores pitch so zoom level doesn't affect movement direction
+        float camYaw = mainCam.transform.eulerAngles.y;
+        Vector3 camForward = new Vector3(Mathf.Sin(camYaw * Mathf.Deg2Rad), 0f, Mathf.Cos(camYaw * Mathf.Deg2Rad));
+        Vector3 camRight   = new Vector3(Mathf.Cos(camYaw * Mathf.Deg2Rad), 0f, -Mathf.Sin(camYaw * Mathf.Deg2Rad));
         Vector3 moveDir = (camForward * v + camRight * h).normalized;
         bool isMoving = moveDir.magnitude > 0.1f;
 

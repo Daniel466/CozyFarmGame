@@ -76,6 +76,28 @@ public class CropGrowthVisual : MonoBehaviour
             SetLayerRecursively(child.gameObject, layer);
     }
 
+    public void PlayWaterBounce()
+    {
+        if (currentModel != null)
+            StartCoroutine(WaterBounce(currentModel.transform));
+    }
+
+    private System.Collections.IEnumerator WaterBounce(Transform t)
+    {
+        Vector3 baseScale = t.localScale;
+        float duration = 0.3f;
+        float elapsed = 0f;
+        // Scale up to 1.2x then back down — simple sine arc
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float s = 1f + 0.2f * Mathf.Sin(Mathf.PI * (elapsed / duration));
+            t.localScale = baseScale * s;
+            yield return null;
+        }
+        t.localScale = baseScale;
+    }
+
     private System.Collections.IEnumerator BounceIn(Transform t)
     {
         Vector3 originalScale = t.localScale;
