@@ -102,7 +102,10 @@ public class FarmingManager : MonoBehaviour
 
         var renderer = go.GetComponent<ParticleSystemRenderer>();
         renderer.renderMode = ParticleSystemRenderMode.Billboard;
-        var mat = new Material(Shader.Find("Universal Render Pipeline/Particles/Unlit"));
+        var particleShader = Shader.Find("Universal Render Pipeline/Particles/Unlit")
+                          ?? Shader.Find("Particles/Standard Unlit")
+                          ?? Shader.Find("Standard");
+        var mat = new Material(particleShader);
         mat.SetColor("_BaseColor", new Color(0.4f, 0.75f, 1.0f, 0.9f));
         renderer.material = mat;
 
@@ -158,7 +161,10 @@ public class FarmingManager : MonoBehaviour
         rotationOverLifetime.enabled = true;
         rotationOverLifetime.z = new ParticleSystem.MinMaxCurve(-120f * Mathf.Deg2Rad, 120f * Mathf.Deg2Rad);
 
-        var mat = new Material(Shader.Find("Universal Render Pipeline/Particles/Unlit"));
+        var particleShader2 = Shader.Find("Universal Render Pipeline/Particles/Unlit")
+                           ?? Shader.Find("Particles/Standard Unlit")
+                           ?? Shader.Find("Standard");
+        var mat = new Material(particleShader2);
         mat.SetColor("_BaseColor", new Color(1f, 0.88f, 0.2f, 1f));
         go.GetComponent<ParticleSystemRenderer>().material = mat;
 
@@ -206,7 +212,10 @@ public class FarmingManager : MonoBehaviour
         Destroy(marker.GetComponent<Collider>());
 
         // URP transparent material
-        var mat = new Material(Shader.Find("Universal Render Pipeline/Unlit"));
+        var unlitShader = Shader.Find("Universal Render Pipeline/Unlit")
+                       ?? Shader.Find("Unlit/Color")
+                       ?? Shader.Find("Standard");
+        var mat = new Material(unlitShader);
         mat.SetFloat("_Surface", 1f);
         mat.SetFloat("_Blend", 0f);
         mat.SetFloat("_SrcBlend", (float)UnityEngine.Rendering.BlendMode.SrcAlpha);

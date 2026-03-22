@@ -58,7 +58,10 @@ public class PlayerInteraction : MonoBehaviour
         Destroy(hoverQuad.GetComponent<Collider>());
 
         hoverRenderer = hoverQuad.GetComponent<Renderer>();
-        var mat = new Material(Shader.Find("Universal Render Pipeline/Unlit"));
+        var shader = Shader.Find("Universal Render Pipeline/Unlit")
+                  ?? Shader.Find("Unlit/Color")
+                  ?? Shader.Find("Standard");
+        var mat = new Material(shader);
 
         // URP transparent surface setup
         mat.SetFloat("_Surface", 1f);                      // 1 = Transparent

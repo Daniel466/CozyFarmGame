@@ -44051,7 +44051,7 @@ MonoBehaviour:
   ambienceClips:
   - {fileID: 8300000, guid: 82731c663975f408d95e2414bcde314b, type: 3}
   - {fileID: 8300000, guid: 202a9d93f1e434c7eaf3181c0a2d6050, type: 3}
-  ambienceVolume: 0.25
+  ambienceVolume: 1
 --- !u!114 &1975690720
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -44069,7 +44069,7 @@ MonoBehaviour:
   musicTracks:
   - {fileID: 8300000, guid: c0ab0204688204eeda24faff2f6817a9, type: 3}
   - {fileID: 8300000, guid: 3d8dc007182e14e5393d10070d34f2fb, type: 3}
-  musicVolume: 0.01
+  musicVolume: 0.1
   tillSFX: {fileID: 8300000, guid: 2343819e1a8d94fd79dcb19921f3cf10, type: 3}
   plantSFX: {fileID: 8300000, guid: 11b5e0d15c4674f0abaea0f8bb1a9bdc, type: 3}
   waterSFX: {fileID: 8300000, guid: d27c89b17a2e34d0aaff0c0af6157aed, type: 3}
