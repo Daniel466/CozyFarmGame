@@ -2,7 +2,7 @@ using UnityEngine;
 
 /// <summary>
 /// Handles player movement using WASD input.
-/// Compatible with polyperfect CTL_People_Walk animator controller.
+/// Swaps between polyperfect Idle/Walk animator controllers based on movement.
 /// </summary>
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
@@ -17,15 +17,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float modelScale = 3f;
     [SerializeField] private Vector3 modelOffset = new Vector3(0f, -1f, 0f);
 
-    [Header("Animation")]
+    [Header("Animation Controllers")]
     [SerializeField] private Animator animator;
+    [SerializeField] private RuntimeAnimatorController idleController;  // CTL_People_Idle
+    [SerializeField] private RuntimeAnimatorController walkController;  // CTL_People_Walk
 
     private CharacterController controller;
     private Vector3 velocity;
-
-    // We'll detect the correct parameter name at runtime
-    private int animParamHash = -1;
-    private bool animParamIsBool = false;
+    private bool wasMoving = false;
 
     private void Awake()
     {
@@ -41,33 +40,9 @@ public class PlayerController : MonoBehaviour
             characterModel.localPosition = modelOffset;
         }
 
-        // Auto-detect animator parameter
-        if (animator != null)
-        {
-            foreach (var param in animator.parameters)
-            {
-                Debug.Log($"[PlayerController] Animator param: '{param.name}' type={param.type}");
-
-                // Look for any movement-related parameter
-                string lower = param.name.ToLower();
-                if (lower.Contains("walk") || lower.Contains("move") || lower.Contains("speed") || lower.Contains("run"))
-                {
-                    animParamHash = param.nameHash;
-                    animParamIsBool = param.type == AnimatorControllerParameterType.Bool;
-                    Debug.Log($"[PlayerController] Using animator param: '{param.name}'");
-                    break;
-                }
-            }
-
-            if (animParamHash == -1 && animator.parameters.Length > 0)
-            {
-                // Just use the first parameter as fallback
-                var first = animator.parameters[0];
-                animParamHash = first.nameHash;
-                animParamIsBool = first.type == AnimatorControllerParameterType.Bool;
-                Debug.Log($"[PlayerController] Fallback to first animator param: '{first.name}'");
-            }
-        }
+        // Start with idle
+        if (animator != null && idleController != null)
+            animator.runtimeAnimatorController = idleController;
     }
 
     private void Update()
@@ -104,17 +79,14 @@ public class PlayerController : MonoBehaviour
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
 
-        // Animation — safe set using detected parameter
-        if (animator != null && animParamHash != -1)
+        // Swap animator controller on state change
+        if (animator != null && isMoving != wasMoving)
         {
-            try
-            {
-                if (animParamIsBool)
-                    animator.SetBool(animParamHash, isMoving);
-                else
-                    animator.SetFloat(animParamHash, isMoving ? 1f : 0f, 0.1f, Time.deltaTime);
-            }
-            catch { } // Silently ignore animation errors
+            wasMoving = isMoving;
+            if (isMoving && walkController != null)
+                animator.runtimeAnimatorController = walkController;
+            else if (!isMoving && idleController != null)
+                animator.runtimeAnimatorController = idleController;
         }
     }
 

@@ -11,6 +11,9 @@ public class FarmGrid : MonoBehaviour
     [SerializeField] private int gridHeight = 20;
     [SerializeField] private float tileSize = 1f;
 
+    [Header("Grid Origin")]
+    [SerializeField] private Vector3 gridOrigin = Vector3.zero; // Set to match flower bed positions
+
     [Header("Tile Visuals")]
     [SerializeField] private GameObject normalTilePrefab;
     [SerializeField] private GameObject tilledTilePrefab;
@@ -54,13 +57,16 @@ public class FarmGrid : MonoBehaviour
 
     public Vector3 GridToWorld(Vector2Int coord)
     {
-        return new Vector3(coord.x * tileSize, 0f, coord.y * tileSize);
+        return new Vector3(
+            gridOrigin.x + coord.x * tileSize,
+            gridOrigin.y,
+            gridOrigin.z + coord.y * tileSize);
     }
 
     public Vector2Int WorldToGrid(Vector3 worldPos)
     {
-        int x = Mathf.RoundToInt(worldPos.x / tileSize);
-        int z = Mathf.RoundToInt(worldPos.z / tileSize);
+        int x = Mathf.RoundToInt((worldPos.x - gridOrigin.x) / tileSize);
+        int z = Mathf.RoundToInt((worldPos.z - gridOrigin.z) / tileSize);
         return new Vector2Int(x, z);
     }
 
