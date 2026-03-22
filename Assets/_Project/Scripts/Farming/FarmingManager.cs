@@ -67,10 +67,7 @@ public class FarmingManager : MonoBehaviour
         if (tile == null || tile.IsTilled) return false;
 
         tile.Till();
-
-        // Always use grid.GridToWorld so Grid Origin is respected
-        Vector3 worldPos = grid.GridToWorld(coord);
-        SpawnTileMarker(coord, worldPos, new Color(0.28f, 0.17f, 0.09f));
+        // No marker spawned — the flower bed IS the tilled visual
         AudioManager.Instance?.PlayTill();
         return true;
     }
@@ -89,7 +86,7 @@ public class FarmingManager : MonoBehaviour
         marker.name = "TileMarker";
         marker.transform.position = worldPos + Vector3.up * 0.02f; // Slightly above ground
         marker.transform.rotation = Quaternion.Euler(90f, 0f, 0f); // Lie flat
-        marker.transform.localScale = new Vector3(0.3f, 0.3f, 1f); // Slightly smaller than tile
+        marker.transform.localScale = new Vector3(1.8f, 1.8f, 1f); // Match flower bed size
 
         // Remove collider so it doesn't block raycasts
         Destroy(marker.GetComponent<Collider>());
@@ -169,7 +166,7 @@ public class FarmingManager : MonoBehaviour
 
         // Always use grid.GridToWorld so Grid Origin is respected
         Vector3 worldPos = grid.GridToWorld(coord);
-        UpdateTileMarkerColor(coord, new Color(0.15f, 0.35f, 0.9f));
+        SpawnTileMarker(coord, worldPos, new Color(0.15f, 0.35f, 0.9f));
 
         // Particles
         if (waterParticles != null)
@@ -207,9 +204,13 @@ public class FarmingManager : MonoBehaviour
 
             AudioManager.Instance?.PlayHarvest();
 
-            // Always use grid.GridToWorld so Grid Origin is respected
+            // Remove watered marker now that tile is reset
+            if (tileMarkers.TryGetValue(coord, out GameObject marker) && marker != null)
+            {
+                Destroy(marker);
+                tileMarkers.Remove(coord);
+            }
             Vector3 worldPos = grid.GridToWorld(coord);
-            UpdateTileMarkerColor(coord, new Color(0.28f, 0.17f, 0.09f));
 
             // Particles
             if (harvestParticles != null)

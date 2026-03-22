@@ -5,8 +5,8 @@ Last updated: 2026-03-22
 
 ## In Progress
 - [ ] Assign polyperfect crop models (run CropModelAssigner.cs Editor tool)
-- [ ] Fix tile marker Y height (try Grid Origin Y: 0.15)
 - [ ] Test crop visuals with real polyperfect models
+- [ ] Fix flower bed clicking — run Tools > CozyFarm > Fix Flower Bed Layers, then save scene
 
 ---
 
@@ -23,7 +23,6 @@ Last updated: 2026-03-22
 
 ## Polish
 - [ ] UI icons using TMP Sprite Asset
-- [ ] Tile marker size matches flower bed size
 - [ ] Crop growth visual scaling per stage (small -> big)
 - [ ] Particle effects for harvest and water
 - [ ] Camera feel - tweak zoom and rotation speed
@@ -52,3 +51,9 @@ Last updated: 2026-03-22
 - [x] Balance progression curve (150 starting coins, rebalanced XP)
 - [x] Main Menu, Pause Menu, Settings UI
 - [x] Editor tools (FarmSceneSetup, HUDBuilder, CropAssetGenerator, BuildingAssetGenerator)
+- [x] Tile marker Y height fixed (Grid Origin Y: 0.15)
+- [x] Brown tilled marker removed — flower bed is the tilled visual
+- [x] Blue watered marker size fixed — 1.8×1.8 to match flower bed
+- [x] Watered marker spawns fresh (no longer depends on till marker existing)
+- [x] Marker cleaned up on harvest — tile returns to clean visual state
+- [x] Editor tool added: Fix Flower Bed Layers (Tools > CozyFarm)

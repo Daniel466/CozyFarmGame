@@ -272,6 +272,46 @@ public class FarmSceneSetup : Editor
         Debug.Log("[FarmSceneSetup] Created LightingManager.");
     }
 
+    // ─── Fix Flower Bed Layers ─────────────────────────────────────────────────
+
+    [MenuItem("Tools/CozyFarm/Fix Flower Bed Layers")]
+    public static void FixFlowerBedLayers()
+    {
+        // Layer 2 = "Ignore Raycast" — built-in Unity layer
+        int ignoreRaycast = LayerMask.NameToLayer("Ignore Raycast");
+        if (ignoreRaycast < 0)
+        {
+            EditorUtility.DisplayDialog("Error", "Could not find 'Ignore Raycast' layer.", "OK");
+            return;
+        }
+
+        // Find all scene GameObjects whose name contains "flower" or "bed" (case-insensitive)
+        // so that polyperfect flower bed meshes don't intercept farm tile raycasts
+        var allObjects = Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None);
+        int count = 0;
+        foreach (var go in allObjects)
+        {
+            string lower = go.name.ToLower();
+            if ((lower.Contains("flower") || lower.Contains("flowerbed") || lower.Contains("flower_bed"))
+                && go.layer != ignoreRaycast)
+            {
+                Undo.RecordObject(go, "Set Flower Bed to Ignore Raycast");
+                go.layer = ignoreRaycast;
+                count++;
+            }
+        }
+
+        EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+
+        EditorUtility.DisplayDialog("Fix Flower Bed Layers",
+            count > 0
+                ? $"Set {count} flower bed object(s) to 'Ignore Raycast' layer.\n\nSave the scene to persist this change."
+                : "No flower bed objects found.\n\nIf clicking is still unreliable, manually set the flower bed GameObjects to layer 'Ignore Raycast' in the Inspector.",
+            "OK");
+
+        Debug.Log($"[FarmSceneSetup] Fixed {count} flower bed objects → Ignore Raycast layer.");
+    }
+
     // ─── Helper ────────────────────────────────────────────────────────────────
 
     private static T EnsureComponent<T>(GameObject go) where T : Component
