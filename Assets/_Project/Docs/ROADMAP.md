@@ -47,10 +47,14 @@ Focus is on polish, visual feedback and functional buildings before playtesting.
 - [ ] Camera zoom and rotation feel improvements
 
 ### Buildings — Functional
-- [ ] Watering Well → auto-waters adjacent 3×3 tiles once per cycle
-- [ ] Greenhouse → crops inside grow 50% faster
-- [ ] Silo → overflow crop storage
-- [ ] Market Stall → auto-sells crops at 10% bonus
+- [ ] Barn → grants +20 inventory slots when placed
+- [ ] Watering Well → auto-waters adjacent 3×3 tiles once per growth cycle
+- [ ] Greenhouse → crops inside its bounds grow 50% faster
+- [ ] Silo → overflow crop storage beyond normal inventory cap
+- [ ] Market Stall → auto-sells harvested crops at 10% coin bonus
+
+### Camera
+- [ ] Build mode camera — entering build mode switches to top-down orthographic view; restoring normal camera on exit
 
 ---
 

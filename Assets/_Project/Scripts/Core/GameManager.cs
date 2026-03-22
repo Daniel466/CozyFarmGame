@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 /// <summary>
@@ -13,6 +14,7 @@ public class GameManager : MonoBehaviour
     public EconomyManager Economy { get; private set; }
     public ProgressionManager Progression { get; private set; }
     public SaveManager SaveManager { get; private set; }
+    public BuildingManager BuildingManager { get; private set; }
 
     private void Awake()
     {
@@ -25,28 +27,34 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         // Grab system references (all on same GameObject)
-        FarmGrid = GetComponent<FarmGrid>();
-        Inventory = GetComponent<InventoryManager>();
-        Economy = GetComponent<EconomyManager>();
-        Progression = GetComponent<ProgressionManager>();
-        SaveManager = GetComponent<SaveManager>();
+        FarmGrid        = GetComponent<FarmGrid>();
+        Inventory       = GetComponent<InventoryManager>();
+        Economy         = GetComponent<EconomyManager>();
+        Progression     = GetComponent<ProgressionManager>();
+        SaveManager     = GetComponent<SaveManager>();
+        BuildingManager = FindFirstObjectByType<BuildingManager>();
 
-        if (FarmGrid == null) Debug.LogError("[GameManager] FarmGrid component missing!");
-        if (Inventory == null) Debug.LogError("[GameManager] InventoryManager component missing!");
-        if (Economy == null) Debug.LogError("[GameManager] EconomyManager component missing!");
+        if (FarmGrid    == null) Debug.LogError("[GameManager] FarmGrid component missing!");
+        if (Inventory   == null) Debug.LogError("[GameManager] InventoryManager component missing!");
+        if (Economy     == null) Debug.LogError("[GameManager] EconomyManager component missing!");
         if (Progression == null) Debug.LogError("[GameManager] ProgressionManager component missing!");
         if (SaveManager == null) Debug.LogWarning("[GameManager] SaveManager component missing — saves disabled.");
     }
 
     private void Start()
     {
+        // Delay one frame so FarmingManager, BuildingManager etc. have all run their Start()
+        StartCoroutine(LoadAfterStart());
+    }
+
+    private IEnumerator LoadAfterStart()
+    {
+        yield return null;
         SaveManager?.LoadGame();
     }
 
     private void OnApplicationQuit()
     {
-        // Only save if player has actually played (has coins or XP)
-        if (Economy != null && (Economy.Coins != 500 || Progression.CurrentXP > 0))
-            SaveManager?.SaveGame();
+        SaveManager?.SaveGame();
     }
 }

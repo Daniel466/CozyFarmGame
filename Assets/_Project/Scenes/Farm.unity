@@ -20209,6 +20209,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e597e0e2ffd04271aaa8d6599ae8ea5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SaveManager
+  cropDatabase: {fileID: 11400000, guid: 583ce83ef71ab4cd1a0eefb5a3219a3c, type: 2}
+  buildingDatabase: {fileID: 11400000, guid: 86a62bf2828b54914950a8f9c0ca4e48, type: 2}
 --- !u!114 &919467188
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20274,7 +20276,7 @@ MonoBehaviour:
   cropVisualPrefab: {fileID: 8905606864023788519, guid: bf34193840c304f9e9b5ba522c9d516d, type: 3}
   harvestParticles: {fileID: 0}
   waterParticles: {fileID: 0}
-  growthSpeedMultiplier: 10
+  growthSpeedMultiplier: 60
 --- !u!114 &919467192
 MonoBehaviour:
   m_ObjectHideFlags: 0

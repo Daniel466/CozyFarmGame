@@ -153,6 +153,25 @@ public class FarmingManager : MonoBehaviour
         return planted;
     }
 
+    /// <summary>
+    /// Restores a planted tile's visual state after loading a save.
+    /// Does not spend coins, award XP, or play audio.
+    /// </summary>
+    public void RestoreFromSave(Vector2Int coord, FarmTile tile)
+    {
+        Vector3 worldPos = grid.GridToWorld(coord);
+
+        if (cropVisualPrefab != null)
+        {
+            GameObject visual = Instantiate(cropVisualPrefab, worldPos, Quaternion.identity);
+            visual.GetComponent<CropGrowthVisual>()?.Initialise(tile);
+            cropVisuals[coord] = visual;
+        }
+
+        if (tile.IsWatered)
+            SpawnTileMarker(coord, worldPos, new Color(0.15f, 0.35f, 0.9f));
+    }
+
     public bool WaterTile(Vector2Int coord)
     {
         FarmTile tile = grid.GetTile(coord);

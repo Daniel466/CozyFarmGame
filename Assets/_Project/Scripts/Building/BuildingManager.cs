@@ -231,6 +231,29 @@ public class BuildingManager : MonoBehaviour
         return true;
     }
 
+    /// <summary>
+    /// Restores a placed building after loading a save.
+    /// Does not spend coins or award XP.
+    /// </summary>
+    public void RestoreBuilding(BuildingData data, Vector2Int coord, int rotation)
+    {
+        Vector3 worldPos = grid.GridToWorld(coord) + Vector3.up * 0.01f;
+        GameObject placed = data.Prefab != null
+            ? Instantiate(data.Prefab, worldPos, Quaternion.Euler(0f, rotation, 0f))
+            : CreatePlaceholderBuilding(data, worldPos);
+        placed.transform.rotation = Quaternion.Euler(0f, rotation, 0f);
+        placed.name = $"Building_{data.BuildingId}_{coord}";
+
+        OccupyCells(coord, data);
+        placedBuildings[coord] = new PlacedBuilding
+        {
+            data       = data,
+            coord      = coord,
+            gameObject = placed,
+            rotation   = rotation
+        };
+    }
+
     private void OccupyCells(Vector2Int origin, BuildingData building)
     {
         for (int x = 0; x < building.Size.x; x++)
