@@ -19,16 +19,16 @@ public class PlayerInteraction : MonoBehaviour
     private FarmGrid grid;
     private Camera mainCamera;
 
-    // Hover highlight
-    private GameObject hoverQuad;
-    private Renderer hoverRenderer;
-    private static readonly Color ColourEmpty    = new Color(0.2f, 0.9f, 0.2f, 0.30f);   // green
-    private static readonly Color ColourPlanted  = new Color(1.0f, 0.9f, 0.1f, 0.30f);   // yellow
-    private static readonly Color ColourWatered  = new Color(0.2f, 0.5f, 1.0f, 0.30f);   // blue
-    private static readonly Color ColourHarvest  = new Color(1.0f, 0.55f, 0.1f, 0.30f);  // orange/glow
-    private const float PulsePeriod = 2.0f;   // seconds per full cycle
-    private const float PulseScaleMin = 0.95f;
-    private const float PulseScaleMax = 1.05f;
+    // Hover highlight — four-edge outline
+    private GameObject hoverRoot;
+    private Material hoverMaterial;  // shared across all 4 edges
+    private static readonly Color ColourEmpty    = new Color(0.4f, 1.0f, 0.4f, 0.80f);   // green
+    private static readonly Color ColourPlanted  = new Color(1.0f, 0.9f, 0.1f, 0.80f);   // yellow
+    private static readonly Color ColourWatered  = new Color(0.2f, 0.5f, 1.0f, 0.80f);   // blue
+    private static readonly Color ColourHarvest  = new Color(1.0f, 0.55f, 0.1f, 0.80f);  // orange
+    private const float PulsePeriod   = 2.0f;
+    private const float PulseScaleMin = 0.97f;
+    private const float PulseScaleMax = 1.03f;
 
     public enum PlayerTool { Till, Plant, Water, Harvest }
     public PlayerTool CurrentTool { get; private set; } = PlayerTool.Till;
@@ -48,41 +48,52 @@ public class PlayerInteraction : MonoBehaviour
 
     private void CreateHoverQuad()
     {
-        hoverQuad = GameObject.CreatePrimitive(PrimitiveType.Quad);
-        hoverQuad.name = "TileHoverHighlight";
-        hoverQuad.transform.localScale = new Vector3(2.5f, 2.5f, 1f);
-        hoverQuad.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
-        hoverQuad.layer = 2; // Ignore Raycast
+        hoverRoot = new GameObject("TileHoverHighlight");
 
-        // Destroy collider so it never intercepts raycasts
-        Destroy(hoverQuad.GetComponent<Collider>());
-
-        hoverRenderer = hoverQuad.GetComponent<Renderer>();
+        // Shared transparent URP material — one SetColor call updates all 4 edges
         var shader = Shader.Find("Universal Render Pipeline/Unlit")
                   ?? Shader.Find("Unlit/Color")
                   ?? Shader.Find("Standard");
-        var mat = new Material(shader);
+        hoverMaterial = new Material(shader);
+        hoverMaterial.SetFloat("_Surface", 1f);
+        hoverMaterial.SetFloat("_Blend", 0f);
+        hoverMaterial.SetFloat("_SrcBlend", (float)UnityEngine.Rendering.BlendMode.SrcAlpha);
+        hoverMaterial.SetFloat("_DstBlend", (float)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+        hoverMaterial.SetFloat("_ZWrite", 0f);
+        hoverMaterial.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+        hoverMaterial.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+        hoverMaterial.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
+        hoverMaterial.SetColor("_BaseColor", ColourEmpty);
 
-        // URP transparent surface setup
-        mat.SetFloat("_Surface", 1f);                      // 1 = Transparent
-        mat.SetFloat("_Blend", 0f);                        // 0 = Alpha blend
-        mat.SetFloat("_SrcBlend", (float)UnityEngine.Rendering.BlendMode.SrcAlpha);
-        mat.SetFloat("_DstBlend", (float)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-        mat.SetFloat("_ZWrite", 0f);
-        mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
-        mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-        mat.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
+        // Tile footprint: 3.5 × 3.5 units. Border thickness: 0.1 units.
+        // Top/Bottom edges span the full 3.5 width.
+        // Left/Right edges span the inner 3.3 height (3.5 - 2 × 0.1) to fill the gap cleanly.
+        const float tile      = 3.5f;
+        const float thick     = 0.1f;
+        const float half      = tile  / 2f;          // 1.75
+        const float innerHalf = (tile - 2f * thick) / 2f; // 1.65
 
-        // Set colour via _BaseColor (URP) — alpha 0.3 for soft glow
-        var startColour = new Color(0f, 1f, 0f, 0.3f);
-        mat.SetColor("_BaseColor", startColour);
-        mat.color = startColour;
+        CreateEdge(new Vector3( 0,     0,  half), new Vector3(tile,  thick, 1f)); // top
+        CreateEdge(new Vector3( 0,     0, -half), new Vector3(tile,  thick, 1f)); // bottom
+        CreateEdge(new Vector3(-half,  0,  0),    new Vector3(thick, tile - 2f * thick, 1f)); // left
+        CreateEdge(new Vector3( half,  0,  0),    new Vector3(thick, tile - 2f * thick, 1f)); // right
 
-        hoverRenderer.material = mat;
-        hoverRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-        hoverRenderer.receiveShadows = false;
+        hoverRoot.SetActive(false);
+    }
 
-        hoverQuad.SetActive(false);
+    private void CreateEdge(Vector3 localPos, Vector3 localScale)
+    {
+        var go = GameObject.CreatePrimitive(PrimitiveType.Quad);
+        go.transform.SetParent(hoverRoot.transform, false);
+        go.transform.localPosition = localPos;
+        go.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+        go.transform.localScale    = localScale;
+        go.layer = 2; // Ignore Raycast
+        Destroy(go.GetComponent<Collider>());
+        var r = go.GetComponent<Renderer>();
+        r.material            = hoverMaterial;
+        r.shadowCastingMode   = UnityEngine.Rendering.ShadowCastingMode.Off;
+        r.receiveShadows      = false;
     }
 
     private void Update()
@@ -98,7 +109,7 @@ public class PlayerInteraction : MonoBehaviour
         Vector2Int? coord = GetHoveredTileCoord();
         if (!coord.HasValue)
         {
-            hoverQuad.SetActive(false);
+            hoverRoot.SetActive(false);
             HUDManager.Instance?.SetContextHint("B: Shop  |  Tab: Inventory  |  G: Build");
             return;
         }
@@ -106,14 +117,14 @@ public class PlayerInteraction : MonoBehaviour
         FarmTile tile = grid.GetTile(coord.Value);
         if (tile == null)
         {
-            hoverQuad.SetActive(false);
+            hoverRoot.SetActive(false);
             HUDManager.Instance?.SetContextHint("B: Shop  |  Tab: Inventory  |  G: Build");
             return;
         }
 
         Vector3 worldPos = grid.GridToWorld(coord.Value);
-        hoverQuad.transform.position = worldPos + Vector3.up * 0.3f;
-        hoverQuad.SetActive(true);
+        hoverRoot.transform.position = worldPos + Vector3.up * 0.3f;
+        hoverRoot.SetActive(true);
 
         Color c;
         if      (tile.IsReadyToHarvest)         c = ColourHarvest;
@@ -121,8 +132,7 @@ public class PlayerInteraction : MonoBehaviour
         else if (tile.IsPlanted)                c = ColourPlanted;
         else                                    c = ColourEmpty;
 
-        hoverRenderer.material.SetColor("_BaseColor", c);
-        hoverRenderer.material.color = c;
+        hoverMaterial.SetColor("_BaseColor", c);
 
         // Context hint
         if (tile.IsPlanted)
@@ -130,10 +140,10 @@ public class PlayerInteraction : MonoBehaviour
         else
             HUDManager.Instance?.SetContextHint("Left Click to Plant");
 
-        // Scale pulse: gentle breathe on XY, period 2 seconds
+        // Pulse: scale the root so all 4 edges breathe together
         float t = 0.5f + 0.5f * Mathf.Sin(Time.time * (Mathf.PI * 2f / PulsePeriod));
         float s = Mathf.Lerp(PulseScaleMin, PulseScaleMax, t);
-        hoverQuad.transform.localScale = new Vector3(2.5f * s, 2.5f * s, 1f);
+        hoverRoot.transform.localScale = Vector3.one * s;
     }
 
     // Hover version — no range limit for display, range checked in GetClickedTileCoord for actions
