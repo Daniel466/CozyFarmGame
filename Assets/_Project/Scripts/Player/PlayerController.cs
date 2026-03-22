@@ -2,8 +2,7 @@ using UnityEngine;
 
 /// <summary>
 /// Handles player movement using WASD input.
-/// Uses Unity's CharacterController for smooth movement with collision.
-/// Supports polyperfect character models with walk/idle animations.
+/// Compatible with polyperfect CTL_People_Walk animator controller.
 /// </summary>
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
@@ -14,26 +13,24 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float gravity = -9.81f;
 
     [Header("Character Model")]
-    [SerializeField] private Transform characterModel; // Drag polyperfect character here
-    [SerializeField] private float modelScale = 3f;    // Polyperfect people are small — try 3-5
+    [SerializeField] private Transform characterModel;
+    [SerializeField] private float modelScale = 3f;
     [SerializeField] private Vector3 modelOffset = new Vector3(0f, -1f, 0f);
 
     [Header("Animation")]
-    [SerializeField] private Animator animator; // Assign CTL_People_Walk controller
+    [SerializeField] private Animator animator;
 
     private CharacterController controller;
     private Vector3 velocity;
-    private static readonly int IsWalking = Animator.StringToHash("IsWalking");
-    private static readonly int Speed = Animator.StringToHash("Speed");
+
+    // We'll detect the correct parameter name at runtime
+    private int animParamHash = -1;
+    private bool animParamIsBool = false;
 
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
-        if (controller == null)
-        {
-            Debug.LogError("[PlayerController] CharacterController missing!", gameObject);
-            enabled = false;
-        }
+        if (controller == null) { Debug.LogError("[PlayerController] CharacterController missing!"); enabled = false; }
     }
 
     private void Start()
@@ -42,6 +39,34 @@ public class PlayerController : MonoBehaviour
         {
             characterModel.localScale = Vector3.one * modelScale;
             characterModel.localPosition = modelOffset;
+        }
+
+        // Auto-detect animator parameter
+        if (animator != null)
+        {
+            foreach (var param in animator.parameters)
+            {
+                Debug.Log($"[PlayerController] Animator param: '{param.name}' type={param.type}");
+
+                // Look for any movement-related parameter
+                string lower = param.name.ToLower();
+                if (lower.Contains("walk") || lower.Contains("move") || lower.Contains("speed") || lower.Contains("run"))
+                {
+                    animParamHash = param.nameHash;
+                    animParamIsBool = param.type == AnimatorControllerParameterType.Bool;
+                    Debug.Log($"[PlayerController] Using animator param: '{param.name}'");
+                    break;
+                }
+            }
+
+            if (animParamHash == -1 && animator.parameters.Length > 0)
+            {
+                // Just use the first parameter as fallback
+                var first = animator.parameters[0];
+                animParamHash = first.nameHash;
+                animParamIsBool = first.type == AnimatorControllerParameterType.Bool;
+                Debug.Log($"[PlayerController] Fallback to first animator param: '{first.name}'");
+            }
         }
     }
 
@@ -79,11 +104,17 @@ public class PlayerController : MonoBehaviour
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
 
-        // Animation
-        if (animator != null)
+        // Animation — safe set using detected parameter
+        if (animator != null && animParamHash != -1)
         {
-            animator.SetBool(IsWalking, isMoving);
-            animator.SetFloat(Speed, isMoving ? 1f : 0f, 0.1f, Time.deltaTime);
+            try
+            {
+                if (animParamIsBool)
+                    animator.SetBool(animParamHash, isMoving);
+                else
+                    animator.SetFloat(animParamHash, isMoving ? 1f : 0f, 0.1f, Time.deltaTime);
+            }
+            catch { } // Silently ignore animation errors
         }
     }
 
