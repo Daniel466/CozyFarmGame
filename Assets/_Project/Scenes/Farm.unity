@@ -20276,7 +20276,7 @@ MonoBehaviour:
   cropVisualPrefab: {fileID: 8905606864023788519, guid: bf34193840c304f9e9b5ba522c9d516d, type: 3}
   harvestParticles: {fileID: 0}
   waterParticles: {fileID: 0}
-  growthSpeedMultiplier: 60
+  growthSpeedMultiplier: 1
 --- !u!114 &919467192
 MonoBehaviour:
   m_ObjectHideFlags: 0

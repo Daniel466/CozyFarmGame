@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 using TMPro;
 
 /// <summary>
@@ -17,8 +18,19 @@ public class MainMenuUI : MonoBehaviour
 
     private void Awake()
     {
+        EnsureEventSystem();
         BuildCanvas();
         BuildMainMenu();
+    }
+
+    private void EnsureEventSystem()
+    {
+        if (FindFirstObjectByType<EventSystem>() == null)
+        {
+            var esGO = new GameObject("EventSystem");
+            esGO.AddComponent<EventSystem>();
+            esGO.AddComponent<StandaloneInputModule>();
+        }
     }
 
     private void BuildCanvas()
