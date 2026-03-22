@@ -99,6 +99,7 @@ public class PlayerInteraction : MonoBehaviour
         if (!coord.HasValue)
         {
             hoverQuad.SetActive(false);
+            HUDManager.Instance?.SetContextHint("B: Shop  |  Tab: Inventory  |  G: Build");
             return;
         }
 
@@ -106,6 +107,7 @@ public class PlayerInteraction : MonoBehaviour
         if (tile == null)
         {
             hoverQuad.SetActive(false);
+            HUDManager.Instance?.SetContextHint("B: Shop  |  Tab: Inventory  |  G: Build");
             return;
         }
 
@@ -121,6 +123,12 @@ public class PlayerInteraction : MonoBehaviour
 
         hoverRenderer.material.SetColor("_BaseColor", c);
         hoverRenderer.material.color = c;
+
+        // Context hint
+        if (tile.IsPlanted)
+            HUDManager.Instance?.SetContextHint("Left Click to Harvest  |  Right Click to Water");
+        else
+            HUDManager.Instance?.SetContextHint("Left Click to Plant");
 
         // Scale pulse: gentle breathe on XY, period 2 seconds
         float t = 0.5f + 0.5f * Mathf.Sin(Time.time * (Mathf.PI * 2f / PulsePeriod));

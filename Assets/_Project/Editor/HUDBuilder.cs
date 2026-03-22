@@ -82,24 +82,28 @@ public class HUDBuilder : Editor
             new Vector2(1, 1), new Vector2(1, 1), new Vector2(-120, -105), new Vector2(220, 30),
             "0 XP to next level", 16, new Color(0.8f, 0.8f, 0.8f), TextAlignmentOptions.Right);
 
-        // Controls hint
-        CreateText("ControlsHint", hudCanvas.transform,
-            new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -30), new Vector2(700, 40),
-            "LClick: Plant/Harvest  |  RClick: Water  |  B: Shop  |  Tab: Inventory  |  G: Build",
-            16, new Color(1, 1, 1, 0.6f), TextAlignmentOptions.Center);
+        // Context hint pill — bottom centre, changes based on hovered tile
+        var contextHintBG = CreatePanel("ContextHintBG", hudCanvas.transform,
+            new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0, 18), new Vector2(700, 36),
+            new Color(0.05f, 0.05f, 0.05f, 0.72f));
+
+        var contextHintText = CreateText("ContextHintText", contextHintBG.transform,
+            Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero,
+            "B: Shop  |  Tab: Inventory  |  G: Build",
+            15, new Color(1, 1, 1, 0.85f), TextAlignmentOptions.Center);
 
         // Tool indicator background
         CreatePanel("ToolBG", hudCanvas.transform,
-            new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0, 50), new Vector2(340, 44),
+            new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0, 68), new Vector2(340, 44),
             new Color(0, 0, 0, 0.55f));
 
         var toolText = CreateText("ToolText", hudCanvas.transform,
-            new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0, 50), new Vector2(340, 44),
+            new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0, 68), new Vector2(340, 44),
             "No crop selected - press B", 18, Color.white, TextAlignmentOptions.Center);
 
         // Notification panel
         var notifPanel = CreatePanel("NotificationPanel", hudCanvas.transform,
-            new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0, 110), new Vector2(500, 50),
+            new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0, 126), new Vector2(500, 50),
             new Color(0.1f, 0.1f, 0.1f, 0.85f));
         notifPanel.SetActive(false);
 
@@ -128,6 +132,7 @@ public class HUDBuilder : Editor
         so.FindProperty("notificationPanel").objectReferenceValue = notifPanel;
         so.FindProperty("notificationText").objectReferenceValue = notifText;
         so.FindProperty("toolText").objectReferenceValue = toolText;
+        so.FindProperty("contextHintText").objectReferenceValue = contextHintText;
         so.ApplyModifiedProperties();
 
         // Build panels on a separate canvas

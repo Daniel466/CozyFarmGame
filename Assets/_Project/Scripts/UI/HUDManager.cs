@@ -23,6 +23,9 @@ public class HUDManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI levelUpText;
     [SerializeField] private float levelUpDisplayTime = 3f;
 
+    [Header("Context Hint")]
+    [SerializeField] private TextMeshProUGUI contextHintText;
+
     [Header("Tool Indicator")]
     [SerializeField] private TextMeshProUGUI toolText;
 
@@ -41,6 +44,7 @@ public class HUDManager : MonoBehaviour
         // Hide panels first (safe before GameManager is ready)
         if (levelUpPanel) levelUpPanel.SetActive(false);
         if (notificationPanel) notificationPanel.SetActive(false);
+        SetContextHint("B: Shop  |  Tab: Inventory  |  G: Build");
     }
 
     private void OnEnable()
@@ -151,5 +155,10 @@ public class HUDManager : MonoBehaviour
     public void UpdateToolIndicator(string toolName)
     {
         if (toolText) toolText.text = toolName;
+    }
+
+    public void SetContextHint(string hint)
+    {
+        if (contextHintText) contextHintText.text = hint;
     }
 }
