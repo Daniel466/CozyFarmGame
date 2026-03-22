@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f4327dd935e571f409aa3fb011f134c0
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 54733
+  packageName: Low Poly Ultimate Pack
+  packageVersion: 10.0
+  assetPath: Assets/polyperfect/Low Poly Ultimate Pack/Animations/Rotation/CTL_Rotation_X_5_5s_Loop.controller
+  uploadId: 805410
