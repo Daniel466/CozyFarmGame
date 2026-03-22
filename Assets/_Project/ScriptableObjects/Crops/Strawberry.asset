@@ -24,6 +24,8 @@ MonoBehaviour:
   - {fileID: 1846160755511594, guid: 5f3499b7ccca7438db0396f05573acae, type: 3}
   - {fileID: 1846160755511594, guid: 5f3499b7ccca7438db0396f05573acae, type: 3}
   - {fileID: 1846160755511594, guid: 5f3499b7ccca7438db0396f05573acae, type: 3}
+  modelRotationOffset: {x: 0, y: 0, z: 0}
+  modelBaseScale: 3
   harvestXP: 5
   plantXP: 2
   waterXP: 1

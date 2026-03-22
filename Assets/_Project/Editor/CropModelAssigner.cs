@@ -5,7 +5,7 @@ public class CropModelAssigner : EditorWindow
 {
     private const string FOOD_PREFABS    = "Assets/polyperfect/Low Poly Ultimate Pack/_M/Prefabs_M/Food_M";
     private const string FLOWERS_PREFABS = "Assets/polyperfect/Low Poly Ultimate Pack/_M/Prefabs_M/Nature_M/Flowers_M";
-    private const string NATURE_PREFABS  = "Assets/polyperfect/Low Poly Ultimate Pack/_M/Prefabs_M/Nature_M";
+    private const string EMPIRE_PREFABS  = "Assets/polyperfect/Low Poly Ultimate Pack/_M/Prefabs_M/Empire_M";
     private const string CROPS_PATH      = "Assets/_Project/ScriptableObjects/Crops";
 
     private static readonly System.Collections.Generic.Dictionary<string, (string folder, string prefab, float scale, float rotY)> CropMap =
@@ -18,7 +18,7 @@ public class CropModelAssigner : EditorWindow
         { "strawberry", (FOOD_PREFABS,    "Apple",                3.0f,  0f   ) },
         { "corn",       (FOOD_PREFABS,    "Corn",                 2.5f,  0f   ) },
         { "pumpkin",    (FLOWERS_PREFABS, "Pumkin",               1.0f,  0f   ) },
-        { "grapes",     (NATURE_PREFABS,  "Grapes_Purple_Empire", 2.0f,  0f   ) },
+        { "grapes",     (EMPIRE_PREFABS,  "Grapes_Purple_Empire", 2.0f,  0f   ) },
         { "chilli",     (FOOD_PREFABS,    "Eggplant",             4.0f,  0f   ) },
         { "lavender",   (FLOWERS_PREFABS, "Carnations",           0.8f,  0f   ) },
     };
