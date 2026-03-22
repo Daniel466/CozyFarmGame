@@ -67,6 +67,17 @@ public class FarmTile
     /// Returns the current growth stage index (0–3) for visual updates.
     /// 0 = Planted, 1 = Sprouting, 2 = Growing, 3 = Ready
     /// </summary>
+    /// <summary>
+    /// Estimated real-world seconds until the crop is ready to harvest.
+    /// Accounts for the 1.3× watered bonus. Returns 0 if not planted or already ready.
+    /// </summary>
+    public float GetRemainingSeconds()
+    {
+        if (!IsPlanted || IsReadyToHarvest) return 0f;
+        float rate = IsWatered ? 1.3f : 1.0f;
+        return PlantedCrop.GrowTimeSeconds * (1f - GrowthProgress) / rate;
+    }
+
     public int GetGrowthStage()
     {
         if (!IsPlanted) return -1;

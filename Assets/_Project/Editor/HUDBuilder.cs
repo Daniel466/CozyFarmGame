@@ -82,6 +82,16 @@ public class HUDBuilder : Editor
             new Vector2(1, 1), new Vector2(1, 1), new Vector2(-120, -105), new Vector2(220, 30),
             "0 XP to next level", 16, new Color(0.8f, 0.8f, 0.8f), TextAlignmentOptions.Right);
 
+        // Selected crop indicator — bottom left
+        var selectedCropPanel = CreatePanel("SelectedCropPanel", hudCanvas.transform,
+            new Vector2(0, 0), new Vector2(0, 0), new Vector2(110, 68), new Vector2(200, 52),
+            new Color(0.05f, 0.05f, 0.05f, 0.72f));
+        selectedCropPanel.SetActive(false);
+
+        var selectedCropText = CreateText("SelectedCropText", selectedCropPanel.transform,
+            Vector2.zero, Vector2.one, new Vector2(8, 0), new Vector2(-8, 0),
+            "", 17, Color.white, TextAlignmentOptions.Left);
+
         // Context hint pill — bottom centre, changes based on hovered tile
         var contextHintBG = CreatePanel("ContextHintBG", hudCanvas.transform,
             new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0, 18), new Vector2(700, 36),
@@ -133,6 +143,8 @@ public class HUDBuilder : Editor
         so.FindProperty("notificationText").objectReferenceValue = notifText;
         so.FindProperty("toolText").objectReferenceValue = toolText;
         so.FindProperty("contextHintText").objectReferenceValue = contextHintText;
+        so.FindProperty("selectedCropPanel").objectReferenceValue = selectedCropPanel;
+        so.FindProperty("selectedCropText").objectReferenceValue = selectedCropText;
         so.ApplyModifiedProperties();
 
         // Build panels on a separate canvas

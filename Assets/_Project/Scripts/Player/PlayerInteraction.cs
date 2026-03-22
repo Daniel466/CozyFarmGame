@@ -134,11 +134,22 @@ public class PlayerInteraction : MonoBehaviour
 
         hoverMaterial.SetColor("_BaseColor", c);
 
-        // Context hint
-        if (tile.IsPlanted)
-            HUDManager.Instance?.SetContextHint("Left Click to Harvest  |  Right Click to Water");
+        // Context hint — state-aware with grow time
+        if (tile.IsReadyToHarvest)
+        {
+            HUDManager.Instance?.SetContextHint($"Left Click to Harvest  |  {tile.PlantedCrop.CropName} is ready!");
+        }
+        else if (tile.IsPlanted)
+        {
+            float secs = tile.GetRemainingSeconds();
+            string timeStr = FormatGrowTime(secs);
+            string waterHint = tile.IsWatered ? "" : "  |  Right Click to Water";
+            HUDManager.Instance?.SetContextHint($"Growing: {timeStr}{waterHint}");
+        }
         else
+        {
             HUDManager.Instance?.SetContextHint("Left Click to Plant");
+        }
 
         // Pulse: scale the root so all 4 edges breathe together
         float t = 0.5f + 0.5f * Mathf.Sin(Time.time * (Mathf.PI * 2f / PulsePeriod));
@@ -212,6 +223,20 @@ public class PlayerInteraction : MonoBehaviour
     }
 
     public void SetTool(PlayerTool tool) => CurrentTool = tool;
-    public void SetSelectedCrop(CropData crop) => selectedCrop = crop;
+
+    public void SetSelectedCrop(CropData crop)
+    {
+        selectedCrop = crop;
+        HUDManager.Instance?.ShowSelectedCrop(crop);
+    }
+
     public void SetGroundLayer(LayerMask mask) => groundLayer = mask;
+
+    private static string FormatGrowTime(float seconds)
+    {
+        if (seconds <= 0f) return "Ready!";
+        int m = (int)seconds / 60;
+        int s = (int)seconds % 60;
+        return m > 0 ? $"{m}m {s:D2}s" : $"{s}s";
+    }
 }

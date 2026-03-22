@@ -23,6 +23,10 @@ public class HUDManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI levelUpText;
     [SerializeField] private float levelUpDisplayTime = 3f;
 
+    [Header("Selected Crop")]
+    [SerializeField] private GameObject selectedCropPanel;
+    [SerializeField] private TextMeshProUGUI selectedCropText;
+
     [Header("Context Hint")]
     [SerializeField] private TextMeshProUGUI contextHintText;
 
@@ -160,5 +164,18 @@ public class HUDManager : MonoBehaviour
     public void SetContextHint(string hint)
     {
         if (contextHintText) contextHintText.text = hint;
+    }
+
+    public void ShowSelectedCrop(CropData crop)
+    {
+        if (selectedCropPanel == null) return;
+        if (crop == null)
+        {
+            selectedCropPanel.SetActive(false);
+            return;
+        }
+        selectedCropPanel.SetActive(true);
+        if (selectedCropText)
+            selectedCropText.text = $"{crop.CropName}\n<size=13><color=#aaaaaa>Seed: {crop.SeedCost}g</color></size>";
     }
 }
