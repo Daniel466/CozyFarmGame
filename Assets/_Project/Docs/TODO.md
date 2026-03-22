@@ -51,6 +51,7 @@ Last updated: 2026-03-22
 - [x] Balance progression curve (150 starting coins, rebalanced XP)
 - [x] Main Menu, Pause Menu, Settings UI
 - [x] Editor tools (FarmSceneSetup, HUDBuilder, CropAssetGenerator, BuildingAssetGenerator)
+- [x] CozyFarm Toolkit window (Tools > CozyFarm > Open Toolkit) — all tools centralised
 - [x] Tile marker Y height fixed (Grid Origin Y: 0.15)
 - [x] Brown tilled marker removed — flower bed is the tilled visual
 - [x] Blue watered marker size fixed — 1.8×1.8 to match flower bed

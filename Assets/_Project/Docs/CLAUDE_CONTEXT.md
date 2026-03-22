@@ -178,9 +178,13 @@ Assets/_Project/
 ---
 
 ## Editor Tools Available
+- Tools > CozyFarm > Open Toolkit — central editor window with all tools (use this)
 - Tools > CozyFarm > Setup Farm Scene — sets up all GameObjects in scene
 - Tools > CozyFarm > Build HUD in Scene — builds HUD Canvas with correct font
+- Tools > CozyFarm > Fix Flower Bed Layers — sets flower beds to Ignore Raycast layer
+- Tools > CozyFarm > Clean Demo Scene — removes pre-placed polyperfect crop props
 - Tools > CozyFarm > Assign Crop Models — assigns polyperfect prefabs to all CropData
 - Tools > CozyFarm > Clear Crop Models — clears all crop model assignments
 - Tools > CozyFarm > Generate Crop Assets — creates all 10 CropData ScriptableObjects
 - Tools > CozyFarm > Generate Building Assets — creates building ScriptableObjects
+- Tools > CozyFarm > List Scene Object Names — prints all unique GameObject names to Console
