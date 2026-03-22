@@ -26,7 +26,10 @@ public class FarmingManager : MonoBehaviour
     }
 
     private Dictionary<Vector2Int, FarmTile> tileCache;
-    private Dictionary<Vector3, GameObject> tileMarkers = new Dictionary<Vector3, GameObject>();
+
+    // Use Vector2Int coord as key instead of Vector3 worldPos — worldPos was unreliable
+    // because tile.WorldPosition was baked at grid init before Grid Origin was set
+    private Dictionary<Vector2Int, GameObject> tileMarkers = new Dictionary<Vector2Int, GameObject>();
     private Dictionary<Vector2Int, GameObject> cropVisuals = new Dictionary<Vector2Int, GameObject>();
 
     private void Start()
@@ -64,19 +67,27 @@ public class FarmingManager : MonoBehaviour
         if (tile == null || tile.IsTilled) return false;
 
         tile.Till();
-        SpawnTileMarker(tile.WorldPosition, new Color(0.28f, 0.17f, 0.09f));
+
+        // Always use grid.GridToWorld so Grid Origin is respected
+        Vector3 worldPos = grid.GridToWorld(coord);
+        SpawnTileMarker(coord, worldPos, new Color(0.28f, 0.17f, 0.09f));
         AudioManager.Instance?.PlayTill();
         return true;
     }
 
     /// <summary>
     /// Spawns a flat quad on the ground to visually mark a tilled or watered tile.
+    /// Keyed by coord so it survives Grid Origin changes.
     /// </summary>
-    private void SpawnTileMarker(Vector3 worldPos, Color color)
+    private void SpawnTileMarker(Vector2Int coord, Vector3 worldPos, Color color)
     {
+        // Remove old marker if one exists for this coord
+        if (tileMarkers.TryGetValue(coord, out GameObject old) && old != null)
+            Destroy(old);
+
         GameObject marker = GameObject.CreatePrimitive(PrimitiveType.Quad);
         marker.name = "TileMarker";
-        marker.transform.position = worldPos + Vector3.up * 0.01f; // Slightly above ground
+        marker.transform.position = worldPos + Vector3.up * 0.02f; // Slightly above ground
         marker.transform.rotation = Quaternion.Euler(90f, 0f, 0f); // Lie flat
         marker.transform.localScale = new Vector3(0.9f, 0.9f, 1f); // Slightly smaller than tile
 
@@ -90,18 +101,16 @@ public class FarmingManager : MonoBehaviour
         mat.SetFloat("_Smoothness", 0f);
         marker.GetComponent<Renderer>().material = mat;
 
-        // Store reference on the tile for later updates (watering)
-        tileMarkers[worldPos] = marker;
+        tileMarkers[coord] = marker;
     }
 
-    public void UpdateTileMarkerColor(Vector3 worldPos, Color color)
+    public void UpdateTileMarkerColor(Vector2Int coord, Color color)
     {
-        if (tileMarkers.TryGetValue(worldPos, out GameObject marker) && marker != null)
+        if (tileMarkers.TryGetValue(coord, out GameObject marker) && marker != null)
         {
             var renderer = marker.GetComponent<Renderer>();
             if (renderer != null)
             {
-                // Create a new material instance to avoid shared material modification
                 var mat = new Material(Shader.Find("Universal Render Pipeline/Lit"));
                 mat.SetColor("_BaseColor", color);
                 mat.color = color;
@@ -129,10 +138,13 @@ public class FarmingManager : MonoBehaviour
         bool planted = tile.Plant(crop);
         if (planted)
         {
+            // Always use grid.GridToWorld so Grid Origin is respected
+            Vector3 worldPos = grid.GridToWorld(coord);
+
             // Spawn visual and track it
             if (cropVisualPrefab != null)
             {
-                GameObject visual = Instantiate(cropVisualPrefab, tile.WorldPosition, Quaternion.identity);
+                GameObject visual = Instantiate(cropVisualPrefab, worldPos, Quaternion.identity);
                 visual.GetComponent<CropGrowthVisual>()?.Initialise(tile);
                 cropVisuals[coord] = visual;
             }
@@ -155,12 +167,13 @@ public class FarmingManager : MonoBehaviour
         tile.Water();
         AudioManager.Instance?.PlayWater();
 
-        // Update tile marker to blue = watered
-        UpdateTileMarkerColor(tile.WorldPosition, new Color(0.15f, 0.35f, 0.9f));
+        // Always use grid.GridToWorld so Grid Origin is respected
+        Vector3 worldPos = grid.GridToWorld(coord);
+        UpdateTileMarkerColor(coord, new Color(0.15f, 0.35f, 0.9f));
 
         // Particles
         if (waterParticles != null)
-            Instantiate(waterParticles, tile.WorldPosition + Vector3.up * 0.5f, Quaternion.identity);
+            Instantiate(waterParticles, worldPos + Vector3.up * 0.5f, Quaternion.identity);
 
         // Award XP using cached value
         GameManager.Instance.Progression.AddXP(xp);
@@ -194,12 +207,13 @@ public class FarmingManager : MonoBehaviour
 
             AudioManager.Instance?.PlayHarvest();
 
-            // Reset tile marker back to tilled brown
-            UpdateTileMarkerColor(tile.WorldPosition, new Color(0.28f, 0.17f, 0.09f));
+            // Always use grid.GridToWorld so Grid Origin is respected
+            Vector3 worldPos = grid.GridToWorld(coord);
+            UpdateTileMarkerColor(coord, new Color(0.28f, 0.17f, 0.09f));
 
             // Particles
             if (harvestParticles != null)
-                Instantiate(harvestParticles, tile.WorldPosition + Vector3.up * 0.5f, Quaternion.identity);
+                Instantiate(harvestParticles, worldPos + Vector3.up * 0.5f, Quaternion.identity);
         }
 
         return harvested;

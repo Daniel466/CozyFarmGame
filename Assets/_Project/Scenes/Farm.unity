@@ -31471,10 +31471,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10a908532a26840cbb08abab01d7bc1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FarmGrid
-  gridWidth: 4
-  gridHeight: 4
-  tileSize: 8
-  gridOrigin: {x: -17, y: 0, z: 5}
+  gridWidth: 12
+  gridHeight: 10
+  tileSize: 2
+  gridOrigin: {x: -8, y: 0.1, z: 10}
   normalTilePrefab: {fileID: 0}
   tilledTilePrefab: {fileID: 0}
 --- !u!114 &919467193
