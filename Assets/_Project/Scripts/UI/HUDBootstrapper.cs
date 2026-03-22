@@ -29,13 +29,34 @@ public class HUDBootstrapper : MonoBehaviour
     private TextMeshProUGUI notificationText;
     private TextMeshProUGUI toolText;
 
+    [Header("Mode")]
+    [SerializeField] private bool buildMainHUD = false; // Uncheck when using Editor-built HUD Canvas
+
     private void Awake()
     {
-        BuildCanvas();
-        BuildHUD();
-        WireUpHUDManager();
+        if (buildMainHUD)
+        {
+            // Full runtime build — creates canvas and all HUD elements
+            BuildCanvas();
+            BuildHUD();
+            WireUpHUDManager();
+        }
+        else
+        {
+            // Panel-only mode — reuse existing canvas, only build Shop/Inventory/BuildMode
+            canvas = FindFirstObjectByType<Canvas>();
+            if (canvas == null)
+            {
+                Debug.LogError("[HUDBootstrapper] No Canvas found in scene! Enable Build Main HUD or add a Canvas.");
+                return;
+            }
 
-        // Force font on ALL TMP components after everything is built
+            try { BuildInventoryUI(); } catch (System.Exception e) { Debug.LogError($"[HUD] InventoryUI: {e.Message}"); }
+            try { BuildShopUI(); } catch (System.Exception e) { Debug.LogError($"[HUD] ShopUI: {e.Message}"); }
+            try { BuildBuildModeUI(); } catch (System.Exception e) { Debug.LogError($"[HUD] BuildModeUI: {e.Message}"); }
+        }
+
+        // Force font on all TMP components
         if (fontAsset != null)
             StartCoroutine(ForceFont());
     }

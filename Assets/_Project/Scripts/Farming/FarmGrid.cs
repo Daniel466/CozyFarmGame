@@ -76,4 +76,46 @@ public class FarmGrid : MonoBehaviour
     }
 
     public Dictionary<Vector2Int, FarmTile> GetAllTiles() => tiles;
+
+#if UNITY_EDITOR
+    /// <summary>
+    /// Draws the grid in the Scene view so you can visually align it with flower beds.
+    /// Yellow = grid outline, White = individual tile borders.
+    /// </summary>
+    private void OnDrawGizmos()
+    {
+        // Draw outer grid boundary in yellow
+        UnityEditor.Handles.color = Color.yellow;
+        Vector3 origin = gridOrigin;
+        float w = gridWidth * tileSize;
+        float h = gridHeight * tileSize;
+
+        // Outer border
+        UnityEditor.Handles.DrawLine(origin, origin + new Vector3(w, 0, 0));
+        UnityEditor.Handles.DrawLine(origin + new Vector3(w, 0, 0), origin + new Vector3(w, 0, h));
+        UnityEditor.Handles.DrawLine(origin + new Vector3(w, 0, h), origin + new Vector3(0, 0, h));
+        UnityEditor.Handles.DrawLine(origin + new Vector3(0, 0, h), origin);
+
+        // Individual tile lines
+        UnityEditor.Handles.color = new Color(1, 1, 1, 0.3f);
+        for (int x = 0; x <= gridWidth; x++)
+        {
+            Vector3 start = origin + new Vector3(x * tileSize, 0, 0);
+            Vector3 end = start + new Vector3(0, 0, h);
+            UnityEditor.Handles.DrawLine(start, end);
+        }
+        for (int z = 0; z <= gridHeight; z++)
+        {
+            Vector3 start = origin + new Vector3(0, 0, z * tileSize);
+            Vector3 end = start + new Vector3(w, 0, 0);
+            UnityEditor.Handles.DrawLine(start, end);
+        }
+
+        // Draw centre cross on tile (0,0)
+        UnityEditor.Handles.color = Color.red;
+        Vector3 tile00 = GridToWorld(Vector2Int.zero);
+        UnityEditor.Handles.DrawLine(tile00 - Vector3.right * 0.5f, tile00 + Vector3.right * 0.5f);
+        UnityEditor.Handles.DrawLine(tile00 - Vector3.forward * 0.5f, tile00 + Vector3.forward * 0.5f);
+    }
+#endif
 }
