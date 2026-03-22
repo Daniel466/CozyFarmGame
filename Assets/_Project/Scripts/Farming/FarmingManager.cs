@@ -89,7 +89,7 @@ public class FarmingManager : MonoBehaviour
         marker.name = "TileMarker";
         marker.transform.position = worldPos + Vector3.up * 0.02f; // Slightly above ground
         marker.transform.rotation = Quaternion.Euler(90f, 0f, 0f); // Lie flat
-        marker.transform.localScale = new Vector3(0.9f, 0.9f, 1f); // Slightly smaller than tile
+        marker.transform.localScale = new Vector3(0.3f, 0.3f, 1f); // Slightly smaller than tile
 
         // Remove collider so it doesn't block raycasts
         Destroy(marker.GetComponent<Collider>());

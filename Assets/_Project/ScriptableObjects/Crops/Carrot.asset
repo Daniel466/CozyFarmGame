@@ -20,10 +20,10 @@ MonoBehaviour:
   sellValue: 10
   growTimeSeconds: 300
   growthStagePrefabs:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 1694223022736750, guid: a1a064d8b631749e6bb8f2e7dab980c0, type: 3}
+  - {fileID: 1694223022736750, guid: a1a064d8b631749e6bb8f2e7dab980c0, type: 3}
+  - {fileID: 1694223022736750, guid: a1a064d8b631749e6bb8f2e7dab980c0, type: 3}
+  - {fileID: 1694223022736750, guid: a1a064d8b631749e6bb8f2e7dab980c0, type: 3}
   harvestXP: 5
   plantXP: 2
   waterXP: 1

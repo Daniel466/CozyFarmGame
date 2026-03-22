@@ -10,6 +10,11 @@ public class CropGrowthVisual : MonoBehaviour
     private int currentStage = -1;
     private GameObject currentModel;
 
+    // Scale per growth stage — starts small, grows to full size
+    // Adjust these to match your tile size and polyperfect model sizes
+    private static readonly float[] StageScales = { 0.5f, 0.8f, 1.2f, 1.8f };
+
+
     // Placeholder colours per crop type
     private static readonly System.Collections.Generic.Dictionary<string, Color> CropColours =
         new System.Collections.Generic.Dictionary<string, Color>
@@ -48,11 +53,17 @@ public class CropGrowthVisual : MonoBehaviour
         if (currentModel != null)
             Destroy(currentModel);
 
+        float scale = StageScales[Mathf.Clamp(stage, 0, StageScales.Length - 1)];
+
         // Try assigned prefabs first
         var prefabs = tile.PlantedCrop?.GrowthStagePrefabs;
         if (prefabs != null && stage >= 0 && stage < prefabs.Length && prefabs[stage] != null)
         {
             currentModel = Instantiate(prefabs[stage], transform.position, Quaternion.identity, transform);
+            currentModel.transform.localScale = Vector3.one * scale;
+
+            // Make sure all child renderers ignore raycasts
+            SetLayerRecursively(currentModel, LayerMask.NameToLayer("Ignore Raycast"));
         }
         else
         {
@@ -67,6 +78,14 @@ public class CropGrowthVisual : MonoBehaviour
 
         // Add a gentle bounce animation when the model changes
         StartCoroutine(BounceIn(currentModel.transform));
+    }
+
+    private void SetLayerRecursively(GameObject obj, int layer)
+    {
+        if (layer == -1) return;
+        obj.layer = layer;
+        foreach (Transform child in obj.transform)
+            SetLayerRecursively(child.gameObject, layer);
     }
 
     private System.Collections.IEnumerator BounceIn(Transform t)
