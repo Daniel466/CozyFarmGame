@@ -1,21 +1,13 @@
 using UnityEngine;
 
-/// <summary>
-/// Handles the visual representation of a crop on a tile.
-/// Uses assigned prefabs if available, otherwise falls back to placeholder primitives.
-/// </summary>
 public class CropGrowthVisual : MonoBehaviour
 {
     private FarmTile tile;
     private int currentStage = -1;
     private GameObject currentModel;
 
-    // Scale per growth stage — starts small, grows to full size
-    // Adjust these to match your tile size and polyperfect model sizes
-    private static readonly float[] StageScales = { 0.5f, 0.8f, 1.2f, 1.8f };
+    private static readonly float[] StageScales = { 0.3f, 0.5f, 0.8f, 1.0f };
 
-
-    // Placeholder colours per crop type
     private static readonly System.Collections.Generic.Dictionary<string, Color> CropColours =
         new System.Collections.Generic.Dictionary<string, Color>
     {
@@ -39,7 +31,6 @@ public class CropGrowthVisual : MonoBehaviour
     private void Update()
     {
         if (tile == null || !tile.IsPlanted) return;
-
         int stage = tile.GetGrowthStage();
         if (stage != currentStage)
         {
@@ -53,30 +44,27 @@ public class CropGrowthVisual : MonoBehaviour
         if (currentModel != null)
             Destroy(currentModel);
 
-        float scale = StageScales[Mathf.Clamp(stage, 0, StageScales.Length - 1)];
+        float stageScale = StageScales[Mathf.Clamp(stage, 0, StageScales.Length - 1)];
+        float baseScale  = tile.PlantedCrop != null ? tile.PlantedCrop.ModelBaseScale : 1f;
+        float finalScale = stageScale * baseScale;
+        Vector3 rotOffset = tile.PlantedCrop != null ? tile.PlantedCrop.ModelRotationOffset : Vector3.zero;
 
-        // Try assigned prefabs first
         var prefabs = tile.PlantedCrop?.GrowthStagePrefabs;
         if (prefabs != null && stage >= 0 && stage < prefabs.Length && prefabs[stage] != null)
         {
-            currentModel = Instantiate(prefabs[stage], transform.position, Quaternion.identity, transform);
-            currentModel.transform.localScale = Vector3.one * scale;
-
-            // Make sure all child renderers ignore raycasts
+            currentModel = Instantiate(prefabs[stage], transform.position, Quaternion.Euler(rotOffset), transform);
+            currentModel.transform.localScale = Vector3.one * finalScale;
             SetLayerRecursively(currentModel, LayerMask.NameToLayer("Ignore Raycast"));
         }
         else
         {
-            // Fall back to placeholder primitives
             Color cropColour = Color.green;
             if (tile.PlantedCrop != null)
                 CropColours.TryGetValue(tile.PlantedCrop.CropId, out cropColour);
-
             currentModel = PlaceholderAssetGenerator.CreatePlaceholderCrop(stage, cropColour, transform.position);
             currentModel.transform.SetParent(transform, true);
         }
 
-        // Add a gentle bounce animation when the model changes
         StartCoroutine(BounceIn(currentModel.transform));
     }
 
@@ -94,12 +82,11 @@ public class CropGrowthVisual : MonoBehaviour
         t.localScale = Vector3.zero;
         float elapsed = 0f;
         float duration = 0.3f;
-
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
-            float scale = Mathf.SmoothStep(0f, 1f, elapsed / duration);
-            t.localScale = originalScale * scale;
+            float s = Mathf.SmoothStep(0f, 1f, elapsed / duration);
+            t.localScale = originalScale * s;
             yield return null;
         }
         t.localScale = originalScale;

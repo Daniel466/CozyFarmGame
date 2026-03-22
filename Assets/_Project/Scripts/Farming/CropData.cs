@@ -20,8 +20,12 @@ public class CropData : ScriptableObject
     [SerializeField] private int sellValue = 10;
 
     [Header("Farming")]
-    [SerializeField] private float growTimeSeconds = 300f; // 5 minutes default
-    [SerializeField] private GameObject[] growthStagePrefabs = new GameObject[4]; // 0=planted, 1=sprout, 2=growing, 3=ready
+    [SerializeField] private float growTimeSeconds = 300f;
+    [SerializeField] private GameObject[] growthStagePrefabs = new GameObject[4];
+
+    [Header("Model Settings")]
+    [SerializeField] private Vector3 modelRotationOffset = Vector3.zero; // e.g. (0, 90, 0) to fix sideways models
+    [SerializeField] private float modelBaseScale = 1f;                  // Adjust if model is too big or small
 
     [Header("XP")]
     [SerializeField] private int harvestXP = 5;
@@ -37,6 +41,8 @@ public class CropData : ScriptableObject
     public int SellValue => sellValue;
     public float GrowTimeSeconds => growTimeSeconds;
     public GameObject[] GrowthStagePrefabs => growthStagePrefabs;
+    public Vector3 ModelRotationOffset => modelRotationOffset;
+    public float ModelBaseScale => modelBaseScale;
     public int HarvestXP => harvestXP;
     public int PlantXP => plantXP;
     public int WaterXP => waterXP;
