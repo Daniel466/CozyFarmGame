@@ -10,10 +10,9 @@ using UnityEngine;
 /// </summary>
 public static class CleanDemoScene
 {
-    // Polyperfect demo crop props that sit on the flower beds.
-    // Identified by inspecting the Farm.unity scene hierarchy.
-    // Unity renames duplicates as "carrot (1)", "carrot (2)" etc., so we match by prefix.
-    // Keep everything else (farm-flower-bed, fences, animals, trees, buildings, decorative flowers).
+    // ── Crop props ─────────────────────────────────────────────────────────────
+    // Unity renames duplicates as "carrot (1)", "carrot (2)" etc., so we match by
+    // StartsWith rather than exact equality.
     private static readonly string[] CropPropPrefixes =
     {
         "wheat-plant",    // ~162 instances — planted in rows across all beds
@@ -23,6 +22,19 @@ public static class CleanDemoScene
         "cotton",         // ~34  instances — cotton crop rows
         "pumkin-leaves",  // ~23  instances — pumpkin crop rows
     };
+
+    // ── Vehicle props ───────────────────────────────────────────────────────────
+    // Matched by Contains() — any object whose name includes these substrings.
+    // Keeps: bike-old, motorbike-old, lawn-mower-ride (farm tools / non-road vehicles).
+    private static readonly string[] VehicleKeywords =
+    {
+        "truck",
+        "tractor",
+        "car",
+        "vehicle",
+    };
+
+    // ── Matching helpers ────────────────────────────────────────────────────────
 
     private static bool IsCropProp(string goName)
     {
@@ -37,11 +49,23 @@ public static class CleanDemoScene
         return false;
     }
 
+    private static bool IsVehicleProp(string goName)
+    {
+        foreach (var keyword in VehicleKeywords)
+            if (goName.IndexOf(keyword, System.StringComparison.OrdinalIgnoreCase) >= 0)
+                return true;
+        return false;
+    }
+
+    private static bool IsTargetProp(string goName) =>
+        IsCropProp(goName) || IsVehicleProp(goName);
+
     private static string GetBaseName(string goName)
     {
         foreach (var prefix in CropPropPrefixes)
             if (goName.StartsWith(prefix, System.StringComparison.OrdinalIgnoreCase))
                 return prefix;
+        // For vehicles, return the name as-is (usually only 1 instance each)
         return goName;
     }
 
@@ -54,7 +78,7 @@ public static class CleanDemoScene
 
         foreach (var go in allObjects)
         {
-            if (IsCropProp(go.name))
+            if (IsTargetProp(go.name))
                 toDelete.Add(go);
         }
 
@@ -78,7 +102,7 @@ public static class CleanDemoScene
         lines.AppendLine($"Found {toDelete.Count} crop prop(s) to remove:\n");
         foreach (var kvp in summary)
             lines.AppendLine($"  • {kvp.Value}x  {kvp.Key}");
-        lines.AppendLine("\nKeeping: flower beds, fences, animals, trees, buildings, decorative flowers.\n");
+        lines.AppendLine("\nKeeping: flower beds, fences, animals, hay, barrels, trees, buildings, decorative flowers.\n");
         lines.AppendLine("This action supports Undo (Ctrl+Z).");
 
         bool confirmed = EditorUtility.DisplayDialog(
