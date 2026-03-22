@@ -8,15 +8,22 @@ using TMPro;
 /// </summary>
 public class InventoryUI : MonoBehaviour
 {
-    private GameObject inventoryPanel;
-    private Transform itemGrid;
-    private TextMeshProUGUI slotsText;
-    private Button sellAllButton;
-    private TextMeshProUGUI sellAllText;
+    [SerializeField] private GameObject inventoryPanel;
+    [SerializeField] private Transform itemGrid;
+    [SerializeField] private TextMeshProUGUI slotsText;
+    [SerializeField] private Button sellAllButton;
+    [SerializeField] private TextMeshProUGUI sellAllText;
 
     private bool isOpen = false;
 
-    /// <summary>Called by HUDBootstrapper to wire up all references at runtime.</summary>
+    private void Start()
+    {
+        sellAllButton?.onClick.AddListener(SellAll);
+        // Delay inventory subscription by one frame to ensure GameManager is ready
+        StartCoroutine(SubscribeNextFrame());
+    }
+
+    /// <summary>Legacy runtime setup — kept for compatibility. Prefer editor-built wiring.</summary>
     public void Setup(GameObject panel, Transform grid, TextMeshProUGUI slots,
                       Button sellBtn, TextMeshProUGUI sellBtnText)
     {
@@ -25,11 +32,6 @@ public class InventoryUI : MonoBehaviour
         slotsText = slots;
         sellAllButton = sellBtn;
         sellAllText = sellBtnText;
-
-        sellAllButton?.onClick.AddListener(SellAll);
-
-        // Delay subscription by one frame to ensure GameManager is ready
-        StartCoroutine(SubscribeNextFrame());
     }
 
     private System.Collections.IEnumerator SubscribeNextFrame()

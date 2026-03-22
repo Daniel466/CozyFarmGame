@@ -186,31 +186,13 @@ public class FarmSceneSetup : Editor
     private static void SetupHUD(TMP_FontAsset font, CropDatabase cropDB,
         BuildingDatabase buildingDB, ref int created)
     {
-        // Remove old HUD Canvas if exists
         var existing = GameObject.Find("HUD Canvas");
-
-        // Check if HUDBootstrapper exists
-        var bootstrapper = Object.FindFirstObjectByType<HUDBootstrapper>();
-        if (bootstrapper == null && existing == null)
+        if (existing != null)
         {
-            // Create HUD bootstrapper object
-            var hudGO = new GameObject("HUD");
-            var hb = hudGO.AddComponent<HUDBootstrapper>();
-
-            // Wire databases and font via SerializedObject
-            var so = new SerializedObject(hb);
-            if (font != null) so.FindProperty("fontAsset").objectReferenceValue = font;
-            if (cropDB != null) so.FindProperty("cropDatabase").objectReferenceValue = cropDB;
-            if (buildingDB != null) so.FindProperty("buildingDatabase").objectReferenceValue = buildingDB;
-            so.ApplyModifiedProperties();
-
-            created++;
-            Debug.Log("[FarmSceneSetup] Created HUD bootstrapper.");
+            Debug.Log("[FarmSceneSetup] HUD Canvas already exists — skipping.");
+            return;
         }
-        else
-        {
-            Debug.Log("[FarmSceneSetup] HUD already exists — skipping.");
-        }
+        Debug.Log("[FarmSceneSetup] No HUD Canvas found. Run Tools > CozyFarm > Build HUD in Scene to build the full HUD and panels.");
     }
 
     // ─── Audio Manager ─────────────────────────────────────────────────────────

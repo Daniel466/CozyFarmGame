@@ -69,7 +69,7 @@ public class ProgressionManager : MonoBehaviour
     public void SetState(int xp, int level)
     {
         currentXP = xp;
-        currentLevel = level;
+        currentLevel = Mathf.Max(1, level);
         OnXPChanged?.Invoke(currentXP, currentLevel);
     }
 }

@@ -11,9 +11,9 @@ public class ShopUI : MonoBehaviour
 {
     public static ShopUI Instance { get; private set; }
 
-    private GameObject shopPanel;
-    private Transform itemGrid;
-    private CropDatabase cropDatabase;
+    [SerializeField] private GameObject shopPanel;
+    [SerializeField] private Transform itemGrid;
+    [SerializeField] private CropDatabase cropDatabase;
     private bool isOpen = false;
 
     private void Awake()
@@ -57,6 +57,7 @@ public class ShopUI : MonoBehaviour
 
     private void RefreshShop()
     {
+        Debug.Log($"[ShopUI] RefreshShop — cropDatabase={(cropDatabase == null ? "NULL" : cropDatabase.name)}, itemGrid={(itemGrid == null ? "NULL" : itemGrid.name)}");
         if (itemGrid == null || cropDatabase == null) return;
 
         foreach (Transform child in itemGrid)
@@ -65,6 +66,7 @@ public class ShopUI : MonoBehaviour
         int playerLevel = GameManager.Instance.Progression.CurrentLevel;
         int coins = GameManager.Instance.Economy.Coins;
         List<CropData> allCrops = cropDatabase.GetAllCrops();
+        Debug.Log($"[ShopUI] playerLevel={playerLevel}, coins={coins}, crops found={allCrops.Count}");
 
         foreach (var crop in allCrops)
         {
@@ -142,6 +144,9 @@ public class ShopUI : MonoBehaviour
             var cg = row.AddComponent<CanvasGroup>();
             cg.alpha = unlocked ? 1f : 0.5f;
         }
+
+        Debug.Log($"[ShopUI] Populated {itemGrid.childCount} item rows into itemGrid '{itemGrid.name}'");
+        LayoutRebuilder.ForceRebuildLayoutImmediate(itemGrid as RectTransform);
     }
 
     private void SelectCrop(CropData crop)

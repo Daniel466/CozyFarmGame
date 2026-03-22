@@ -1,12 +1,11 @@
 # Cozy Farm Game - TODO
-Last updated: 2026-03-22
+Last updated: 2026-03-23
 
 ---
 
 ## In Progress
 - [ ] Assign polyperfect crop models (run CropModelAssigner.cs Editor tool)
 - [ ] Test crop visuals with real polyperfect models
-- [ ] Fix flower bed clicking — run Tools > CozyFarm > Fix Flower Bed Layers, then save scene
 
 ---
 
@@ -58,3 +57,7 @@ Last updated: 2026-03-22
 - [x] Watered marker spawns fresh (no longer depends on till marker existing)
 - [x] Marker cleaned up on harvest — tile returns to clean visual state
 - [x] Editor tool added: Fix Flower Bed Layers (Tools > CozyFarm)
+- [x] Pre-placed polyperfect demo crop props removed (383 objects — wheat, corn, carrot, salad, cotton, pumpkin)
+- [x] Demo scene vehicles removed (car-tow-truck)
+- [x] FarmGrid origin aligned to flower beds: Origin(-6, 0.15, 13), TileSize 4, Width 4, Height 4
+- [x] FarmGrid gizmo fixed — draws tile boundaries (boxes around tiles) not from tile centre

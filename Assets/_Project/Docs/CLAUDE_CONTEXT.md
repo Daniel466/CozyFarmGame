@@ -100,10 +100,11 @@ Assets/_Project/
 - Uses groundLayer mask for raycasts
 - interactionRange = 10f
 
-### HUDBootstrapper.cs
-- buildMainHUD = false (Editor-built HUD Canvas used instead)
-- Panel-only mode builds Shop, Inventory, BuildMode on separate Canvas (sort order 50)
-- Needs: fontAsset, cropDatabase, buildingDatabase assigned in Inspector
+### HUDBuilder (Editor tool)
+- Builds HUD Canvas (sort order 10) + PanelsCanvas (sort order 50) entirely in the Editor
+- PanelsCanvas holds ShopPanel, InventoryPanel, BuildModePanel — all hidden by default
+- ShopUI, InventoryUI, BuildModeUI components sit on PanelsCanvas and are wired via SerializedObject
+- HUDBootstrapper has been deleted — no runtime UI building needed
 
 ---
 

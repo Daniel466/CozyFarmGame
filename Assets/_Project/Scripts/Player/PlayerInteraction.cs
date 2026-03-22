@@ -57,9 +57,10 @@ public class PlayerInteraction : MonoBehaviour
         FarmTile tile = grid.GetTile(coord.Value);
         if (tile == null) return;
 
-        if (!tile.IsTilled)
+        // Flower beds are pre-tilled — no till step needed (Farm Together style)
+        if (tile.IsReadyToHarvest)
         {
-            farming.TillTile(coord.Value);
+            farming.HarvestTile(coord.Value);
         }
         else if (!tile.IsPlanted && selectedCrop != null)
         {
@@ -68,10 +69,6 @@ public class PlayerInteraction : MonoBehaviour
         else if (!tile.IsPlanted && selectedCrop == null)
         {
             HUDManager.Instance?.ShowNotification("No crop selected - press B to open shop!");
-        }
-        else if (tile.IsReadyToHarvest)
-        {
-            farming.HarvestTile(coord.Value);
         }
     }
 

@@ -23,7 +23,7 @@ public class FarmTile
     {
         Coord = coord;
         WorldPosition = worldPosition;
-        IsTilled = false;
+        IsTilled = true;  // Flower beds are pre-tilled — no till step required
         IsWatered = false;
         GrowthProgress = 0f;
     }

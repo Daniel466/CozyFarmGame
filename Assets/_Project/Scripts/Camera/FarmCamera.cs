@@ -10,13 +10,13 @@ public class FarmCamera : MonoBehaviour
     [SerializeField] private Transform target;
 
     [Header("Position")]
-    [SerializeField] private float distance = 12f;
-    [SerializeField] private float height = 10f;
+    [SerializeField] private float distance = 16f;
+    [SerializeField] private float height = 22f;
     [SerializeField] private float followSpeed = 8f;
 
     [Header("Zoom")]
-    [SerializeField] private float minDistance = 5f;
-    [SerializeField] private float maxDistance = 25f;
+    [SerializeField] private float minDistance = 8f;
+    [SerializeField] private float maxDistance = 40f;
     [SerializeField] private float zoomSpeed = 3f;
 
     [Header("Rotation")]

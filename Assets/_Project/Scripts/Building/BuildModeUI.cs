@@ -11,9 +11,9 @@ public class BuildModeUI : MonoBehaviour
 {
     public static BuildModeUI Instance { get; private set; }
 
-    private GameObject buildPanel;
-    private Transform itemGrid;
-    private BuildingDatabase database;
+    [SerializeField] private GameObject buildPanel;
+    [SerializeField] private Transform itemGrid;
+    [SerializeField] private BuildingDatabase database;
     private bool isOpen = false;
 
     private void Awake()

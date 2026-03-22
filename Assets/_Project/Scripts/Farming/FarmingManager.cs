@@ -84,9 +84,9 @@ public class FarmingManager : MonoBehaviour
 
         GameObject marker = GameObject.CreatePrimitive(PrimitiveType.Quad);
         marker.name = "TileMarker";
-        marker.transform.position = worldPos + Vector3.up * 0.02f; // Slightly above ground
+        marker.transform.position = worldPos + Vector3.up * 0.05f; // Sits on flower bed surface
         marker.transform.rotation = Quaternion.Euler(90f, 0f, 0f); // Lie flat
-        marker.transform.localScale = new Vector3(1.8f, 1.8f, 1f); // Match flower bed size
+        marker.transform.localScale = new Vector3(3.5f, 3.5f, 1f); // Slightly smaller than 4-unit tile
 
         // Remove collider so it doesn't block raycasts
         Destroy(marker.GetComponent<Collider>());
