@@ -22,6 +22,21 @@ public class ShopUI : MonoBehaviour
         Instance = this;
     }
 
+    private void Start()
+    {
+        // Refresh while open if coins or level change (e.g. after buying a seed)
+        StartCoroutine(SubscribeNextFrame());
+    }
+
+    private System.Collections.IEnumerator SubscribeNextFrame()
+    {
+        yield return null;
+        if (GameManager.Instance?.Economy != null)
+            GameManager.Instance.Economy.OnCoinsChanged.AddListener(_ => { if (isOpen) RefreshShop(); });
+        if (GameManager.Instance?.Progression != null)
+            GameManager.Instance.Progression.OnLevelUp.AddListener(_ => { if (isOpen) RefreshShop(); });
+    }
+
     public void Setup(GameObject panel, Transform grid, CropDatabase db)
     {
         shopPanel = panel;
@@ -57,7 +72,6 @@ public class ShopUI : MonoBehaviour
 
     private void RefreshShop()
     {
-        Debug.Log($"[ShopUI] RefreshShop — cropDatabase={(cropDatabase == null ? "NULL" : cropDatabase.name)}, itemGrid={(itemGrid == null ? "NULL" : itemGrid.name)}");
         if (itemGrid == null || cropDatabase == null) return;
 
         foreach (Transform child in itemGrid)
@@ -66,7 +80,6 @@ public class ShopUI : MonoBehaviour
         int playerLevel = GameManager.Instance.Progression.CurrentLevel;
         int coins = GameManager.Instance.Economy.Coins;
         List<CropData> allCrops = cropDatabase.GetAllCrops();
-        Debug.Log($"[ShopUI] playerLevel={playerLevel}, coins={coins}, crops found={allCrops.Count}");
 
         foreach (var crop in allCrops)
         {
@@ -145,7 +158,6 @@ public class ShopUI : MonoBehaviour
             cg.alpha = unlocked ? 1f : 0.5f;
         }
 
-        Debug.Log($"[ShopUI] Populated {itemGrid.childCount} item rows into itemGrid '{itemGrid.name}'");
         LayoutRebuilder.ForceRebuildLayoutImmediate(itemGrid as RectTransform);
     }
 

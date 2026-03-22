@@ -1,5 +1,5 @@
 # Cozy Farm Game - TODO
-Last updated: 2026-03-23
+Last updated: 2026-03-22
 
 ---
 
@@ -61,3 +61,7 @@ Last updated: 2026-03-23
 - [x] Demo scene vehicles removed (car-tow-truck)
 - [x] FarmGrid origin aligned to flower beds: Origin(-6, 0.15, 13), TileSize 4, Width 4, Height 4
 - [x] FarmGrid gizmo fixed — draws tile boundaries (boxes around tiles) not from tile centre
+- [x] Shop UI working — all 10 crops shown with correct locked/unlocked state, prices, buy buttons
+- [x] HUDBootstrapper deleted — Shop, Inventory, BuildMode panels built entirely in Editor (HUDBuilder)
+- [x] ProgressionManager.SetState clamps level to min 1 (fixes all-locked bug from old save files)
+- [x] HUDBuilder BuildScrollView uses Viewport + RectMask2D + VerticalLayoutGroup with correct anchors

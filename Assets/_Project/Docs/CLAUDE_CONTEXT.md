@@ -103,8 +103,10 @@ Assets/_Project/
 ### HUDBuilder (Editor tool)
 - Builds HUD Canvas (sort order 10) + PanelsCanvas (sort order 50) entirely in the Editor
 - PanelsCanvas holds ShopPanel, InventoryPanel, BuildModePanel — all hidden by default
-- ShopUI, InventoryUI, BuildModeUI components sit on PanelsCanvas and are wired via SerializedObject
+- ShopUI, InventoryUI, BuildModeUI components sit on PanelsCanvas and are wired via SerializedObject + EditorUtility.SetDirty
 - HUDBootstrapper has been deleted — no runtime UI building needed
+- BuildScrollView uses Viewport child with RectMask2D for correct clipping; Content uses VLG with childControlWidth=true
+- ShopWindow anchoredPosition (250, 0), width 500px
 
 ---
 
@@ -139,21 +141,19 @@ Assets/_Project/
 ---
 
 ## Known Issues / TODO
-- [ ] Flower bed clicking unreliable — flower bed colliders intercept raycasts
-      Fix: set farm-flower-bed objects to Ignore Raycast layer
-- [ ] Brown tilled marker should be removed — flower bed IS the tilled visual
-      Only keep blue watered indicator
-- [ ] Watered indicator too small — needs to match flower bed size
-- [ ] Crops can be planted on edges/gaps between flower beds
-      Fix: increase tile size to 8 to match flower bed spacing (1 crop per bed)
-      OR keep tile size 2 for multiple crops per bed but restrict to flower bed bounds
 - [ ] Growth Speed Multiplier set to 60 — change to 1 for real gameplay
 - [ ] Audio clips not assigned in AudioManager Inspector
 - [ ] No Audio Listener on Main Camera
-- [ ] Pre-placed polyperfect demo crops still in scene (remove later)
 - [ ] UI has no icons (TMP sprite asset needed)
 - [ ] No harvest/water/till animations (DEV-48)
-- [ ] Carrot unlock level was 0 — should be 1
+- [x] FIXED: Flower bed clicking unreliable — flower beds set to Ignore Raycast layer
+- [x] FIXED: Brown tilled marker removed — flower bed is the tilled visual
+- [x] FIXED: Watered indicator size fixed (3.5×3.5, Y offset 0.05)
+- [x] FIXED: Pre-placed polyperfect demo crops removed (383 objects via Clean Demo Scene tool)
+- [x] FIXED: Carrot unlock level corrected to 1
+- [x] FIXED: Shop UI showing 0 items — HUDBuilder ScrollView now uses Viewport+RectMask2D+VLG
+- [x] FIXED: All crops showing locked — ProgressionManager.SetState clamps level to min 1
+- [x] FIXED: HUDBootstrapper deleted — panels now built entirely in Editor via HUDBuilder
 
 ---
 
