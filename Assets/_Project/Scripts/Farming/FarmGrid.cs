@@ -86,7 +86,7 @@ public class FarmGrid : MonoBehaviour
     {
         // Draw outer grid boundary in yellow
         UnityEditor.Handles.color = Color.yellow;
-        Vector3 origin = gridOrigin;
+        Vector3 origin = gridOrigin - new Vector3(tileSize * 0.5f, 0, tileSize * 0.5f);
         float w = gridWidth * tileSize;
         float h = gridHeight * tileSize;
 
