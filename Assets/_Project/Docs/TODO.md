@@ -13,6 +13,12 @@ Last updated: 2026-03-23
 ### Functional Buildings
 - [ ] Replace coloured box placeholders with polyperfect models (Barn, Greenhouse, Market Stall)
 - [ ] Run Tools > CozyFarm > Render Icons to generate icon PNGs and assign to assets
+- [ ] Set WateringWell BuildingData Description: "Auto-waters nearby crops every 30s"
+
+### Bugs
+- [ ] Shop "YOUR COINS: 0" not reading correctly — coins display broken in ShopUI
+- [ ] Icon backgrounds not transparent — IconRenderer transparent RT fix needs re-run
+- [ ] Crop icons inconsistent: grapes, lavender, chilli too dark/small — adjust IconRenderer lighting or camera framing per crop
 
 ### Art
 - [ ] Find better model matches: Potato, Strawberry, Chilli, Lavender

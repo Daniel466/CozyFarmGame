@@ -71,7 +71,7 @@ public class BuildModeUI : MonoBehaviour
             img.color = unlocked ? new Color(0.25f, 0.2f, 0.13f) : new Color(0.15f, 0.13f, 0.1f);
 
             var rect = btn.GetComponent<RectTransform>();
-            rect.sizeDelta = new Vector2(120f, 125f);
+            rect.sizeDelta = new Vector2(120f, !string.IsNullOrEmpty(building.Description) ? 155f : 125f);
 
             var vlg = btn.AddComponent<VerticalLayoutGroup>();
             vlg.padding = new RectOffset(6, 6, 6, 6);
@@ -120,6 +120,21 @@ public class BuildModeUI : MonoBehaviour
             costTMP.alignment = TextAlignmentOptions.Center;
             var costLE = costGO.AddComponent<LayoutElement>();
             costLE.preferredHeight = 18f;
+
+            // Description text
+            if (!string.IsNullOrEmpty(building.Description))
+            {
+                GameObject descGO = new GameObject("Desc");
+                descGO.transform.SetParent(btn.transform, false);
+                var descTMP = descGO.AddComponent<TextMeshProUGUI>();
+                descTMP.text = building.Description;
+                descTMP.fontSize = 11f;
+                descTMP.color = new Color(0.7f, 0.7f, 0.7f);
+                descTMP.alignment = TextAlignmentOptions.Center;
+                descTMP.enableWordWrapping = true;
+                var descLE = descGO.AddComponent<LayoutElement>();
+                descLE.preferredHeight = 28f;
+            }
 
             // Button click
             var button = btn.AddComponent<Button>();

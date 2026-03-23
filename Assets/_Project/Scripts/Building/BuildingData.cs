@@ -10,6 +10,7 @@ public class BuildingData : ScriptableObject
     [Header("Identity")]
     [SerializeField] private string buildingId;
     [SerializeField] private string buildingName;
+    [SerializeField] [TextArea(2, 4)] private string description;
     [SerializeField] private Sprite icon;
 
     [Header("Type")]
@@ -38,6 +39,7 @@ public class BuildingData : ScriptableObject
     // Public accessors
     public string BuildingId => buildingId;
     public string BuildingName => buildingName;
+    public string Description => description;
     public Sprite Icon => icon;
     public BuildingType Type => buildingType;
     public int UnlockLevel => unlockLevel;

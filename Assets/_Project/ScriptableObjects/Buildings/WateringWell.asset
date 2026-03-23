@@ -14,13 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BuildingData
   buildingId: watering_well
   buildingName: Watering Well
+  description: Auto-waters nearby crops every 30s
   icon: {fileID: 21300000, guid: 092d0931c3c16449aa44c938191e9110, type: 3}
   buildingType: 0
   unlockLevel: 2
   cost: 200
   size: {x: 1, y: 1}
   prefab: {fileID: 135936, guid: 675f4fbc91d453849b4eaf672b63bc50, type: 3}
-  placeholderColor: {r: 0.5, g: 0.7, b: 0.8, a: 0}
+  placeholderColor: {r: 0.5, g: 0.7, b: 0.8, a: 1}
   placeXP: 10
   autoWaterRadius: 1
   autoWaterInterval: 30
