@@ -79,6 +79,10 @@ public class SettingsUI : MonoBehaviour
         // Growth speed (debug)
         AddLabel(window.transform, "Crop Growth Speed (1=normal, 60=fast)", 16f,
             new Color(0.6f, 0.6f, 0.6f), FontStyles.Italic);
+        AddSlider(window.transform,
+            FarmingManager.Instance != null ? FarmingManager.Instance.GrowthSpeedMultiplier : 1f,
+            (val) => { if (FarmingManager.Instance != null) FarmingManager.Instance.GrowthSpeedMultiplier = val; },
+            1f, 60f);
 
         // Close button
         AddButton(window.transform, "Close", new Color(0.3f, 0.65f, 0.3f), Hide);
@@ -109,13 +113,13 @@ public class SettingsUI : MonoBehaviour
     }
 
     private Slider AddSlider(Transform parent, float defaultValue,
-        UnityEngine.Events.UnityAction<float> onChange)
+        UnityEngine.Events.UnityAction<float> onChange, float min = 0f, float max = 1f)
     {
         GameObject go = new GameObject("Slider");
         go.transform.SetParent(parent, false);
         var slider = go.AddComponent<Slider>();
-        slider.minValue = 0f;
-        slider.maxValue = 1f;
+        slider.minValue = min;
+        slider.maxValue = max;
         slider.value = defaultValue;
 
         var rect = go.GetComponent<RectTransform>();
@@ -146,7 +150,12 @@ public class SettingsUI : MonoBehaviour
         fill.transform.SetParent(fillArea.transform, false);
         var fillImg = fill.AddComponent<Image>();
         fillImg.color = new Color(0.4f, 0.75f, 0.4f);
-        slider.fillRect = fill.GetComponent<RectTransform>();
+        var fillRect = fill.GetComponent<RectTransform>();
+        fillRect.anchorMin = Vector2.zero;
+        fillRect.anchorMax = Vector2.one;
+        fillRect.offsetMin = Vector2.zero;
+        fillRect.offsetMax = Vector2.zero;
+        slider.fillRect = fillRect;
 
         slider.onValueChanged.AddListener(onChange);
 
