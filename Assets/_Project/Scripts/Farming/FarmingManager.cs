@@ -16,6 +16,7 @@ public class FarmingManager : MonoBehaviour
 
     [Header("Debug")]
     [SerializeField] private float growthSpeedMultiplier = 1f; // Set to 60 in Inspector for fast testing
+    public float GrowthSpeedMultiplier => growthSpeedMultiplier;
 
     private FarmGrid grid;
 

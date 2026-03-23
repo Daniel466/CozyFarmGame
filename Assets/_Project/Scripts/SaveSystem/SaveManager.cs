@@ -1,4 +1,7 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using UnityEngine;
 
@@ -21,6 +24,9 @@ public class SaveManager : MonoBehaviour
         data.coins = GameManager.Instance.Economy.Coins;
         data.xp    = GameManager.Instance.Progression.CurrentXP;
         data.level = GameManager.Instance.Progression.CurrentLevel;
+
+        // Timestamp — used by offline growth system on next load
+        data.saveTimestamp = DateTime.UtcNow.ToString("O");
 
         // Inventory
         data.inventoryItems = new List<InventorySaveItem>();
@@ -93,10 +99,25 @@ public class SaveManager : MonoBehaviour
             }
         }
 
-        // Farm tiles — restore tile state then spawn visuals
+        // Calculate how long the game has been closed
+        float offlineSeconds = 0f;
+        if (!string.IsNullOrEmpty(data.saveTimestamp) &&
+            DateTime.TryParseExact(data.saveTimestamp, "O", null,
+                DateTimeStyles.RoundtripKind, out DateTime savedTime))
+        {
+            offlineSeconds = (float)(DateTime.UtcNow - savedTime).TotalSeconds;
+            offlineSeconds = Mathf.Clamp(offlineSeconds, 0f, 7f * 24f * 3600f); // cap at 7 days
+            Debug.Log($"[Save] Offline for {offlineSeconds:F0}s — applying growth.");
+        }
+
+        // Farm tiles — restore state, apply offline growth, then spawn visuals
+        int readyCount = 0;
+        int grewCount  = 0;
         if (data.tiles != null)
         {
-            var grid = GameManager.Instance.FarmGrid;
+            var grid      = GameManager.Instance.FarmGrid;
+            float speedMult = FarmingManager.Instance?.GrowthSpeedMultiplier ?? 1f;
+
             foreach (var tileData in data.tiles)
             {
                 var coord = new Vector2Int(tileData.coordX, tileData.coordY);
@@ -108,6 +129,14 @@ public class SaveManager : MonoBehaviour
                     : cropDatabase?.GetCropById(tileData.cropId);
 
                 tile.LoadFromSaveData(tileData, crop);
+
+                if (tile.IsPlanted && offlineSeconds > 0f)
+                {
+                    float before = tile.GrowthProgress;
+                    tile.ApplyOfflineGrowth(offlineSeconds, speedMult);
+                    if (tile.GrowthProgress > before) grewCount++;
+                    if (tile.IsReadyToHarvest)        readyCount++;
+                }
 
                 if (tile.IsPlanted)
                     FarmingManager.Instance?.RestoreFromSave(coord, tile);
@@ -131,6 +160,20 @@ public class SaveManager : MonoBehaviour
 
         Debug.Log($"[Save] Loaded — coins:{data.coins} level:{data.level} " +
                   $"tiles:{data.tiles?.Count} inventory:{data.inventoryItems?.Count} buildings:{data.buildings?.Count}");
+
+        // Notify the player about offline growth (defer one frame so HUDManager is ready)
+        if (offlineSeconds > 60f)
+            StartCoroutine(ShowOfflineNotification(readyCount, grewCount));
+    }
+
+    private IEnumerator ShowOfflineNotification(int ready, int grew)
+    {
+        yield return new WaitForSeconds(0.5f);
+        if (ready > 0)
+            HUDManager.Instance?.ShowNotification(
+                ready == 1 ? "1 crop ready to harvest!" : $"{ready} crops ready to harvest!", 4f);
+        else if (grew > 0)
+            HUDManager.Instance?.ShowNotification("Your crops grew while you were away!", 3f);
     }
 
     public void DeleteSave()
@@ -144,9 +187,10 @@ public class SaveManager : MonoBehaviour
 [System.Serializable]
 public class GameSaveData
 {
-    public int coins;
-    public int xp;
-    public int level;
+    public int    coins;
+    public int    xp;
+    public int    level;
+    public string saveTimestamp;
     public List<InventorySaveItem> inventoryItems;
     public List<FarmTileSaveData>  tiles;
     public List<BuildingSaveData>  buildings;

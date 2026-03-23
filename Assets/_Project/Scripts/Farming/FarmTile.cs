@@ -87,6 +87,18 @@ public class FarmTile
         return 3;
     }
 
+    /// <summary>
+    /// Advances growth by the equivalent of elapsedSeconds of real time.
+    /// Used by the offline growth system on load.
+    /// </summary>
+    public void ApplyOfflineGrowth(float elapsedSeconds, float speedMultiplier)
+    {
+        if (!IsPlanted || IsReadyToHarvest || PlantedCrop == null) return;
+        float rate = 1f / PlantedCrop.GrowTimeSeconds;
+        if (IsWatered) rate *= 1.3f;
+        GrowthProgress = Mathf.Clamp01(GrowthProgress + rate * elapsedSeconds * speedMultiplier);
+    }
+
     public CropData Harvest()
     {
         if (!IsReadyToHarvest) return null;
