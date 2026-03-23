@@ -1,125 +1,148 @@
 # CozyFarmGame — Development Roadmap
-*Last updated: 2026-03-22*
+*Last updated: 2026-03-23*
 
 ---
 
 ## Current Status
-Core gameplay loop is complete and working. Game is in Milestone 3 (Alpha).
-Focus is on polish, visual feedback and functional buildings before playtesting.
+Core gameplay loop is complete. Milestone 3 (Alpha) in progress.
+Mac and Windows builds playtested — feedback: core loop clear, controls confusing.
+Focus: TileInfoUI, DOTween juice, offline growth, then functional buildings.
 
 ---
 
-## Priority 1 — Before First Playtest
+## Priority 1 — Next Session
 
-### Gameplay Feel
-- [ ] Particle effects for watering (water splash)
-- [ ] Particle effects for harvesting (sparkles/leaves)
-- [ ] Harvest ready glow/bloom effect on crops (GDD spec)
-- [ ] Growth stage scaling — sprout → full bloom visually distinct
-- [ ] Hover highlight transparency fix (currently too solid)
-- [ ] Hover highlight colour by action (green=plant, blue=water, orange=harvest)
+### 1. TileInfoUI
+- [ ] Contextual hover panel showing crop status, grow time, input hints
+- [ ] Replaces or augments the current bottom-centre hint pill
 
-### Audio
-- [ ] Replace placeholder SFX with Universal Sound FX pack clips
-- [ ] Music volume balance (currently 0.01 — too quiet)
-- [ ] Fix ShopUI RefreshShop() being called too frequently
+### 2. DOTween Juice
+- [ ] Install DOTween from Asset Store
+- [ ] Crop pop/bounce effect on plant, harvest, growth stage change
+- [ ] Scale punch: transform.DOPunchScale()
 
-### Technical
-- [ ] Fix save/load for growth stages and tile state
-- [ ] Offline growth — crops progress while player is away
-- [ ] Growth Speed Multiplier back to 1x for release (currently testing at 60x)
+### 3. Canvas Scale Fix
+- [ ] Investigate HUD Canvas showing scale (2,2,1) on some displays
+- [ ] Root cause: CanvasScaler ScaleWithScreenSize on HiDPI/Retina
+- [ ] Permanent fix so HUD is always correctly sized
+
+### 4. Offline Crop Growth
+- [ ] Save DateTime.UtcNow on quit/save
+- [ ] On load, calculate elapsed time and advance growth progress
+- [ ] Cap at max growth (ready to harvest, not over-grown)
+
+### 5. Watering Well (Functional Building)
+- [ ] Well placed on farm auto-waters adjacent 3x3 tiles once per growth cycle
+- [ ] First functional building — unblocks barn/greenhouse/market stall pattern
+
+### 6. Building Placeholder Models
+- [ ] Replace coloured box placeholders with polyperfect models
+- [ ] Barn, Well, Greenhouse, Market Stall
 
 ---
 
 ## Priority 2 — Polish Sprint
 
-### Visual Polish
-- [ ] Crop highlight/subtle bloom when ready to harvest
-- [ ] Decorative spacing between beds (paths, lanterns, small props)
-- [ ] Replace placeholder building visuals with polyperfect models
-- [ ] Find better models for Potato, Chilli, Lavender (currently using substitutes)
+### Visual
+- [ ] Crop bloom / glow when ready to harvest
+- [ ] Better model matches: Potato, Strawberry, Chilli, Lavender
+- [ ] Decorative props: paths, lanterns, fences between beds
 
-### UI Polish
-- [ ] Shop and inventory icons (TMP Sprite Assets)
-- [ ] HUD crop growth indicator (show % grown)
-- [ ] Watered status indicator on HUD
-- [ ] Level up visual feedback (warm chime + screen effect)
-- [ ] Camera zoom and rotation feel improvements
+### UI
+- [ ] Shop / inventory icons (TMP Sprite Assets)
+- [ ] HUD crop growth % indicator per tile
 
-### Buildings — Functional
-- [ ] Barn → grants +20 inventory slots when placed
-- [ ] Watering Well → auto-waters adjacent 3×3 tiles once per growth cycle
-- [ ] Greenhouse → crops inside its bounds grow 50% faster
-- [ ] Silo → overflow crop storage beyond normal inventory cap
-- [ ] Market Stall → auto-sells harvested crops at 10% coin bonus
-
-### Camera
-- [ ] Build mode camera — entering build mode switches to top-down orthographic view; restoring normal camera on exit
+### Map
+- [ ] Add Cluster B flower beds (8 more, Z approx -5)
+- [ ] Mixamo animations for harvest/water/plant (DEV-48)
 
 ---
 
-## Priority 3 — Content Expansion
+## Priority 3 — Content
 
-### Grid & Layout
-- [ ] Add Cluster B flower beds (8 more beds at Z=-5 area)
-- [ ] Tile types: Bed vs Ground (ground = decorative flowers or slower crops)
-- [ ] Decorative ground tiles between beds (paths, fences)
-
-### Character
-- [ ] Mixamo harvest animation
-- [ ] Mixamo water animation
-- [ ] Mixamo plant animation
-
-### Audio
-- [ ] More music tracks (lo-fi acoustic loops)
-- [ ] Additional ambience layers
-
----
-
-## Priority 4 — Post Launch / Stretch Goals
-
-- [ ] Rare blooms / hybrid flowers (prestige crops)
-- [ ] Decorative scoring / aesthetic points
-- [ ] Bed upgrades (faster growth, more XP, higher coins)
-- [ ] Seasonal crops / events
-- [ ] Optional ground planting (freeform garden)
-- [ ] Multiplayer / co-op (Farm Together vibe)
-- [ ] Character cosmetics (hats, outfits)
-- [ ] Achievements system
+- [ ] Scrounger loop: collectibles scattered around map
+- [ ] Seasonal crops
+- [ ] Rare / hybrid blooms
+- [ ] Character cosmetics
+- [ ] Achievements
 
 ---
 
 ## Out of Scope for v1.0
 - Multiplayer
-- Seasons
-- NPCs / quests / story
-- Mobile support
-- Controller support
+- Mobile / controller support
+- NPCs / quests
 - Crafting system
 
 ---
 
 ## Done
-- [x] Full farming loop (plant/water/grow/harvest)
-- [x] 10 crops with polyperfect 3D models
-- [x] 4×4 grid aligned to flower beds
-- [x] One crop per flower bed
+
+### Core Systems
+- [x] Full farming loop (plant/water/grow/harvest) — no till step, Farm Together style
+- [x] 10 crops with polyperfect 3D models and 4 growth stages
 - [x] Building and decoration placement system
 - [x] Shop UI (B key) with unlock levels
-- [x] Inventory UI (Tab key) with sell all
+- [x] Inventory UI (Tab key) with colour swatches and Sell All
 - [x] Build Mode UI (G key)
-- [x] HUD (coins, XP, level, notifications)
-- [x] XP and 15 level progression
+- [x] XP and 15 level progression system
 - [x] Economy and coins (150 starting)
 - [x] Save/load system (JSON)
-- [x] Animated polyperfect character (walk/idle)
-- [x] AudioManager with all hooks assigned
-- [x] Music and ambience playing
-- [x] Main Menu, Pause Menu, Settings UI
-- [x] CozyFarm Toolkit editor window
-- [x] Hover highlight (basic, needs transparency fix)
-- [x] One-click planting (no till step)
-- [x] Clean demo scene (383 props removed)
-- [x] Flower bed clicking fixed (Ignore Raycast)
-- [x] Editor-built panels (HUDBootstrapper removed)
-- [x] Grid gizmo aligned to flower beds
+- [x] FarmingManager query methods: GetPlantedCount(), GetNearestRemainingSeconds()
+- [x] BuildModeUI.IsOpen public property
+
+### Camera
+- [x] Farm Together style orbit camera (FarmCamera.cs) — Q/E + middle-mouse rotation
+- [x] Scroll zoom with dynamic pitch-to-zoom (pitch tracks distance)
+- [x] C key preset cycles: Close (d=8 p=40), Mid (d=20 p=55), Far (d=35 p=68)
+- [x] Auto-follow on W key only (2s cooldown after manual input)
+- [x] SphereCast collision prevention (origin pivot + up*1.5f)
+- [x] Camera-relative WASD movement in PlayerController
+
+### Player
+- [x] CharacterController movement (camera-relative)
+- [x] Single controller.Move() per frame (no stutter)
+- [x] rotationSpeed=20 for snappy turning
+- [x] Idle/Walk animator swap
+- [x] applyRootMotion = false
+
+### UI / HUD
+- [x] HUDBuilder editor tool (Tools > CozyFarm > Build HUD in Scene)
+- [x] Coins text (top-centre)
+- [x] Level, XP bar, Level Up panel (top-right)
+- [x] Contextual hint pill (bottom-centre, changes per tile state, ASCII separators)
+- [x] Controls overlay panel (H to toggle, visible by default)
+- [x] Selected crop panel — Farm Together 2 style (top-left, 280x100)
+  - Colour swatch, crop name, planted count, countdown timer
+  - Live 0.5s refresh via coroutine in HUDManager
+- [x] Tool indicator: Farming Mode / Planting: [Crop] / Watering Can / Build Mode
+- [x] Notification system (timed pop-ups)
+- [x] Shop UI (scrollable, buy seeds, coin display)
+- [x] Inventory UI (colour swatches, per-item sell, Sell All, slots text)
+- [x] Build Mode UI (catalogue with unlock levels)
+- [x] All UI strings ASCII-only (no pipes, em dashes, or Unicode)
+
+### Visual / Art
+- [x] Polyperfect 3D crop models (all 10 crops assigned)
+- [x] Growth stage scaling (4 stages via CropGrowthVisual)
+- [x] Hollow square hover highlight (4-edge outline, yellow=planted, orange=ready, green=empty)
+- [x] Blue watered tile marker (scale 1.2, alpha 0.12)
+- [x] TileMarker stacking bug fixed (explicit destroy before spawn)
+- [x] Harvest/water particle effects
+
+### Audio
+- [x] AudioManager (music + SFX, singleton, DontDestroyOnLoad)
+- [x] AmbienceManager (layered ambient loops)
+- [x] All SFX wired and clips assigned in Inspector
+
+### Build / Technical
+- [x] Mac build tested — girlfriend (2026-03-23)
+- [x] Windows build tested — brother (2026-03-23)
+- [x] Playtest feedback: core loop clear, liked it overall, controls confusing
+- [x] URP shader stripping fix (ShaderIncludePreprocessor)
+- [x] Main Menu EventSystem fix
+- [x] BuildModeUI null reference fix
+- [x] Grid world position bug fixed (GridToWorld everywhere)
+- [x] Flower bed clicking fixed (Ignore Raycast layer)
+- [x] Pre-placed polyperfect demo props removed (383 objects)
+- [x] HUDBootstrapper removed — panels built entirely in HUDBuilder

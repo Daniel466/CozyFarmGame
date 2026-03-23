@@ -1,4 +1,5 @@
 using UnityEngine;
+using DG.Tweening;
 
 public class CropGrowthVisual : MonoBehaviour
 {
@@ -53,7 +54,6 @@ public class CropGrowthVisual : MonoBehaviour
         if (prefabs != null && stage >= 0 && stage < prefabs.Length && prefabs[stage] != null)
         {
             currentModel = Instantiate(prefabs[stage], transform.position, Quaternion.Euler(rotOffset), transform);
-            currentModel.transform.localScale = Vector3.one * finalScale;
             SetLayerRecursively(currentModel, LayerMask.NameToLayer("Ignore Raycast"));
         }
         else
@@ -65,7 +65,8 @@ public class CropGrowthVisual : MonoBehaviour
             currentModel.transform.SetParent(transform, true);
         }
 
-        StartCoroutine(BounceIn(currentModel.transform));
+        currentModel.transform.localScale = Vector3.zero;
+        currentModel.transform.DOScale(Vector3.one * finalScale, 0.35f).SetEase(Ease.OutBack);
     }
 
     private void SetLayerRecursively(GameObject obj, int layer)
@@ -78,39 +79,19 @@ public class CropGrowthVisual : MonoBehaviour
 
     public void PlayWaterBounce()
     {
-        if (currentModel != null)
-            StartCoroutine(WaterBounce(currentModel.transform));
+        if (currentModel == null) return;
+        currentModel.transform.DOKill();
+        currentModel.transform.DOPunchScale(Vector3.one * 0.25f, 0.3f, 4, 0.5f);
     }
 
-    private System.Collections.IEnumerator WaterBounce(Transform t)
+    public void PopOutAndDestroy(System.Action onComplete)
     {
-        Vector3 baseScale = t.localScale;
-        float duration = 0.3f;
-        float elapsed = 0f;
-        // Scale up to 1.2x then back down — simple sine arc
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            float s = 1f + 0.2f * Mathf.Sin(Mathf.PI * (elapsed / duration));
-            t.localScale = baseScale * s;
-            yield return null;
-        }
-        t.localScale = baseScale;
-    }
-
-    private System.Collections.IEnumerator BounceIn(Transform t)
-    {
-        Vector3 originalScale = t.localScale;
-        t.localScale = Vector3.zero;
-        float elapsed = 0f;
-        float duration = 0.3f;
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            float s = Mathf.SmoothStep(0f, 1f, elapsed / duration);
-            t.localScale = originalScale * s;
-            yield return null;
-        }
-        t.localScale = originalScale;
+        if (currentModel == null) { onComplete?.Invoke(); return; }
+        currentModel.transform.DOKill();
+        Vector3 baseScale = currentModel.transform.localScale;
+        DOTween.Sequence()
+            .Append(currentModel.transform.DOScale(baseScale * 1.3f, 0.08f).SetEase(Ease.OutQuad))
+            .Append(currentModel.transform.DOScale(Vector3.zero, 0.18f).SetEase(Ease.InBack))
+            .OnComplete(() => onComplete?.Invoke());
     }
 }

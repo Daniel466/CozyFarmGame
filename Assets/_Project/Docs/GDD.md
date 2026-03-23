@@ -204,7 +204,7 @@ Not in v1.0 — consider for a future update post-launch.
 ---
 
 ## 12. Implementation Status
-*Updated: 2026-03-22*
+*Updated: 2026-03-23*
 
 | Feature | Status |
 |---------|--------|
@@ -221,9 +221,9 @@ Not in v1.0 — consider for a future update post-launch.
 | Inventory UI | Done |
 | Build mode UI | Done |
 | HUD (coins, XP, level) | Done |
-| Audio (hooks in place, clips needed) | Partial |
+| Audio (hooks in place, clips needed) | Done |
 | Main Menu, Pause, Settings | Done |
-| Real 3D crop visuals | In Progress |
+| Real 3D crop visuals | Done |
 | Real 3D building visuals | To Do |
 | Watering Well auto-water function | To Do |
 | Greenhouse grow speed bonus | To Do |
@@ -231,4 +231,4 @@ Not in v1.0 — consider for a future update post-launch.
 | Market Stall auto-sell | To Do |
 | Windmill animation | To Do |
 | Harvest/water/till animations | To Do |
-| Alpha playtesting | To Do |
+| Alpha playtesting | In Progress |

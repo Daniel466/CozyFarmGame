@@ -9,7 +9,7 @@ Last updated: 2026-03-23
 ### Core Systems
 - [x] FarmGrid + FarmTile (till, plant, water, harvest)
 - [x] CropData ScriptableObjects (10 crops)
-- [x] InventoryManager (add, remove, sell, sell all)
+- [x] InventoryManager (add, remove, sell, sell all, SellItem per crop)
 - [x] EconomyManager (coins, XP, level up)
 - [x] ProgressionManager (XP thresholds, level gating)
 - [x] Save / Load system (fully working)
@@ -20,7 +20,7 @@ Last updated: 2026-03-23
 - [x] Q/E + middle-mouse horizontal rotation
 - [x] Scroll zoom with dynamic pitch-to-zoom
 - [x] C key preset cycles: Close (d=8), Mid (d=20), Far (d=35)
-- [x] Auto-follow on W key (2s cooldown after manual input)
+- [x] Auto-follow on W key only (2s cooldown after manual input)
 - [x] SphereCast collision prevention
 - [x] Camera-relative WASD movement
 
@@ -33,20 +33,25 @@ Last updated: 2026-03-23
 
 ### UI / HUD
 - [x] HUDBuilder editor tool (Tools > CozyFarm > Build HUD in Scene)
-- [x] Coins, Level, XP bar, Level Up panel
-- [x] Contextual hint pill (bottom-centre, changes per tile state)
+- [x] Coins text (top-centre)
+- [x] Level, XP bar, Level Up panel (top-right)
+- [x] Contextual hint pill (bottom-centre, changes per tile state, ASCII / separators)
 - [x] Controls overlay panel (H to toggle, visible by default)
-- [x] Selected crop indicator (bottom-left)
+- [x] Selected crop panel — Farm Together 2 style (top-left)
+  - Colour swatch, crop name, planted count, countdown timer
+  - Live 0.5s refresh via coroutine
+- [x] Tool indicator: Farming Mode / Planting: [Crop] / Watering Can / Build Mode
 - [x] Notification system (timed pop-ups)
 - [x] Shop UI (scrollable, buy seeds, coin display)
-- [x] Inventory UI (color swatches, per-item sell, Sell All)
+- [x] Inventory UI (colour swatches, per-item sell, Sell All, slots text)
 - [x] Build Mode UI (catalogue with unlock levels)
 
 ### Visual / Art
 - [x] Polyperfect 3D crop models (all 10 crops assigned)
 - [x] Growth stage scaling (4 stages via CropGrowthVisual)
-- [x] Hollow square hover highlight (4-edge outline, colour-by-action)
-- [x] Blue watered tile marker
+- [x] Hollow square hover highlight (4-edge outline, yellow=planted, orange=ready, green=empty)
+- [x] Blue watered tile marker (scale 1.2, alpha 0.12)
+- [x] TileMarker stacking bug fixed
 - [x] Harvest/water particle effects
 
 ### Audio
@@ -56,47 +61,47 @@ Last updated: 2026-03-23
 - [x] All clips assigned in Inspector
 
 ### Build / Technical
-- [x] Mac build working
-- [x] Windows build working
+- [x] Mac build working — tested by girlfriend
+- [x] Windows build working — tested by brother
 - [x] URP shader stripping fix (ShaderIncludePreprocessor)
 - [x] MainMenu EventSystem fix
 - [x] BuildModeUI null reference fix
+- [x] All UI strings ASCII-only (Kenney Future SDF compatible)
 
 ### Playtesting
-- [x] Mac build sent to girlfriend (2026-03-23)
-- [x] Windows build sent to brother (2026-03-23)
-- [x] First feedback received: plant/grow loop clear, controls confusing
+- [x] Mac build to girlfriend, Windows build to brother (2026-03-23)
+- [x] Feedback: core loop clear, liked it overall, controls confusing
 
 ---
 
-## IN PROGRESS — M3 Alpha
+## TOMORROW — Priority Order
 
-### Animations (DEV-48)
-- [ ] Mixamo animations: harvest, water, plant actions
-- [ ] Blend tree or animator state machine for actions
+### 1. TileInfoUI
+- [ ] Contextual hover panel showing crop status, grow time, input hints
+- [ ] Replaces or augments the current bottom-centre hint pill
 
----
+### 2. DOTween
+- [ ] Install DOTween from Asset Store
+- [ ] Crop pop/bounce effect on plant, harvest, growth stage change
+- [ ] Scale punch: transform.DOPunchScale()
 
-## UP NEXT — Priority 1 (Post-Playtest Polish)
+### 3. Canvas Scale Fix
+- [ ] Investigate HUD Canvas showing scale (2,2,1) on some displays
+- [ ] Root cause: CanvasScaler ScaleWithScreenSize on HiDPI/Retina?
+- [ ] Permanent fix so HUD is always correctly sized
 
-### Controls Feel
-- [ ] Better controls onboarding (first playtest: controls confusing)
-- [ ] Consider simplified control scheme or tooltip tutorial
+### 4. Offline Crop Growth
+- [ ] Save DateTime.UtcNow on quit/save
+- [ ] On load, calculate elapsed time and advance growth progress
+- [ ] Cap at max growth (ready to harvest, not over-grown)
 
-### Gameplay Loops (Google AI Feedback)
-- [ ] Scrounger loop: collectibles scattered around map to find while farming
-- [ ] Offline growth: crops progress while game is closed (save timestamp, apply on load)
+### 5. Watering Well (Functional Building)
+- [ ] Well placed on farm auto-waters adjacent 3x3 tiles once per growth cycle
+- [ ] First functional building — unblocks barn/greenhouse/market stall pattern
 
-### Visual Juice
-- [ ] DOTween crop pop effect on harvest and plant (scale bounce)
-- [ ] Selected crop panel (Farm Together 2 style) — show active crop icon + name bottom-left
-
-### Functional Buildings
-- [ ] Well: auto-waters adjacent 3x3 tiles once per growth cycle (FIRST)
-- [ ] Barn: +20 inventory slots on placement
-- [ ] Greenhouse: crops inside bounds grow 50% faster
-- [ ] Market Stall: auto-sells harvested crops at 10% coin bonus
-- [ ] Silo: overflow crop storage beyond inventory cap
+### 6. Building Placeholder Models
+- [ ] Replace coloured box placeholders with polyperfect models
+- [ ] Barn, Well, Greenhouse, Market Stall
 
 ---
 
@@ -104,24 +109,23 @@ Last updated: 2026-03-23
 
 ### Visual
 - [ ] Crop bloom / glow when ready to harvest
-- [ ] Better model matches: Potato, Strawberry, Chilli, Lavender (all currently placeholders)
-- [ ] Building placeholder models -> polyperfect models
+- [ ] Better model matches: Potato, Strawberry, Chilli, Lavender
 - [ ] Decorative props: paths, lanterns, fences between beds
 
 ### UI
 - [ ] Shop / inventory icons (TMP Sprite Assets)
 - [ ] HUD crop growth % indicator per tile
-- [ ] Watered status indicator on HUD
 
-### Map / World
+### Map
 - [ ] Add Cluster B flower beds (8 more, Z ~ -5)
-- [ ] Tile type system: Bed vs Ground distinction
+- [ ] Mixamo animations for harvest/water/till (DEV-48)
 
 ---
 
 ## Priority 3 — Content
 
-- [ ] Seasonal crops (spring/summer/autumn variants)
+- [ ] Scrounger loop: collectibles scattered around map
+- [ ] Seasonal crops
 - [ ] Rare / hybrid blooms
 - [ ] Character cosmetics
 - [ ] Achievements

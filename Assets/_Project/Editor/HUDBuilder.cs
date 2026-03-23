@@ -174,6 +174,65 @@ public class HUDBuilder : Editor
             Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero,
             "LEVEL UP!", 42, new Color(0.1f, 0.05f, 0), TextAlignmentOptions.Center);
 
+        // Tile Info Panel — bottom right, 290x150, slides in/out via DOTween
+        // anchor (1,0) = bottom-right; panel bottom stays at y=75 from bottom edge
+        var tileInfoPanel = CreatePanel("TileInfoPanel", hudCanvas.transform,
+            new Vector2(1, 0), new Vector2(1, 0), new Vector2(-155, 150), new Vector2(290, 150),
+            new Color(0.04f, 0.04f, 0.04f, 0.88f));
+        tileInfoPanel.SetActive(false);
+
+        // Colour swatch — top-left, same row as crop name
+        var tileInfoSwatchGO = new GameObject("TileInfoSwatch");
+        tileInfoSwatchGO.transform.SetParent(tileInfoPanel.transform, false);
+        var tileInfoSwatch = tileInfoSwatchGO.AddComponent<Image>();
+        tileInfoSwatch.color = new Color(0.5f, 0.8f, 0.5f);
+        var tileInfoSwatchRect = tileInfoSwatchGO.GetComponent<RectTransform>();
+        tileInfoSwatchRect.anchorMin = Vector2.zero;
+        tileInfoSwatchRect.anchorMax = Vector2.zero;
+        tileInfoSwatchRect.anchoredPosition = new Vector2(19, 126);
+        tileInfoSwatchRect.sizeDelta = new Vector2(20, 20);
+
+        // Crop name — top row, right of swatch
+        var tileInfoCropName = CreateText("TileInfoCropName", tileInfoPanel.transform,
+            Vector2.zero, Vector2.zero, new Vector2(165, 126), new Vector2(238, 26),
+            "", 16, Color.white, TextAlignmentOptions.Left);
+
+        // Stage label
+        var tileInfoStageText = CreateText("TileInfoStageText", tileInfoPanel.transform,
+            Vector2.zero, Vector2.zero, new Vector2(145, 99), new Vector2(270, 22),
+            "", 13, new Color(0.65f, 0.65f, 0.65f), TextAlignmentOptions.Left);
+
+        // Time remaining
+        var tileInfoTimeText = CreateText("TileInfoTimeText", tileInfoPanel.transform,
+            Vector2.zero, Vector2.zero, new Vector2(145, 76), new Vector2(270, 22),
+            "", 13, Color.white, TextAlignmentOptions.Left);
+
+        // Water status
+        var tileInfoWaterText = CreateText("TileInfoWaterText", tileInfoPanel.transform,
+            Vector2.zero, Vector2.zero, new Vector2(145, 54), new Vector2(270, 20),
+            "", 11, new Color(0.3f, 0.85f, 1.0f), TextAlignmentOptions.Left);
+
+        // Progress bar background
+        var tileInfoProgressBG = CreatePanel("TileInfoProgressBG", tileInfoPanel.transform,
+            Vector2.zero, Vector2.zero, new Vector2(145, 34), new Vector2(270, 10),
+            new Color(0.15f, 0.15f, 0.15f, 0.9f));
+
+        // Progress bar fill — anchorMax.x driven at runtime by GrowthProgress
+        var tileInfoProgressFillGO = new GameObject("TileInfoProgressFill");
+        tileInfoProgressFillGO.transform.SetParent(tileInfoProgressBG.transform, false);
+        var tileInfoProgressFillImg = tileInfoProgressFillGO.AddComponent<Image>();
+        tileInfoProgressFillImg.color = new Color(0.35f, 0.75f, 0.35f);
+        var tileInfoProgressFill = tileInfoProgressFillGO.GetComponent<RectTransform>();
+        tileInfoProgressFill.anchorMin = Vector2.zero;
+        tileInfoProgressFill.anchorMax = Vector2.one;
+        tileInfoProgressFill.offsetMin = Vector2.zero;
+        tileInfoProgressFill.offsetMax = Vector2.zero;
+
+        // Action hint — bottom row, context sensitive
+        var tileInfoActionHint = CreateText("TileInfoActionHint", tileInfoPanel.transform,
+            Vector2.zero, Vector2.zero, new Vector2(145, 14), new Vector2(270, 20),
+            "", 12, new Color(0.75f, 0.75f, 0.75f), TextAlignmentOptions.Left);
+
         // Wire up HUDManager via SerializedObject
         var so = new SerializedObject(hudManager);
         so.FindProperty("coinsText").objectReferenceValue = coinsText;
@@ -191,6 +250,14 @@ public class HUDBuilder : Editor
         so.FindProperty("selectedCropSwatch").objectReferenceValue = selectedCropSwatch;
         so.FindProperty("selectedCropNameText").objectReferenceValue = selectedCropNameText;
         so.FindProperty("selectedCropStatsText").objectReferenceValue = selectedCropStatsText;
+        so.FindProperty("tileInfoPanel").objectReferenceValue = tileInfoPanel;
+        so.FindProperty("tileInfoSwatch").objectReferenceValue = tileInfoSwatch;
+        so.FindProperty("tileInfoCropName").objectReferenceValue = tileInfoCropName;
+        so.FindProperty("tileInfoStageText").objectReferenceValue = tileInfoStageText;
+        so.FindProperty("tileInfoTimeText").objectReferenceValue = tileInfoTimeText;
+        so.FindProperty("tileInfoWaterText").objectReferenceValue = tileInfoWaterText;
+        so.FindProperty("tileInfoProgressFill").objectReferenceValue = tileInfoProgressFill;
+        so.FindProperty("tileInfoActionHint").objectReferenceValue = tileInfoActionHint;
         so.ApplyModifiedProperties();
 
         // Build panels on a separate canvas

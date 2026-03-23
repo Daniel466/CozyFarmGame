@@ -112,6 +112,7 @@ public class PlayerInteraction : MonoBehaviour
         {
             hoverRoot.SetActive(false);
             HUDManager.Instance?.SetContextHint("B: Shop  /  Tab: Inventory  /  G: Build");
+            HUDManager.Instance?.HideTileInfo();
             return;
         }
 
@@ -120,6 +121,7 @@ public class PlayerInteraction : MonoBehaviour
         {
             hoverRoot.SetActive(false);
             HUDManager.Instance?.SetContextHint("B: Shop  /  Tab: Inventory  /  G: Build");
+            HUDManager.Instance?.HideTileInfo();
             return;
         }
 
@@ -138,6 +140,7 @@ public class PlayerInteraction : MonoBehaviour
         if (tile.IsReadyToHarvest)
         {
             HUDManager.Instance?.SetContextHint($"Left Click to Harvest  -  {tile.PlantedCrop.CropName} is ready!");
+            HUDManager.Instance?.ShowTileInfo(tile);
         }
         else if (tile.IsPlanted)
         {
@@ -145,10 +148,12 @@ public class PlayerInteraction : MonoBehaviour
             string timeStr = FormatGrowTime(secs);
             string waterHint = tile.IsWatered ? "" : "  -  Right Click to Water";
             HUDManager.Instance?.SetContextHint($"Growing: {timeStr}{waterHint}");
+            HUDManager.Instance?.ShowTileInfo(tile);
         }
         else
         {
             HUDManager.Instance?.SetContextHint("Left Click to Plant");
+            HUDManager.Instance?.ShowTileInfo(tile);
         }
 
         // Pulse: scale the root so all 4 edges breathe together

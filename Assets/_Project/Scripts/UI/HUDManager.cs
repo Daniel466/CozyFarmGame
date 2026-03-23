@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using DG.Tweening;
 
 /// <summary>
 /// Manages the main HUD display: coins, XP bar, level, and tool indicator.
@@ -32,6 +33,21 @@ public class HUDManager : MonoBehaviour
     [SerializeField] private Image selectedCropSwatch;
     [SerializeField] private TextMeshProUGUI selectedCropNameText;
     [SerializeField] private TextMeshProUGUI selectedCropStatsText;
+
+    [Header("Tile Info Panel")]
+    [SerializeField] private GameObject tileInfoPanel;
+    [SerializeField] private Image tileInfoSwatch;
+    [SerializeField] private TextMeshProUGUI tileInfoCropName;
+    [SerializeField] private TextMeshProUGUI tileInfoStageText;
+    [SerializeField] private TextMeshProUGUI tileInfoTimeText;
+    [SerializeField] private TextMeshProUGUI tileInfoWaterText;
+    [SerializeField] private RectTransform tileInfoProgressFill;
+    [SerializeField] private TextMeshProUGUI tileInfoActionHint;
+
+    private RectTransform tileInfoPanelRect;
+    private bool tileInfoVisible;
+    private const float TileInfoOnScreenX  = -155f;
+    private const float TileInfoOffScreenX =  160f;
 
     [Header("Context Hint")]
     [SerializeField] private TextMeshProUGUI contextHintText;
@@ -70,6 +86,11 @@ public class HUDManager : MonoBehaviour
         // Hide panels first (safe before GameManager is ready)
         if (levelUpPanel) levelUpPanel.SetActive(false);
         if (notificationPanel) notificationPanel.SetActive(false);
+        if (tileInfoPanel)
+        {
+            tileInfoPanel.SetActive(false);
+            tileInfoPanelRect = tileInfoPanel.GetComponent<RectTransform>();
+        }
         if (controlsPanel) controlsPanel.SetActive(true); // visible by default
         SetContextHint("B: Shop  |  Tab: Inventory  |  G: Build");
     }
@@ -255,5 +276,111 @@ public class HUDManager : MonoBehaviour
         int m = (int)seconds / 60;
         int s = (int)seconds % 60;
         return m > 0 ? $"{m}m {s:D2}s" : $"{s}s";
+    }
+
+    public void ShowTileInfo(FarmTile tile)
+    {
+        if (tileInfoPanel == null || tile == null) { HideTileInfo(); return; }
+
+        // Slide in from right if not already visible
+        if (!tileInfoVisible)
+        {
+            tileInfoVisible = true;
+            tileInfoPanel.SetActive(true);
+            if (tileInfoPanelRect != null)
+            {
+                tileInfoPanelRect.DOKill();
+                tileInfoPanelRect.anchoredPosition = new Vector2(TileInfoOffScreenX, tileInfoPanelRect.anchoredPosition.y);
+                tileInfoPanelRect.DOAnchorPosX(TileInfoOnScreenX, 0.2f).SetEase(Ease.OutCubic);
+            }
+        }
+
+        bool planted = tile.IsPlanted;
+
+        // Swatch — only visible when a crop is planted
+        if (tileInfoSwatch)
+        {
+            tileInfoSwatch.gameObject.SetActive(planted);
+            if (planted)
+                tileInfoSwatch.color = CropColors.TryGetValue(tile.PlantedCrop.CropId, out Color c)
+                    ? c : new Color(0.5f, 0.8f, 0.5f);
+        }
+
+        if (tileInfoCropName)
+            tileInfoCropName.text = planted ? tile.PlantedCrop.CropName : "";
+
+        if (tileInfoStageText)
+        {
+            if (!planted)
+                tileInfoStageText.text = "";
+            else if (tile.IsReadyToHarvest)
+                tileInfoStageText.text = "Ready to Harvest!";
+            else
+            {
+                string[] labels = { "Planted", "Sprouting", "Growing" };
+                int stage = Mathf.Clamp(tile.GetGrowthStage(), 0, 2);
+                tileInfoStageText.text = labels[stage];
+            }
+        }
+
+        if (tileInfoTimeText)
+        {
+            if (!planted || tile.IsReadyToHarvest)
+                tileInfoTimeText.text = "";
+            else
+            {
+                float secs = tile.GetRemainingSeconds();
+                tileInfoTimeText.text = secs > 0f ? FormatTime(secs) + " remaining" : "";
+            }
+        }
+
+        if (tileInfoWaterText)
+        {
+            if (!planted || tile.IsReadyToHarvest)
+            {
+                tileInfoWaterText.text = "";
+            }
+            else
+            {
+                tileInfoWaterText.text = tile.IsWatered ? "Watered" : "Needs Water";
+                tileInfoWaterText.color = tile.IsWatered
+                    ? new Color(0.3f, 0.85f, 1.0f)
+                    : new Color(1.0f, 0.6f, 0.2f);
+            }
+        }
+
+        // Progress bar
+        if (tileInfoProgressFill != null)
+        {
+            float prog = !planted ? 0f : (tile.IsReadyToHarvest ? 1f : tile.GrowthProgress);
+            tileInfoProgressFill.anchorMax = new Vector2(prog, 1f);
+            var fillImg = tileInfoProgressFill.GetComponent<Image>();
+            if (fillImg) fillImg.color = tile.IsReadyToHarvest
+                ? new Color(1f, 0.75f, 0.1f)
+                : new Color(0.35f, 0.75f, 0.35f);
+        }
+
+        // Action hint
+        if (tileInfoActionHint)
+        {
+            if (tile.IsReadyToHarvest)
+                tileInfoActionHint.text = "Left click - harvest";
+            else if (planted && !tile.IsWatered)
+                tileInfoActionHint.text = "Right click - water";
+            else if (planted)
+                tileInfoActionHint.text = "";
+            else
+                tileInfoActionHint.text = "Left click - plant";
+        }
+    }
+
+    public void HideTileInfo()
+    {
+        if (!tileInfoVisible) return;
+        tileInfoVisible = false;
+        if (tileInfoPanelRect == null) { if (tileInfoPanel) tileInfoPanel.SetActive(false); return; }
+        tileInfoPanelRect.DOKill();
+        tileInfoPanelRect.DOAnchorPosX(TileInfoOffScreenX, 0.15f).SetEase(Ease.InCubic)
+            .OnComplete(() => { if (tileInfoPanel) tileInfoPanel.SetActive(false); });
     }
 }

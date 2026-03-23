@@ -122,8 +122,8 @@ public class FarmingManager : MonoBehaviour
         main.duration         = 0.5f;
         main.loop             = false;
         main.startLifetime    = new ParticleSystem.MinMaxCurve(0.5f, 1.1f);
-        main.startSpeed       = new ParticleSystem.MinMaxCurve(1.5f, 4f);
-        main.startSize        = new ParticleSystem.MinMaxCurve(0.08f, 0.22f);
+        main.startSpeed       = new ParticleSystem.MinMaxCurve(2f, 6f);
+        main.startSize        = new ParticleSystem.MinMaxCurve(0.2f, 0.5f);
         main.startColor       = new ParticleSystem.MinMaxGradient(
                                     new Color(1.0f, 0.88f, 0.2f, 1f),
                                     new Color(0.6f, 1.0f, 0.3f, 1f));
@@ -133,7 +133,7 @@ public class FarmingManager : MonoBehaviour
         main.stopAction       = ParticleSystemStopAction.Destroy;
 
         var emission = ps.emission;
-        emission.SetBursts(new[] { new ParticleSystem.Burst(0f, 30) });
+        emission.SetBursts(new[] { new ParticleSystem.Burst(0f, 40) });
         emission.rateOverTime = 0;
 
         var shape = ps.shape;
@@ -154,7 +154,7 @@ public class FarmingManager : MonoBehaviour
         var sizeOverLifetime = ps.sizeOverLifetime;
         sizeOverLifetime.enabled = true;
         var sizeCurve = new AnimationCurve(
-            new Keyframe(0f, 0.3f), new Keyframe(0.2f, 1f), new Keyframe(1f, 0f));
+            new Keyframe(0f, 0.8f), new Keyframe(0.3f, 1f), new Keyframe(1f, 0f));
         sizeOverLifetime.size = new ParticleSystem.MinMaxCurve(1f, sizeCurve);
 
         var rotationOverLifetime = ps.rotationOverLifetime;
@@ -352,22 +352,22 @@ public class FarmingManager : MonoBehaviour
         CropData harvested = tile.Harvest();
         if (harvested != null)
         {
-            // Destroy crop visual
+            // Pop-out animation then destroy — deferred so the tween plays out
             if (cropVisuals.TryGetValue(coord, out GameObject visual) && visual != null)
             {
-                Destroy(visual);
                 cropVisuals.Remove(coord);
+                var cgv = visual.GetComponent<CropGrowthVisual>();
+                if (cgv != null)
+                    cgv.PopOutAndDestroy(() => Destroy(visual));
+                else
+                    Destroy(visual);
             }
 
-            // Add to inventory
+            // Inventory, XP, audio, particles all fire immediately
             GameManager.Instance.Inventory.AddItem(harvested, 1);
-
-            // Award XP
             GameManager.Instance.Progression.AddXP(xp);
-
             AudioManager.Instance?.PlayHarvest();
 
-            // Remove watered marker now that tile is reset
             if (tileMarkers.TryGetValue(coord, out GameObject marker) && marker != null)
             {
                 Destroy(marker);
@@ -375,12 +375,12 @@ public class FarmingManager : MonoBehaviour
             }
             Vector3 worldPos = grid.GridToWorld(coord);
 
-            // Particles
             if (harvestParticles != null)
             {
-                var ps = Instantiate(harvestParticles, worldPos + Vector3.up * 0.5f, Quaternion.identity);
+                var ps = Instantiate(harvestParticles, worldPos + Vector3.up * 1.0f, Quaternion.identity);
                 ps.gameObject.SetActive(true);
                 ps.Play();
+                Destroy(ps.gameObject, 3f);
             }
         }
 
