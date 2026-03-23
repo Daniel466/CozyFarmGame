@@ -99,6 +99,7 @@ public class PlayerInteraction : MonoBehaviour
     private void Update()
     {
         UpdateHoverHighlight();
+        UpdateToolText();
         if (Input.GetMouseButtonDown(0)) HandleLeftClick();
         if (Input.GetMouseButtonDown(1)) HandleRightClick();
         if (Input.GetKeyDown(KeyCode.F)) SellAll();
@@ -110,7 +111,7 @@ public class PlayerInteraction : MonoBehaviour
         if (!coord.HasValue)
         {
             hoverRoot.SetActive(false);
-            HUDManager.Instance?.SetContextHint("B: Shop  |  Tab: Inventory  |  G: Build");
+            HUDManager.Instance?.SetContextHint("B: Shop  /  Tab: Inventory  /  G: Build");
             return;
         }
 
@@ -118,7 +119,7 @@ public class PlayerInteraction : MonoBehaviour
         if (tile == null)
         {
             hoverRoot.SetActive(false);
-            HUDManager.Instance?.SetContextHint("B: Shop  |  Tab: Inventory  |  G: Build");
+            HUDManager.Instance?.SetContextHint("B: Shop  /  Tab: Inventory  /  G: Build");
             return;
         }
 
@@ -127,23 +128,22 @@ public class PlayerInteraction : MonoBehaviour
         hoverRoot.SetActive(true);
 
         Color c;
-        if      (tile.IsReadyToHarvest)         c = ColourHarvest;
-        else if (tile.IsWatered)                c = ColourWatered;
-        else if (tile.IsPlanted)                c = ColourPlanted;
-        else                                    c = ColourEmpty;
+        if      (tile.IsReadyToHarvest)  c = ColourHarvest;
+        else if (tile.IsPlanted)         c = ColourPlanted;  // yellow for all planted (watered or not)
+        else                             c = ColourEmpty;
 
         hoverMaterial.SetColor("_BaseColor", c);
 
         // Context hint — state-aware with grow time
         if (tile.IsReadyToHarvest)
         {
-            HUDManager.Instance?.SetContextHint($"Left Click to Harvest  |  {tile.PlantedCrop.CropName} is ready!");
+            HUDManager.Instance?.SetContextHint($"Left Click to Harvest  -  {tile.PlantedCrop.CropName} is ready!");
         }
         else if (tile.IsPlanted)
         {
             float secs = tile.GetRemainingSeconds();
             string timeStr = FormatGrowTime(secs);
-            string waterHint = tile.IsWatered ? "" : "  |  Right Click to Water";
+            string waterHint = tile.IsWatered ? "" : "  -  Right Click to Water";
             HUDManager.Instance?.SetContextHint($"Growing: {timeStr}{waterHint}");
         }
         else
@@ -231,6 +231,24 @@ public class PlayerInteraction : MonoBehaviour
     }
 
     public void SetGroundLayer(LayerMask mask) => groundLayer = mask;
+
+    private string lastToolText;
+    private void UpdateToolText()
+    {
+        string desired;
+        if (BuildModeUI.Instance != null && BuildModeUI.Instance.IsOpen)
+            desired = "Build Mode";
+        else if (Input.GetMouseButton(1))
+            desired = "Watering Can";
+        else if (selectedCrop != null)
+            desired = $"Planting: {selectedCrop.CropName}";
+        else
+            desired = "Farming Mode";
+
+        if (desired == lastToolText) return;
+        lastToolText = desired;
+        HUDManager.Instance?.UpdateToolIndicator(desired);
+    }
 
     private static string FormatGrowTime(float seconds)
     {

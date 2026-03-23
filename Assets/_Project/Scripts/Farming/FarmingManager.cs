@@ -206,7 +206,7 @@ public class FarmingManager : MonoBehaviour
         marker.name = "TileMarker";
         marker.transform.position = worldPos + Vector3.up * 0.02f;
         marker.transform.rotation = Quaternion.Euler(90f, 0f, 0f); // Lie flat
-        marker.transform.localScale = new Vector3(2.0f, 2.0f, 1f);
+        marker.transform.localScale = new Vector3(1.2f, 1.2f, 1f);
 
         // Remove collider so it doesn't block raycasts
         Destroy(marker.GetComponent<Collider>());
@@ -313,8 +313,14 @@ public class FarmingManager : MonoBehaviour
         // Always use grid.GridToWorld so Grid Origin is respected
         Vector3 worldPos = grid.GridToWorld(coord);
 
-        // Subtle blue marker — alpha 0.2, scale 2.0
-        SpawnTileMarker(coord, worldPos, new Color(0.15f, 0.35f, 0.9f, 0.2f));
+        // Destroy any existing marker before spawning a new one
+        if (tileMarkers.TryGetValue(coord, out GameObject existing))
+        {
+            Destroy(existing);
+            tileMarkers.Remove(coord);
+        }
+
+        SpawnTileMarker(coord, worldPos, new Color(0.15f, 0.35f, 0.9f, 0.12f));
 
         // Crop bounce
         if (cropVisuals.TryGetValue(coord, out GameObject visual) && visual != null)
@@ -379,5 +385,38 @@ public class FarmingManager : MonoBehaviour
         }
 
         return harvested;
+    }
+
+    // ── Selected-crop panel queries ─────────────────────────────────────────────
+
+    /// <summary>Count of tiles with this crop planted (including ready-to-harvest).</summary>
+    public int GetPlantedCount(string cropId)
+    {
+        if (tileCache == null) return 0;
+        int count = 0;
+        foreach (var tile in tileCache.Values)
+            if (tile.IsPlanted && tile.PlantedCrop?.CropId == cropId)
+                count++;
+        return count;
+    }
+
+    /// <summary>
+    /// Remaining seconds on the nearest-to-done tile of this crop type.
+    /// Returns 0 if any tile is ready, -1 if none planted.
+    /// </summary>
+    public float GetNearestRemainingSeconds(string cropId)
+    {
+        if (tileCache == null) return -1f;
+        float nearest = float.MaxValue;
+        bool found = false;
+        foreach (var tile in tileCache.Values)
+        {
+            if (!tile.IsPlanted || tile.PlantedCrop?.CropId != cropId) continue;
+            found = true;
+            if (tile.IsReadyToHarvest) return 0f;
+            float rem = tile.GetRemainingSeconds();
+            if (rem < nearest) nearest = rem;
+        }
+        return found ? nearest : -1f;
     }
 }

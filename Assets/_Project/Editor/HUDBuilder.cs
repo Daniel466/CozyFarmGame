@@ -69,8 +69,8 @@ public class HUDBuilder : Editor
 
         // Build all HUD elements
         var coinsText    = CreateText("CoinsText", hudCanvas.transform,
-            new Vector2(0, 1), new Vector2(0, 1), new Vector2(160, -40), new Vector2(280, 50),
-            "500 coins", 28, Color.white, TextAlignmentOptions.Left);
+            new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -40), new Vector2(280, 50),
+            "500 coins", 28, Color.white, TextAlignmentOptions.Center);
 
         var levelText    = CreateText("LevelText", hudCanvas.transform,
             new Vector2(1, 1), new Vector2(1, 1), new Vector2(-120, -40), new Vector2(180, 50),
@@ -105,15 +105,35 @@ public class HUDBuilder : Editor
             "</color></size>",
             13, Color.white, TextAlignmentOptions.Left);
 
-        // Selected crop indicator — bottom left
+        // Selected crop panel — top left, 10px padding from edges
+        // anchor (0,1) = top-left corner; x = pad + halfWidth, y = -(pad + halfHeight)
         var selectedCropPanel = CreatePanel("SelectedCropPanel", hudCanvas.transform,
-            new Vector2(0, 0), new Vector2(0, 0), new Vector2(110, 68), new Vector2(200, 52),
-            new Color(0.05f, 0.05f, 0.05f, 0.72f));
+            new Vector2(0, 1), new Vector2(0, 1), new Vector2(150, -60), new Vector2(280, 100),
+            new Color(0.04f, 0.04f, 0.04f, 0.82f));
         selectedCropPanel.SetActive(false);
 
-        var selectedCropText = CreateText("SelectedCropText", selectedCropPanel.transform,
-            Vector2.zero, Vector2.one, new Vector2(8, 0), new Vector2(-8, 0),
-            "", 17, Color.white, TextAlignmentOptions.Left);
+        // Colour swatch (left side, vertically centred)
+        var swatchGO = new GameObject("CropSwatch");
+        swatchGO.transform.SetParent(selectedCropPanel.transform, false);
+        var selectedCropSwatch = swatchGO.AddComponent<Image>();
+        selectedCropSwatch.color = new Color(0.5f, 0.8f, 0.5f); // overwritten at runtime
+        var swatchRect = swatchGO.GetComponent<RectTransform>();
+        swatchRect.anchorMin = new Vector2(0f, 0.5f);
+        swatchRect.anchorMax = new Vector2(0f, 0.5f);
+        swatchRect.anchoredPosition = new Vector2(30f, 0f);
+        swatchRect.sizeDelta = new Vector2(40f, 40f);
+
+        // Crop name (upper right of swatch)
+        // Panel 280x100: upper portion x=60-272, y=58-92 → center (166, 75) size (212, 34)
+        var selectedCropNameText = CreateText("CropNameText", selectedCropPanel.transform,
+            new Vector2(0, 0), new Vector2(0, 0), new Vector2(166, 75), new Vector2(212, 34),
+            "", 18, Color.white, TextAlignmentOptions.Left);
+
+        // Stats line (lower right of swatch)
+        // Panel 280x100: lower portion x=60-272, y=12-46 → center (166, 29) size (212, 24)
+        var selectedCropStatsText = CreateText("CropStatsText", selectedCropPanel.transform,
+            new Vector2(0, 0), new Vector2(0, 0), new Vector2(166, 29), new Vector2(212, 24),
+            "", 11, new Color(0.65f, 0.65f, 0.65f), TextAlignmentOptions.Left);
 
         // Context hint pill — bottom centre, changes based on hovered tile
         var contextHintBG = CreatePanel("ContextHintBG", hudCanvas.transform,
@@ -122,7 +142,7 @@ public class HUDBuilder : Editor
 
         var contextHintText = CreateText("ContextHintText", contextHintBG.transform,
             Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero,
-            "B: Shop  |  Tab: Inventory  |  G: Build",
+            "B: Shop  /  Tab: Inventory  /  G: Build",
             15, new Color(1, 1, 1, 0.85f), TextAlignmentOptions.Center);
 
         // Tool indicator background
@@ -132,7 +152,7 @@ public class HUDBuilder : Editor
 
         var toolText = CreateText("ToolText", hudCanvas.transform,
             new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0, 68), new Vector2(340, 44),
-            "No crop selected - press B", 18, Color.white, TextAlignmentOptions.Center);
+            "Farming Mode", 18, Color.white, TextAlignmentOptions.Center);
 
         // Notification panel
         var notifPanel = CreatePanel("NotificationPanel", hudCanvas.transform,
@@ -168,7 +188,9 @@ public class HUDBuilder : Editor
         so.FindProperty("contextHintText").objectReferenceValue = contextHintText;
         so.FindProperty("controlsPanel").objectReferenceValue = controlsPanel;
         so.FindProperty("selectedCropPanel").objectReferenceValue = selectedCropPanel;
-        so.FindProperty("selectedCropText").objectReferenceValue = selectedCropText;
+        so.FindProperty("selectedCropSwatch").objectReferenceValue = selectedCropSwatch;
+        so.FindProperty("selectedCropNameText").objectReferenceValue = selectedCropNameText;
+        so.FindProperty("selectedCropStatsText").objectReferenceValue = selectedCropStatsText;
         so.ApplyModifiedProperties();
 
         // Build panels on a separate canvas
@@ -394,7 +416,7 @@ public class HUDBuilder : Editor
         CreateText("BuildHint", sidePanel.transform,
             new Vector2(0f, 1f), new Vector2(1f, 1f),
             new Vector2(0f, -65f), new Vector2(0f, 30f),
-            "R: Rotate  |  Del: Remove  |  Esc: Cancel", 13,
+            "R: Rotate  /  Del: Remove  /  Esc: Cancel", 13,
             new Color(0.6f, 0.6f, 0.6f), TextAlignmentOptions.Center);
 
         var content = BuildScrollView(sidePanel.transform,

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -26,9 +27,11 @@ public class HUDManager : MonoBehaviour
     [Header("Controls Overlay")]
     [SerializeField] private GameObject controlsPanel;
 
-    [Header("Selected Crop")]
+    [Header("Selected Crop Panel")]
     [SerializeField] private GameObject selectedCropPanel;
-    [SerializeField] private TextMeshProUGUI selectedCropText;
+    [SerializeField] private Image selectedCropSwatch;
+    [SerializeField] private TextMeshProUGUI selectedCropNameText;
+    [SerializeField] private TextMeshProUGUI selectedCropStatsText;
 
     [Header("Context Hint")]
     [SerializeField] private TextMeshProUGUI contextHintText;
@@ -39,6 +42,22 @@ public class HUDManager : MonoBehaviour
     [Header("Notification")]
     [SerializeField] private GameObject notificationPanel;
     [SerializeField] private TextMeshProUGUI notificationText;
+
+    private CropData currentSelectedCrop;
+
+    private static readonly Dictionary<string, Color> CropColors = new Dictionary<string, Color>
+    {
+        { "carrot",     new Color(1.0f, 0.55f, 0.1f)  },
+        { "sunflower",  new Color(1.0f, 0.85f, 0.1f)  },
+        { "tomato",     new Color(0.9f, 0.2f,  0.1f)  },
+        { "potato",     new Color(0.7f, 0.55f, 0.2f)  },
+        { "strawberry", new Color(0.9f, 0.15f, 0.25f) },
+        { "corn",       new Color(1.0f, 0.9f,  0.2f)  },
+        { "pumpkin",    new Color(0.9f, 0.45f, 0.05f) },
+        { "grapes",     new Color(0.5f, 0.1f,  0.7f)  },
+        { "chilli",     new Color(0.9f, 0.1f,  0.05f) },
+        { "lavender",   new Color(0.7f, 0.5f,  0.9f)  },
+    };
 
     private void Awake()
     {
@@ -178,14 +197,63 @@ public class HUDManager : MonoBehaviour
 
     public void ShowSelectedCrop(CropData crop)
     {
+        currentSelectedCrop = crop;
         if (selectedCropPanel == null) return;
+
         if (crop == null)
         {
             selectedCropPanel.SetActive(false);
+            StopCoroutine("TickSelectedCropStats");
             return;
         }
+
         selectedCropPanel.SetActive(true);
-        if (selectedCropText)
-            selectedCropText.text = $"{crop.CropName}\n<size=13><color=#aaaaaa>Seed: {crop.SeedCost}g</color></size>";
+
+        if (selectedCropNameText)
+            selectedCropNameText.text = crop.CropName;
+
+        if (selectedCropSwatch)
+            selectedCropSwatch.color = CropColors.TryGetValue(crop.CropId, out Color c)
+                ? c : new Color(0.5f, 0.8f, 0.5f);
+
+        UpdateSelectedCropStats();
+        StopCoroutine("TickSelectedCropStats");
+        StartCoroutine("TickSelectedCropStats");
+    }
+
+    private System.Collections.IEnumerator TickSelectedCropStats()
+    {
+        while (currentSelectedCrop != null)
+        {
+            UpdateSelectedCropStats();
+            yield return new WaitForSeconds(0.5f);
+        }
+    }
+
+    private void UpdateSelectedCropStats()
+    {
+        if (currentSelectedCrop == null || selectedCropStatsText == null) return;
+        var fm = FarmingManager.Instance;
+        if (fm == null) { selectedCropStatsText.text = ""; return; }
+
+        int count = fm.GetPlantedCount(currentSelectedCrop.CropId);
+        float nearest = fm.GetNearestRemainingSeconds(currentSelectedCrop.CropId);
+
+        if (count == 0)
+        {
+            selectedCropStatsText.text = "None planted";
+            return;
+        }
+
+        string countStr = count == 1 ? "1 planted" : $"{count} planted";
+        string timerStr = nearest <= 0f ? ", Ready!" : $", Next: {FormatTime(nearest)}";
+        selectedCropStatsText.text = countStr + timerStr;
+    }
+
+    private static string FormatTime(float seconds)
+    {
+        int m = (int)seconds / 60;
+        int s = (int)seconds % 60;
+        return m > 0 ? $"{m}m {s:D2}s" : $"{s}s";
     }
 }

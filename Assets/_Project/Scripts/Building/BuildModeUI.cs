@@ -15,6 +15,7 @@ public class BuildModeUI : MonoBehaviour
     [SerializeField] private Transform itemGrid;
     [SerializeField] private BuildingDatabase database;
     private bool isOpen = false;
+    public bool IsOpen => isOpen;
 
     private void Awake()
     {
