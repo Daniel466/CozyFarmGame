@@ -167,7 +167,7 @@ public class ShopUI : MonoBehaviour
         if (interaction != null)
         {
             interaction.SetSelectedCrop(crop);
-            HUDManager.Instance?.ShowNotification($"{crop.CropName} selected! Left-click a tilled tile to plant.");
+            HUDManager.Instance?.ShowNotification($"{crop.CropName} selected!");
             HUDManager.Instance?.UpdateToolIndicator($"{crop.CropName}");
         }
         CloseShop();

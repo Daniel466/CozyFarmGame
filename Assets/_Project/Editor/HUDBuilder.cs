@@ -156,13 +156,13 @@ public class HUDBuilder : Editor
 
         // Notification panel
         var notifPanel = CreatePanel("NotificationPanel", hudCanvas.transform,
-            new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0, 126), new Vector2(500, 50),
-            new Color(0.1f, 0.1f, 0.1f, 0.85f));
+            new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0, 120), new Vector2(420, 32),
+            new Color(0.05f, 0.05f, 0.05f, 0.72f));
         notifPanel.SetActive(false);
 
         var notifText = CreateText("NotificationText", notifPanel.transform,
             Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero,
-            "", 20, Color.white, TextAlignmentOptions.Center);
+            "", 14, Color.white, TextAlignmentOptions.Center);
 
         // Level up panel
         var levelUpPanel = CreatePanel("LevelUpPanel", hudCanvas.transform,

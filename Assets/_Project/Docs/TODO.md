@@ -10,25 +10,6 @@ Last updated: 2026-03-23
 
 ## Up Next (Priority Order)
 
-### Session Goal: TileInfoUI
-- [ ] Contextual hover panel showing crop name, grow time, planted date, input hints
-- [ ] Replaces or augments bottom-centre hint pill
-
-### Session Goal: DOTween Juice
-- [ ] Install DOTween from Asset Store
-- [ ] Crop pop/bounce on plant (transform.DOPunchScale)
-- [ ] Crop pop on harvest
-- [ ] Pop on growth stage change
-
-### Session Goal: Offline Growth
-- [ ] Save DateTime.UtcNow on quit/save
-- [ ] On load, calculate elapsed time and advance growth progress
-- [ ] Cap at max growth (ready, not over-grown)
-
-### Canvas Scale Fix
-- [ ] Investigate HUD Canvas showing scale (2,2,1) on HiDPI/Retina displays
-- [ ] Permanent fix so HUD is always correctly sized (CanvasScaler issue)
-
 ### Functional Buildings
 - [ ] Watering Well — auto-waters adjacent 3x3 tiles once per growth cycle
 - [ ] Replace coloured box placeholders with polyperfect models (Barn, Well, Greenhouse, Market Stall)
@@ -37,11 +18,8 @@ Last updated: 2026-03-23
 - [ ] Find better model matches: Potato, Strawberry, Chilli, Lavender
 - [ ] Cluster B flower beds (8 more, Z approx -5)
 
----
-
-## Polish
+### Polish
 - [ ] UI icons using TMP Sprite Asset
-- [ ] Crop growth % indicator on HUD per tile
 - [ ] Crop bloom/glow when ready to harvest
 - [ ] Decorative props: paths, lanterns, fences between beds
 - [ ] Shop/inventory icons
@@ -61,10 +39,12 @@ Last updated: 2026-03-23
 - [x] Selected crop panel top-left (Farm Together 2 style) - swatch, name, count, timer
 - [x] Tool indicator (Farming Mode / Planting: X / Watering Can / Build Mode)
 - [x] Contextual hint pill bottom-centre (per tile state, ASCII separators)
+- [x] TileInfoUI — contextual hover panel (crop name, stage, timer, water status, progress bar, action hints, DOTween slide in/out)
 - [x] Controls overlay panel (H to toggle)
 - [x] XP and 15 level progression
 - [x] Economy and coins (150 starting)
 - [x] Save/load system (JSON)
+- [x] Offline crop growth — DateTime save/load, ApplyOfflineGrowth, notification on return
 - [x] Music, SFX and ambience - all clips assigned and working
 - [x] Polyperfect farm scene integrated
 - [x] Animated low-poly character (walk/idle)
@@ -82,6 +62,13 @@ Last updated: 2026-03-23
 - [x] Kenney Future SDF font - no box characters
 - [x] Balance progression curve (150 starting coins, rebalanced XP)
 - [x] Main Menu, Pause Menu, Settings UI
+- [x] PauseMenuUI on dedicated canvas (sortingOrder 100, CanvasScaler)
+- [x] SettingsUI sliders — fill rect anchors fixed (no green blocks)
+- [x] Crop Growth Speed slider in Settings (1-60x range)
+- [x] DOTween juice — crop pop on plant (OutBack), water punch, harvest scale-up then squish
+- [x] Harvest particles — larger size (0.2-0.5), faster speed, more visible
+- [x] Notification resized to hint-pill style (420x32, 14pt, subtle dark bg)
+- [x] ShopUI stale copy fixed ("selected!" only, no tilled tile copy)
 - [x] Editor tools (FarmSceneSetup, HUDBuilder, CropAssetGenerator, BuildingAssetGenerator)
 - [x] CozyFarm Toolkit window (Tools > CozyFarm > Open Toolkit)
 - [x] Flower bed clicking fixed (Ignore Raycast layer)

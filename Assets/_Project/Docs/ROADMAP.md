@@ -4,40 +4,31 @@
 ---
 
 ## Current Status
-Core gameplay loop is complete. Milestone 3 (Alpha) in progress.
+Core gameplay loop complete. Milestone 3 (Alpha) in progress.
 Mac and Windows builds playtested — feedback: core loop clear, controls confusing.
-Focus: TileInfoUI, DOTween juice, offline growth, then functional buildings.
+UI polish sprint complete (TileInfoUI, DOTween, offline growth, notification redesign).
+Focus: functional buildings (Watering Well), then building models and animations.
 
 ---
 
 ## Priority 1 — Next Session
 
-### 1. TileInfoUI
-- [ ] Contextual hover panel showing crop status, grow time, input hints
-- [ ] Replaces or augments the current bottom-centre hint pill
-
-### 2. DOTween Juice
-- [ ] Install DOTween from Asset Store
-- [ ] Crop pop/bounce effect on plant, harvest, growth stage change
-- [ ] Scale punch: transform.DOPunchScale()
-
-### 3. Canvas Scale Fix
-- [ ] Investigate HUD Canvas showing scale (2,2,1) on some displays
-- [ ] Root cause: CanvasScaler ScaleWithScreenSize on HiDPI/Retina
-- [ ] Permanent fix so HUD is always correctly sized
-
-### 4. Offline Crop Growth
-- [ ] Save DateTime.UtcNow on quit/save
-- [ ] On load, calculate elapsed time and advance growth progress
-- [ ] Cap at max growth (ready to harvest, not over-grown)
-
-### 5. Watering Well (Functional Building)
+### 1. Watering Well (Functional Building)
 - [ ] Well placed on farm auto-waters adjacent 3x3 tiles once per growth cycle
 - [ ] First functional building — unblocks barn/greenhouse/market stall pattern
 
-### 6. Building Placeholder Models
+### 2. Building Placeholder Models
 - [ ] Replace coloured box placeholders with polyperfect models
 - [ ] Barn, Well, Greenhouse, Market Stall
+
+### 3. Mixamo Animations (DEV-48)
+- [ ] Harvest animation
+- [ ] Water animation
+- [ ] Plant animation
+
+### 4. Art Pass
+- [ ] Better model matches: Potato, Strawberry, Chilli, Lavender
+- [ ] Cluster B flower beds (8 more, Z approx -5)
 
 ---
 
@@ -45,16 +36,11 @@ Focus: TileInfoUI, DOTween juice, offline growth, then functional buildings.
 
 ### Visual
 - [ ] Crop bloom / glow when ready to harvest
-- [ ] Better model matches: Potato, Strawberry, Chilli, Lavender
 - [ ] Decorative props: paths, lanterns, fences between beds
 
 ### UI
 - [ ] Shop / inventory icons (TMP Sprite Assets)
 - [ ] HUD crop growth % indicator per tile
-
-### Map
-- [ ] Add Cluster B flower beds (8 more, Z approx -5)
-- [ ] Mixamo animations for harvest/water/plant (DEV-48)
 
 ---
 
@@ -88,6 +74,7 @@ Focus: TileInfoUI, DOTween juice, offline growth, then functional buildings.
 - [x] XP and 15 level progression system
 - [x] Economy and coins (150 starting)
 - [x] Save/load system (JSON)
+- [x] Offline crop growth — DateTime save/load, ApplyOfflineGrowth, return notification
 - [x] FarmingManager query methods: GetPlantedCount(), GetNearestRemainingSeconds()
 - [x] BuildModeUI.IsOpen public property
 
@@ -111,16 +98,20 @@ Focus: TileInfoUI, DOTween juice, offline growth, then functional buildings.
 - [x] Coins text (top-centre)
 - [x] Level, XP bar, Level Up panel (top-right)
 - [x] Contextual hint pill (bottom-centre, changes per tile state, ASCII separators)
+- [x] TileInfoUI — bottom-right hover panel with crop name, stage, timer, water status, progress bar, action hints; DOTween slide in/out
 - [x] Controls overlay panel (H to toggle, visible by default)
 - [x] Selected crop panel — Farm Together 2 style (top-left, 280x100)
   - Colour swatch, crop name, planted count, countdown timer
   - Live 0.5s refresh via coroutine in HUDManager
 - [x] Tool indicator: Farming Mode / Planting: [Crop] / Watering Can / Build Mode
-- [x] Notification system (timed pop-ups)
+- [x] Notification system — hint-pill style (420x32, 14pt, subtle dark bg)
 - [x] Shop UI (scrollable, buy seeds, coin display)
 - [x] Inventory UI (colour swatches, per-item sell, Sell All, slots text)
 - [x] Build Mode UI (catalogue with unlock levels)
 - [x] All UI strings ASCII-only (no pipes, em dashes, or Unicode)
+- [x] PauseMenuUI on dedicated canvas (sortingOrder 100, CanvasScaler)
+- [x] SettingsUI sliders — fill rect anchors fixed (no green blocks)
+- [x] Crop Growth Speed debug slider in Settings (1-60x)
 
 ### Visual / Art
 - [x] Polyperfect 3D crop models (all 10 crops assigned)
@@ -128,7 +119,12 @@ Focus: TileInfoUI, DOTween juice, offline growth, then functional buildings.
 - [x] Hollow square hover highlight (4-edge outline, yellow=planted, orange=ready, green=empty)
 - [x] Blue watered tile marker (scale 1.2, alpha 0.12)
 - [x] TileMarker stacking bug fixed (explicit destroy before spawn)
-- [x] Harvest/water particle effects
+- [x] Harvest/water particle effects — larger, more visible (size 0.2-0.5, speed 2-6)
+
+### DOTween Juice
+- [x] Crop pop on plant — DOScale from 0 to full scale, Ease.OutBack
+- [x] Crop punch on water — DOPunchScale (0.25f, 0.3s, 4 vibrato)
+- [x] Harvest pop-out — scale UP to 1.3x then squish to zero (DOTween.Sequence)
 
 ### Audio
 - [x] AudioManager (music + SFX, singleton, DontDestroyOnLoad)
