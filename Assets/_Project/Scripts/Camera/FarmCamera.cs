@@ -35,6 +35,16 @@ public class FarmCamera : MonoBehaviour
     [SerializeField] private float scrollSensitivity = 3f;
     [SerializeField] private float zoomDamping     = 0.15f;
 
+    [Header("C-Key Zoom Presets")]
+    // Close / Mid / Far — C key cycles through these
+    private static readonly float[] PresetDistances = { 8f,  20f, 35f };
+    private static readonly float[] PresetPitches   = { 40f, 55f, 68f };
+    private int presetIndex = 1; // start at Mid
+
+    [Header("Auto-Follow")]
+    [SerializeField] private bool  autoFollow      = true;
+    [SerializeField] private float autoFollowSpeed = 20f;  // degrees/sec nudge toward behind-player
+
     [Header("Collision")]
     [SerializeField] private LayerMask collisionMask = ~0;
     [SerializeField] private float collisionRadius   = 0.35f;
@@ -48,6 +58,9 @@ public class FarmCamera : MonoBehaviour
     // ── Middle-mouse drag ──────────────────────────────────────────────────────
     private bool  isDragging;
     private Vector2 lastMousePos;
+
+    // ── Auto-follow cooldown — suppress after manual rotation ─────────────────
+    private float autoFollowCooldown;
 
     // ── Init guard — snap on first frame target is available ──────────────────
     private bool ready;
@@ -71,6 +84,8 @@ public class FarmCamera : MonoBehaviour
         HandleMouseDrag();
         HandleKeyRotate();
         HandleScroll();
+        HandlePresetCycle();
+        HandleAutoFollow();
     }
 
     private void LateUpdate()
@@ -136,12 +151,13 @@ public class FarmCamera : MonoBehaviour
         targetYaw   += delta.x * mouseSensitivity;
         targetPitch -= delta.y * mouseSensitivity; // drag up → less top-down
         targetPitch  = Mathf.Clamp(targetPitch, minPitch, maxPitch);
+        autoFollowCooldown = 2f;
     }
 
     private void HandleKeyRotate()
     {
-        if (Input.GetKey(KeyCode.Q)) targetYaw -= keyRotateSpeed * Time.deltaTime;
-        if (Input.GetKey(KeyCode.E)) targetYaw += keyRotateSpeed * Time.deltaTime;
+        if (Input.GetKey(KeyCode.Q)) { targetYaw -= keyRotateSpeed * Time.deltaTime; autoFollowCooldown = 2f; }
+        if (Input.GetKey(KeyCode.E)) { targetYaw += keyRotateSpeed * Time.deltaTime; autoFollowCooldown = 2f; }
     }
 
     private void HandleScroll()
@@ -149,6 +165,32 @@ public class FarmCamera : MonoBehaviour
         float scroll = Input.GetAxis("Mouse ScrollWheel");
         if (scroll == 0f) return;
         targetDist = Mathf.Clamp(targetDist - scroll * scrollSensitivity * 10f, minDistance, maxDistance);
+
+        // Dynamic pitch — tilt down as you zoom out, flatten as you zoom in
+        float zoomPercent = Mathf.InverseLerp(minDistance, maxDistance, targetDist);
+        targetPitch = Mathf.Lerp(minPitch, maxPitch, zoomPercent);
+    }
+
+    private void HandleAutoFollow()
+    {
+        if (!autoFollow || target == null) return;
+        if (autoFollowCooldown > 0f) { autoFollowCooldown -= Time.deltaTime; return; }
+
+        // Only auto-follow when pressing W (moving away from camera)
+        float v = Input.GetAxisRaw("Vertical");
+        if (v < 0.1f) return;
+
+        // Camera sits behind the player — opposite of player's facing yaw
+        float behindYaw = target.eulerAngles.y + 180f;
+        targetYaw = Mathf.MoveTowardsAngle(targetYaw, behindYaw, autoFollowSpeed * Time.deltaTime);
+    }
+
+    private void HandlePresetCycle()
+    {
+        if (!Input.GetKeyDown(KeyCode.C)) return;
+        presetIndex = (presetIndex + 1) % PresetDistances.Length;
+        targetDist  = PresetDistances[presetIndex];
+        targetPitch = Mathf.Clamp(PresetPitches[presetIndex], minPitch, maxPitch);
     }
 
     // ── Maths ──────────────────────────────────────────────────────────────────
@@ -170,7 +212,7 @@ public class FarmCamera : MonoBehaviour
     private Vector3 CollisionAdjusted(Vector3 pivotPos, Vector3 offset)
     {
         Vector3 desiredPos = pivotPos + offset;
-        Vector3 origin     = pivotPos + Vector3.up * 2.5f;   // above head, outside character collider
+        Vector3 origin     = pivotPos + Vector3.up * 1.5f;   // slightly above head, better in tight spaces
         Vector3 dir        = (desiredPos - origin).normalized;
         float   maxDist    = Vector3.Distance(origin, desiredPos);
 

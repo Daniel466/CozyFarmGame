@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private float rotationSpeed = 10f;
+    [SerializeField] private float rotationSpeed = 20f;
     [SerializeField] private float gravity = -9.81f;
 
     [Header("Character Model")]
@@ -60,16 +60,14 @@ public class PlayerController : MonoBehaviour
         Camera mainCam = Camera.main;
         if (mainCam == null) return;
 
-        // Use camera yaw only — ignores pitch so zoom level doesn't affect movement direction
-        float camYaw = mainCam.transform.eulerAngles.y;
-        Vector3 camForward = new Vector3(Mathf.Sin(camYaw * Mathf.Deg2Rad), 0f, Mathf.Cos(camYaw * Mathf.Deg2Rad));
-        Vector3 camRight   = new Vector3(Mathf.Cos(camYaw * Mathf.Deg2Rad), 0f, -Mathf.Sin(camYaw * Mathf.Deg2Rad));
+        // Camera-relative movement — flatten camera axes to ground plane
+        Vector3 camForward = mainCam.transform.forward; camForward.y = 0f; camForward.Normalize();
+        Vector3 camRight   = mainCam.transform.right;   camRight.y   = 0f; camRight.Normalize();
         Vector3 moveDir = (camForward * v + camRight * h).normalized;
         bool isMoving = moveDir.magnitude > 0.1f;
 
         if (isMoving)
         {
-            controller.Move(moveDir * moveSpeed * Time.deltaTime);
             Quaternion targetRot = Quaternion.LookRotation(moveDir);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, rotationSpeed * Time.deltaTime);
         }
@@ -78,7 +76,10 @@ public class PlayerController : MonoBehaviour
         if (controller.isGrounded && velocity.y < 0f)
             velocity.y = -2f;
         velocity.y += gravity * Time.deltaTime;
-        controller.Move(velocity * Time.deltaTime);
+
+        // Single Move call — prevents stutter from two separate moves per frame
+        Vector3 finalFrameMove = (moveDir * moveSpeed) + velocity;
+        controller.Move(finalFrameMove * Time.deltaTime);
 
         // Swap animator controller on state change
         if (animator != null && isMoving != wasMoving)

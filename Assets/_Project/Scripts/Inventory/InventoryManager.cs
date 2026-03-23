@@ -63,6 +63,18 @@ public class InventoryManager : MonoBehaviour
         OnInventoryChanged?.Invoke();
     }
 
+    /// <summary>Sells all of one crop type. Returns coins earned.</summary>
+    public int SellItem(string cropId)
+    {
+        if (!items.TryGetValue(cropId, out InventoryItem item)) return 0;
+        int earned = item.crop.SellValue * item.quantity;
+        GameManager.Instance.Economy.AddCoins(earned);
+        GameManager.Instance.Progression.AddXP(Mathf.FloorToInt(earned / 10f));
+        items.Remove(cropId);
+        OnInventoryChanged?.Invoke();
+        return earned;
+    }
+
     // Sell all crops in inventory
     public int SellAll()
     {

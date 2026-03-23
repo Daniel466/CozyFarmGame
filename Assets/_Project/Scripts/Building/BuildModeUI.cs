@@ -59,6 +59,7 @@ public class BuildModeUI : MonoBehaviour
 
         foreach (var building in all)
         {
+            if (building == null) continue;
             bool unlocked = building.UnlockLevel <= playerLevel;
 
             // Create item button

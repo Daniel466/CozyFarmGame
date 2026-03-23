@@ -23,6 +23,9 @@ public class HUDManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI levelUpText;
     [SerializeField] private float levelUpDisplayTime = 3f;
 
+    [Header("Controls Overlay")]
+    [SerializeField] private GameObject controlsPanel;
+
     [Header("Selected Crop")]
     [SerializeField] private GameObject selectedCropPanel;
     [SerializeField] private TextMeshProUGUI selectedCropText;
@@ -48,7 +51,14 @@ public class HUDManager : MonoBehaviour
         // Hide panels first (safe before GameManager is ready)
         if (levelUpPanel) levelUpPanel.SetActive(false);
         if (notificationPanel) notificationPanel.SetActive(false);
+        if (controlsPanel) controlsPanel.SetActive(true); // visible by default
         SetContextHint("B: Shop  |  Tab: Inventory  |  G: Build");
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.H) && controlsPanel != null)
+            controlsPanel.SetActive(!controlsPanel.activeSelf);
     }
 
     private void OnEnable()

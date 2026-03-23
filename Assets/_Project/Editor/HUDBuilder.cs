@@ -82,6 +82,29 @@ public class HUDBuilder : Editor
             new Vector2(1, 1), new Vector2(1, 1), new Vector2(-120, -105), new Vector2(220, 30),
             "0 XP to next level", 16, new Color(0.8f, 0.8f, 0.8f), TextAlignmentOptions.Right);
 
+        // Controls overlay — bottom left, toggleable with H
+        var controlsPanel = CreatePanel("ControlsPanel", hudCanvas.transform,
+            new Vector2(0, 0), new Vector2(0, 0), new Vector2(140, 140), new Vector2(222, 228),
+            new Color(0.04f, 0.04f, 0.04f, 0.80f));
+
+        CreateText("ControlsText", controlsPanel.transform,
+            Vector2.zero, Vector2.one, new Vector2(12, 10), new Vector2(-12, -10),
+            "<size=14><b>CONTROLS</b></size>\n" +
+            "<size=12><color=#cccccc>" +
+            "WASD - Move\n" +
+            "Left Click - Plant / Harvest\n" +
+            "Right Click - Water\n" +
+            "Scroll - Zoom\n" +
+            "C - Cycle Zoom Preset\n" +
+            "Q / E - Rotate Camera\n" +
+            "B - Shop\n" +
+            "Tab - Inventory\n" +
+            "G - Build Mode\n" +
+            "Esc - Pause\n" +
+            "H - Hide Controls" +
+            "</color></size>",
+            13, Color.white, TextAlignmentOptions.Left);
+
         // Selected crop indicator — bottom left
         var selectedCropPanel = CreatePanel("SelectedCropPanel", hudCanvas.transform,
             new Vector2(0, 0), new Vector2(0, 0), new Vector2(110, 68), new Vector2(200, 52),
@@ -143,6 +166,7 @@ public class HUDBuilder : Editor
         so.FindProperty("notificationText").objectReferenceValue = notifText;
         so.FindProperty("toolText").objectReferenceValue = toolText;
         so.FindProperty("contextHintText").objectReferenceValue = contextHintText;
+        so.FindProperty("controlsPanel").objectReferenceValue = controlsPanel;
         so.FindProperty("selectedCropPanel").objectReferenceValue = selectedCropPanel;
         so.FindProperty("selectedCropText").objectReferenceValue = selectedCropText;
         so.ApplyModifiedProperties();
@@ -284,47 +308,57 @@ public class HUDBuilder : Editor
             new Color(0f, 0f, 0f, 0.75f));
         invPanel.SetActive(false);
 
-        // Window (centred)
+        // Window (centred) — warm dark brown matching shop
         var invWindow = CreatePanelGO("InventoryWindow", invPanel.transform,
             new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),
-            Vector2.zero, new Vector2(700f, 500f),
-            new Color(0.15f, 0.12f, 0.08f, 0.97f));
+            Vector2.zero, new Vector2(700f, 560f),
+            new Color(0.12f, 0.1f, 0.07f, 0.97f));
 
-        CreateText("InventoryTitle", invWindow.transform,
+        // Header bar accent
+        var headerBar = CreatePanelGO("HeaderBar", invWindow.transform,
             new Vector2(0f, 1f), new Vector2(1f, 1f),
-            new Vector2(0f, -30f), new Vector2(0f, 50f),
-            "Inventory", 32, new Color(1f, 0.9f, 0.6f), TextAlignmentOptions.Center);
+            new Vector2(0f, -35f), new Vector2(0f, 70f),
+            new Color(0.09f, 0.07f, 0.04f, 1f));
+
+        CreateText("InventoryTitle", headerBar.transform,
+            Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero,
+            "INVENTORY", 30, new Color(1f, 0.85f, 0.3f), TextAlignmentOptions.Center);
 
         var slotsText = CreateText("SlotsText", invWindow.transform,
             new Vector2(0f, 1f), new Vector2(1f, 1f),
-            new Vector2(0f, -70f), new Vector2(0f, 30f),
-            "Slots: 0/20", 18, new Color(0.7f, 0.7f, 0.7f), TextAlignmentOptions.Center);
+            new Vector2(0f, -80f), new Vector2(0f, 26f),
+            "0/20 slots", 15, new Color(0.55f, 0.55f, 0.55f), TextAlignmentOptions.Center);
 
+        // Scroll area — leaves room for header (top), sell-all button (bottom), close hint
         var content = BuildScrollView(invWindow.transform,
-            new Vector2(20f, 0f), new Vector2(-20f, 0f), useGrid: false,
-            anchorMin: new Vector2(0f, 0.15f), anchorMax: new Vector2(1f, 0.85f));
+            new Vector2(16f, 0f), new Vector2(-16f, 0f), useGrid: false,
+            anchorMin: new Vector2(0f, 0.18f), anchorMax: new Vector2(1f, 0.84f));
 
-        // Sell All button
+        // Sell All button — prominent cozy green
         var sellBtnGO = new GameObject("SellAllButton");
         sellBtnGO.transform.SetParent(invWindow.transform, false);
         var sellBtnRect = sellBtnGO.AddComponent<RectTransform>();
         sellBtnRect.anchorMin = new Vector2(0.5f, 0f);
         sellBtnRect.anchorMax = new Vector2(0.5f, 0f);
-        sellBtnRect.anchoredPosition = new Vector2(0f, 40f);
-        sellBtnRect.sizeDelta = new Vector2(250f, 55f);
+        sellBtnRect.anchoredPosition = new Vector2(0f, 52f);
+        sellBtnRect.sizeDelta = new Vector2(320f, 62f);
         var sellBtnImg = sellBtnGO.AddComponent<Image>();
-        sellBtnImg.color = new Color(0.3f, 0.7f, 0.3f);
+        sellBtnImg.color = new Color(0.2f, 0.55f, 0.2f);
         var sellBtn = sellBtnGO.AddComponent<Button>();
         sellBtn.targetGraphic = sellBtnImg;
+        var sellColors = sellBtn.colors;
+        sellColors.highlightedColor = new Color(0.28f, 0.72f, 0.28f);
+        sellColors.pressedColor     = new Color(0.14f, 0.42f, 0.14f);
+        sellBtn.colors = sellColors;
 
         var sellBtnText = CreateText("SellBtnText", sellBtnGO.transform,
             Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero,
-            "Sell All", 24, Color.white, TextAlignmentOptions.Center);
+            "Sell All", 26, Color.white, TextAlignmentOptions.Center);
 
         CreateText("CloseHint", invWindow.transform,
             new Vector2(0f, 0f), new Vector2(1f, 0f),
-            new Vector2(0f, 15f), new Vector2(0f, 25f),
-            "Press TAB to close", 16, new Color(0.6f, 0.6f, 0.6f), TextAlignmentOptions.Center);
+            new Vector2(0f, 16f), new Vector2(0f, 24f),
+            "Press TAB to close", 14, new Color(0.5f, 0.5f, 0.5f), TextAlignmentOptions.Center);
 
         // Add InventoryUI component and wire via SerializedObject
         var invUI = canvasGO.AddComponent<InventoryUI>();
