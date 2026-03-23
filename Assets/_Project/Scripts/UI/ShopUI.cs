@@ -102,14 +102,23 @@ public class ShopUI : MonoBehaviour
             hlg.childAlignment = TextAnchor.MiddleLeft;
             hlg.childForceExpandHeight = true;
 
-            // Colour swatch
+            // Icon / colour swatch
             GameObject swatch = new GameObject("Swatch");
             swatch.transform.SetParent(row.transform, false);
             var swatchImg = swatch.AddComponent<Image>();
-            swatchImg.color = unlocked ? GetCropColour(crop.CropId) : new Color(0.3f, 0.3f, 0.3f);
+            if (crop.Icon != null)
+            {
+                swatchImg.sprite = crop.Icon;
+                swatchImg.color = unlocked ? Color.white : new Color(1f, 1f, 1f, 0.4f);
+                swatchImg.preserveAspect = true;
+            }
+            else
+            {
+                swatchImg.color = unlocked ? GetCropColour(crop.CropId) : new Color(0.3f, 0.3f, 0.3f);
+            }
             var swatchLE = swatch.AddComponent<LayoutElement>();
-            swatchLE.preferredWidth = 36f;
-            swatchLE.preferredHeight = 36f;
+            swatchLE.preferredWidth = 48f;
+            swatchLE.preferredHeight = 48f;
             swatchLE.flexibleWidth = 0f;
 
             // Info column

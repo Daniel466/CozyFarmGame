@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CropData
   cropId: sunflower
   cropName: Sunflower
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 730f70416325d489aacc417ebfb417aa, type: 3}
   unlockLevel: 1
   seedCost: 8
   sellValue: 15

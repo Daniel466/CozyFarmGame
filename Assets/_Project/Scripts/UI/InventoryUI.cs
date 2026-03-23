@@ -99,17 +99,26 @@ public class InventoryUI : MonoBehaviour
             hlg.childForceExpandHeight = false;
             hlg.childForceExpandWidth = false;
 
-            // Colour swatch
-            Color cropCol = CropColors.TryGetValue(item.crop.CropId, out Color c) ? c : new Color(0.5f, 0.8f, 0.5f);
+            // Icon / colour swatch
             var swatch = new GameObject("Swatch");
             swatch.transform.SetParent(row.transform, false);
             var swatchImg = swatch.AddComponent<Image>();
-            swatchImg.color = cropCol;
+            if (item.crop.Icon != null)
+            {
+                swatchImg.sprite = item.crop.Icon;
+                swatchImg.color = Color.white;
+                swatchImg.preserveAspect = true;
+            }
+            else
+            {
+                Color cropCol = CropColors.TryGetValue(item.crop.CropId, out Color c) ? c : new Color(0.5f, 0.8f, 0.5f);
+                swatchImg.color = cropCol;
+            }
             var swatchLE = swatch.AddComponent<LayoutElement>();
-            swatchLE.minWidth = 36f;
-            swatchLE.preferredWidth = 36f;
-            swatchLE.minHeight = 36f;
-            swatchLE.preferredHeight = 36f;
+            swatchLE.minWidth = 48f;
+            swatchLE.preferredWidth = 48f;
+            swatchLE.minHeight = 48f;
+            swatchLE.preferredHeight = 48f;
 
             // Crop name
             MakeText(row.transform, item.crop.CropName, 20f, Color.white, TextAlignmentOptions.Left,

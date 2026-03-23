@@ -304,16 +304,16 @@ public class FarmingManager : MonoBehaviour
 
     }
 
-    public bool WaterTile(Vector2Int coord)
+    /// <summary>
+    /// Waters a planted tile. playEffects=false is used by the Watering Well building
+    /// to avoid audio/particle spam when watering multiple tiles at once.
+    /// </summary>
+    public bool WaterTile(Vector2Int coord, bool playEffects = true)
     {
         FarmTile tile = grid.GetTile(coord);
         if (tile == null || !tile.IsPlanted || tile.IsWatered) return false;
 
-        // Cache crop reference BEFORE watering (tile state changes after Water())
-        int xp = tile.PlantedCrop?.WaterXP ?? 1;
-
         tile.Water();
-        AudioManager.Instance?.PlayWater();
 
         // Always use grid.GridToWorld so Grid Origin is respected
         Vector3 worldPos = grid.GridToWorld(coord);
@@ -327,21 +327,26 @@ public class FarmingManager : MonoBehaviour
 
         SpawnTileMarker(coord, worldPos, new Color(0.15f, 0.35f, 0.9f, 0.12f));
 
-        // Crop bounce
-        if (cropVisuals.TryGetValue(coord, out GameObject visual) && visual != null)
-            visual.GetComponent<CropGrowthVisual>()?.PlayWaterBounce();
-
-        // Particles — clone plays once then self-destructs
-        if (waterParticles != null)
+        if (playEffects)
         {
-            var ps = Instantiate(waterParticles, worldPos + Vector3.up * 0.5f, Quaternion.identity);
-            ps.gameObject.SetActive(true);
-            ps.Play();
-            Destroy(ps.gameObject, 2f); // fallback: force destroy after 2s regardless
-        }
+            AudioManager.Instance?.PlayWater();
 
-        // Award XP using cached value
-        GameManager.Instance.Progression.AddXP(xp);
+            // Crop bounce
+            if (cropVisuals.TryGetValue(coord, out GameObject visual) && visual != null)
+                visual.GetComponent<CropGrowthVisual>()?.PlayWaterBounce();
+
+            // Particles — clone plays once then self-destructs
+            if (waterParticles != null)
+            {
+                var ps = Instantiate(waterParticles, worldPos + Vector3.up * 0.5f, Quaternion.identity);
+                ps.gameObject.SetActive(true);
+                ps.Play();
+                Destroy(ps.gameObject, 2f);
+            }
+
+            // Award XP using cached value
+            GameManager.Instance.Progression.AddXP(tile.PlantedCrop?.WaterXP ?? 1);
+        }
 
         return true;
     }

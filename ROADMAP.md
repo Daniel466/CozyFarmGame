@@ -14,6 +14,10 @@ Last updated: 2026-03-23
 - [x] ProgressionManager (XP thresholds, level gating)
 - [x] Save / Load system (fully working)
 - [x] BuildingManager + BuildingData ScriptableObjects
+- [x] Offline crop growth — DateTime save/load, ApplyOfflineGrowth, return notification
+- [x] Watering Well — WateringWellComponent auto-waters 3x3 radius on timer; polyperfect model assigned
+- [x] IconRenderer editor tool — 128x128 PNG per asset, TMP Sprite Asset atlas (Tools > CozyFarm > Render Icons)
+- [x] Build mode isolates farm — hover highlight hidden, plant/water/harvest blocked while building
 
 ### Camera
 - [x] Farm Together style orbit camera (FarmCamera.cs)
@@ -36,15 +40,19 @@ Last updated: 2026-03-23
 - [x] Coins text (top-centre)
 - [x] Level, XP bar, Level Up panel (top-right)
 - [x] Contextual hint pill (bottom-centre, changes per tile state, ASCII / separators)
+- [x] TileInfoUI — bottom-right hover panel with crop name, stage, timer, water status, progress bar, action hints; DOTween slide in/out
 - [x] Controls overlay panel (H to toggle, visible by default)
 - [x] Selected crop panel — Farm Together 2 style (top-left)
   - Colour swatch, crop name, planted count, countdown timer
   - Live 0.5s refresh via coroutine
 - [x] Tool indicator: Farming Mode / Planting: [Crop] / Watering Can / Build Mode
-- [x] Notification system (timed pop-ups)
+- [x] Notification system — hint-pill style (420x32, 14pt, subtle dark bg)
 - [x] Shop UI (scrollable, buy seeds, coin display)
-- [x] Inventory UI (colour swatches, per-item sell, Sell All, slots text)
-- [x] Build Mode UI (catalogue with unlock levels)
+- [x] Inventory UI (sprite icons with colour fallback, per-item sell, Sell All, slots text)
+- [x] Build Mode UI (sprite icons with colour fallback, catalogue with unlock levels)
+- [x] Shop UI (sprite icons with colour fallback, buy seeds)
+- [x] PauseMenuUI on dedicated canvas (sortingOrder 100, CanvasScaler)
+- [x] SettingsUI sliders fixed (no green blocks), Crop Growth Speed slider (1-60x)
 
 ### Visual / Art
 - [x] Polyperfect 3D crop models (all 10 crops assigned)
@@ -52,7 +60,12 @@ Last updated: 2026-03-23
 - [x] Hollow square hover highlight (4-edge outline, yellow=planted, orange=ready, green=empty)
 - [x] Blue watered tile marker (scale 1.2, alpha 0.12)
 - [x] TileMarker stacking bug fixed
-- [x] Harvest/water particle effects
+- [x] Harvest/water particle effects — larger, more visible (size 0.2-0.5, speed 2-6)
+
+### DOTween Juice
+- [x] Crop pop on plant — DOScale from 0, Ease.OutBack
+- [x] Crop punch on water — DOPunchScale (0.25f, 0.3s, 4 vibrato)
+- [x] Harvest pop-out — scale UP to 1.3x then squish to zero (DOTween.Sequence)
 
 ### Audio
 - [x] AudioManager (music + SFX, singleton)
@@ -74,34 +87,21 @@ Last updated: 2026-03-23
 
 ---
 
-## TOMORROW — Priority Order
+## NEXT — Priority Order
 
-### 1. TileInfoUI
-- [ ] Contextual hover panel showing crop status, grow time, input hints
-- [ ] Replaces or augments the current bottom-centre hint pill
+### 1. Run Icon Pipeline
+- [ ] Run Tools > CozyFarm > Render Icons to generate PNGs and assign to all assets
 
-### 2. DOTween
-- [ ] Install DOTween from Asset Store
-- [ ] Crop pop/bounce effect on plant, harvest, growth stage change
-- [ ] Scale punch: transform.DOPunchScale()
-
-### 3. Canvas Scale Fix
-- [ ] Investigate HUD Canvas showing scale (2,2,1) on some displays
-- [ ] Root cause: CanvasScaler ScaleWithScreenSize on HiDPI/Retina?
-- [ ] Permanent fix so HUD is always correctly sized
-
-### 4. Offline Crop Growth
-- [ ] Save DateTime.UtcNow on quit/save
-- [ ] On load, calculate elapsed time and advance growth progress
-- [ ] Cap at max growth (ready to harvest, not over-grown)
-
-### 5. Watering Well (Functional Building)
-- [ ] Well placed on farm auto-waters adjacent 3x3 tiles once per growth cycle
-- [ ] First functional building — unblocks barn/greenhouse/market stall pattern
-
-### 6. Building Placeholder Models
+### 2. Building Placeholder Models
 - [ ] Replace coloured box placeholders with polyperfect models
-- [ ] Barn, Well, Greenhouse, Market Stall
+- [ ] Barn, Greenhouse, Market Stall (Well already assigned)
+
+### 3. Mixamo Animations (DEV-48)
+- [ ] Harvest, water, plant animations
+
+### 4. Art Pass
+- [ ] Better model matches: Potato, Strawberry, Chilli, Lavender
+- [ ] Cluster B flower beds (8 more, Z ~ -5)
 
 ---
 
@@ -109,16 +109,10 @@ Last updated: 2026-03-23
 
 ### Visual
 - [ ] Crop bloom / glow when ready to harvest
-- [ ] Better model matches: Potato, Strawberry, Chilli, Lavender
 - [ ] Decorative props: paths, lanterns, fences between beds
 
 ### UI
-- [ ] Shop / inventory icons (TMP Sprite Assets)
 - [ ] HUD crop growth % indicator per tile
-
-### Map
-- [ ] Add Cluster B flower beds (8 more, Z ~ -5)
-- [ ] Mixamo animations for harvest/water/till (DEV-48)
 
 ---
 

@@ -31,6 +31,10 @@ public class BuildingData : ScriptableObject
     [Header("XP")]
     [SerializeField] private int placeXP = 10;
 
+    [Header("Auto Watering (0 = disabled)")]
+    [SerializeField] private int autoWaterRadius = 0;       // Grid cells radius; 1 = 3x3 area
+    [SerializeField] private float autoWaterInterval = 30f; // Seconds between auto-water cycles
+
     // Public accessors
     public string BuildingId => buildingId;
     public string BuildingName => buildingName;
@@ -42,6 +46,8 @@ public class BuildingData : ScriptableObject
     public GameObject Prefab => prefab;
     public Color PlaceholderColor => placeholderColor;
     public int PlaceXP => placeXP;
+    public int AutoWaterRadius => autoWaterRadius;
+    public float AutoWaterInterval => autoWaterInterval;
 }
 
 public enum BuildingType

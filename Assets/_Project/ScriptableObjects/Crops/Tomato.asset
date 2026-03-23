@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CropData
   cropId: tomato
   cropName: Tomato
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 8a2f2e0ab18b9493baa0fb61604e5cef, type: 3}
   unlockLevel: 1
   seedCost: 12
   sellValue: 25

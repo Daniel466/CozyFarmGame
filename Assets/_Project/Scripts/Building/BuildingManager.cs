@@ -61,7 +61,7 @@ public class BuildingManager : MonoBehaviour
         selectedBuilding = building;
         currentRotation = 0;
         CreateGhost();
-        HUDManager.Instance?.ShowNotification($"Placing {building.BuildingName} | R: Rotate | RClick/Esc: Cancel");
+        HUDManager.Instance?.ShowNotification($"Placing {building.BuildingName}  /  R: Rotate  /  Esc: Cancel");
         HUDManager.Instance?.UpdateToolIndicator($"{building.BuildingName}");
     }
 
@@ -109,19 +109,28 @@ public class BuildingManager : MonoBehaviour
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         LayerMask mask = groundLayer.value == 0 ? ~0 : groundLayer;
 
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f, mask))
+        Vector3 hitPoint;
+        if (Physics.Raycast(ray, out RaycastHit hit, 200f, mask))
         {
-            Vector2Int coord = grid.WorldToGrid(hit.point);
-            Vector3 snappedPos = grid.GridToWorld(coord);
-            ghostObject.transform.position = snappedPos + Vector3.up * 0.01f;
-            ghostObject.transform.rotation = Quaternion.Euler(0f, currentRotation, 0f);
-
-            // Colour ghost based on whether placement is valid
-            bool canPlace = CanPlace(coord, selectedBuilding);
-            SetGhostColor(ghostObject, canPlace
-                ? new Color(0.3f, 1f, 0.3f, 0.5f)   // Green = valid
-                : new Color(1f, 0.2f, 0.2f, 0.5f));  // Red = invalid
+            hitPoint = hit.point;
         }
+        else
+        {
+            // Fall back to infinite horizontal plane at y=0 when terrain has no collider
+            var groundPlane = new Plane(Vector3.up, Vector3.zero);
+            if (!groundPlane.Raycast(ray, out float enter)) return;
+            hitPoint = ray.GetPoint(enter);
+        }
+
+        Vector2Int coord = grid.WorldToGrid(hitPoint);
+        Vector3 snappedPos = grid.GridToWorld(coord);
+        ghostObject.transform.position = new Vector3(snappedPos.x, hitPoint.y + 0.01f, snappedPos.z);
+        ghostObject.transform.rotation = Quaternion.Euler(0f, currentRotation, 0f);
+
+        bool canPlace = CanPlace(coord, selectedBuilding);
+        SetGhostColor(ghostObject, canPlace
+            ? new Color(0.3f, 1f, 0.3f, 0.5f)
+            : new Color(1f, 0.2f, 0.2f, 0.5f));
     }
 
     private void DestroyGhost()
@@ -149,9 +158,19 @@ public class BuildingManager : MonoBehaviour
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         LayerMask mask = groundLayer.value == 0 ? ~0 : groundLayer;
 
-        if (!Physics.Raycast(ray, out RaycastHit hit, 100f, mask)) return false;
+        Vector3 hitPoint;
+        if (Physics.Raycast(ray, out RaycastHit hit, 200f, mask))
+        {
+            hitPoint = hit.point;
+        }
+        else
+        {
+            var groundPlane = new Plane(Vector3.up, Vector3.zero);
+            if (!groundPlane.Raycast(ray, out float enter)) return false;
+            hitPoint = ray.GetPoint(enter);
+        }
 
-        Vector2Int coord = grid.WorldToGrid(hit.point);
+        Vector2Int coord = grid.WorldToGrid(hitPoint);
 
         if (!CanPlace(coord, selectedBuilding))
         {
@@ -166,8 +185,9 @@ public class BuildingManager : MonoBehaviour
             return false;
         }
 
-        // Place it!
-        Vector3 worldPos = grid.GridToWorld(coord) + Vector3.up * 0.01f;
+        // Place it! Use hitPoint.y so building sits on actual terrain height
+        Vector3 gridPos = grid.GridToWorld(coord);
+        Vector3 worldPos = new Vector3(gridPos.x, hitPoint.y + 0.01f, gridPos.z);
         GameObject placed;
 
         if (selectedBuilding.Prefab != null)
@@ -188,6 +208,13 @@ public class BuildingManager : MonoBehaviour
             gameObject = placed,
             rotation = currentRotation
         };
+
+        // Attach functional behaviour
+        if (selectedBuilding.AutoWaterRadius > 0)
+        {
+            var well = placed.AddComponent<WateringWellComponent>();
+            well.Initialise(coord, selectedBuilding.AutoWaterRadius, selectedBuilding.AutoWaterInterval);
+        }
 
         // Award XP
         GameManager.Instance.Progression.AddXP(selectedBuilding.PlaceXP);
@@ -217,15 +244,14 @@ public class BuildingManager : MonoBehaviour
 
     private bool CanPlace(Vector2Int coord, BuildingData building)
     {
-        if (!grid.IsValidCoord(coord)) return false;
-
         for (int x = 0; x < building.Size.x; x++)
         {
             for (int y = 0; y < building.Size.y; y++)
             {
                 Vector2Int cell = coord + new Vector2Int(x, y);
-                if (!grid.IsValidCoord(cell)) return false;
                 if (placedBuildings.ContainsKey(cell)) return false;
+                // Block placement on farm grid tiles (flower beds)
+                if (grid.IsValidCoord(cell)) return false;
             }
         }
         return true;
@@ -252,6 +278,12 @@ public class BuildingManager : MonoBehaviour
             gameObject = placed,
             rotation   = rotation
         };
+
+        if (data.AutoWaterRadius > 0)
+        {
+            var well = placed.AddComponent<WateringWellComponent>();
+            well.Initialise(coord, data.AutoWaterRadius, data.AutoWaterInterval);
+        }
     }
 
     private void OccupyCells(Vector2Int origin, BuildingData building)

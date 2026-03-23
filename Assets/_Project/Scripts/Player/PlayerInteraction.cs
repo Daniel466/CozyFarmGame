@@ -105,8 +105,16 @@ public class PlayerInteraction : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F)) SellAll();
     }
 
+    private bool IsInBuildMode => BuildingManager.Instance != null && BuildingManager.Instance.IsInBuildMode;
+
     private void UpdateHoverHighlight()
     {
+        if (IsInBuildMode)
+        {
+            hoverRoot.SetActive(false);
+            return;
+        }
+
         Vector2Int? coord = GetHoveredTileCoord();
         if (!coord.HasValue)
         {
@@ -185,6 +193,7 @@ public class PlayerInteraction : MonoBehaviour
 
     private void HandleLeftClick()
     {
+        if (IsInBuildMode) return;
         Vector2Int? coord = GetClickedTileCoord();
         if (!coord.HasValue) return;
 
@@ -208,6 +217,7 @@ public class PlayerInteraction : MonoBehaviour
 
     private void HandleRightClick()
     {
+        if (IsInBuildMode) return;
         Vector2Int? coord = GetClickedTileCoord();
         if (!coord.HasValue) return;
         farming.WaterTile(coord.Value);

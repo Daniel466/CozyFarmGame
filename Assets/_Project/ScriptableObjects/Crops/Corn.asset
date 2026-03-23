@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CropData
   cropId: corn
   cropName: Corn
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 0a00dfc5265694233aa4e9bedb3279cb, type: 3}
   unlockLevel: 5
   seedCost: 30
   sellValue: 50

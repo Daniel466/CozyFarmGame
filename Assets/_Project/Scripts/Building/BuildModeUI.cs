@@ -71,23 +71,32 @@ public class BuildModeUI : MonoBehaviour
             img.color = unlocked ? new Color(0.25f, 0.2f, 0.13f) : new Color(0.15f, 0.13f, 0.1f);
 
             var rect = btn.GetComponent<RectTransform>();
-            rect.sizeDelta = new Vector2(160f, 120f);
+            rect.sizeDelta = new Vector2(120f, 125f);
 
             var vlg = btn.AddComponent<VerticalLayoutGroup>();
-            vlg.padding = new RectOffset(8, 8, 8, 8);
+            vlg.padding = new RectOffset(6, 6, 6, 6);
             vlg.spacing = 4f;
             vlg.childForceExpandWidth = true;
             vlg.childAlignment = TextAnchor.MiddleCenter;
 
-            // Colour swatch
+            // Icon / colour swatch
             GameObject swatch = new GameObject("Swatch");
             swatch.transform.SetParent(btn.transform, false);
             var swatchImg = swatch.AddComponent<Image>();
-            swatchImg.color = unlocked ? building.PlaceholderColor : new Color(0.3f, 0.3f, 0.3f);
+            if (building.Icon != null)
+            {
+                swatchImg.sprite = building.Icon;
+                swatchImg.color = unlocked ? Color.white : new Color(1f, 1f, 1f, 0.4f);
+                swatchImg.preserveAspect = true;
+            }
+            else
+            {
+                swatchImg.color = unlocked ? building.PlaceholderColor : new Color(0.3f, 0.3f, 0.3f);
+            }
             var swatchRect = swatch.GetComponent<RectTransform>();
-            swatchRect.sizeDelta = new Vector2(60f, 50f);
+            swatchRect.sizeDelta = new Vector2(70f, 55f);
             var swatchLE = swatch.AddComponent<LayoutElement>();
-            swatchLE.preferredHeight = 50f;
+            swatchLE.preferredHeight = 55f;
 
             // Name text
             GameObject nameGO = new GameObject("Name");

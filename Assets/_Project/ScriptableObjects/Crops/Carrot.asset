@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CropData
   cropId: carrot
   cropName: Carrot
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 9838692049c5441b8bd7f301e207d6ae, type: 3}
   unlockLevel: 0
   seedCost: 5
   sellValue: 10

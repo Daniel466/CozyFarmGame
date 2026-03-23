@@ -11,18 +11,16 @@ Last updated: 2026-03-23
 ## Up Next (Priority Order)
 
 ### Functional Buildings
-- [ ] Watering Well — auto-waters adjacent 3x3 tiles once per growth cycle
-- [ ] Replace coloured box placeholders with polyperfect models (Barn, Well, Greenhouse, Market Stall)
+- [ ] Replace coloured box placeholders with polyperfect models (Barn, Greenhouse, Market Stall)
+- [ ] Run Tools > CozyFarm > Render Icons to generate icon PNGs and assign to assets
 
 ### Art
 - [ ] Find better model matches: Potato, Strawberry, Chilli, Lavender
 - [ ] Cluster B flower beds (8 more, Z approx -5)
 
 ### Polish
-- [ ] UI icons using TMP Sprite Asset
 - [ ] Crop bloom/glow when ready to harvest
 - [ ] Decorative props: paths, lanterns, fences between beds
-- [ ] Shop/inventory icons
 
 ---
 
@@ -82,3 +80,12 @@ Last updated: 2026-03-23
 - [x] Playtest feedback received: core loop clear, controls confusing
 - [x] FarmingManager.GetPlantedCount() and GetNearestRemainingSeconds() query methods
 - [x] BuildModeUI.IsOpen public property
+- [x] Watering Well functional building (WateringWellComponent, auto-waters 3x3 on timer)
+- [x] WateringWell polyperfect model assigned (_M/Prefabs_M/Medieval_M/Well.prefab)
+- [x] BuildingData autoWaterRadius + autoWaterInterval fields
+- [x] FarmingManager.WaterTile() playEffects param (well skips audio/XP/bounce)
+- [x] Building placement raycast — Plane fallback for open ground (no collider)
+- [x] CanPlace blocks flower bed tiles (grid.IsValidCoord check)
+- [x] IconRenderer editor tool (Tools > CozyFarm > Render Icons) — 128x128 PNGs, TMP Sprite Asset
+- [x] Shop/inventory/build mode icons — sprite with colour fallback (48px, preserveAspect)
+- [x] Build mode blocks tile hover highlight and all farm interactions (plant, water, harvest)

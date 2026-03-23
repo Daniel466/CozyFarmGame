@@ -3,6 +3,60 @@ Generated: 2026-03-23
 
 ---
 
+## Session 2026-03-23 — UI Polish Sprint (TileInfoUI, DOTween, Offline Growth)
+
+### DEV-54 — UI Polish
+**Status: Done**
+
+Done this session:
+- TileInfoUI — contextual hover panel bottom-right (290x150)
+  - Crop colour swatch, name, growth stage text, timer, water status, action hint
+  - Progress bar (green fill, RectTransform anchorMax.x = GrowthProgress)
+  - DOTween slide in/out: DOAnchorPosX, tileInfoVisible bool guards re-triggering
+  - OnScreenX = -155, OffScreenX = 160
+- Notification resized to hint-pill style: 420x32, 14pt, color(0.05,0.05,0.05,0.72)
+  - Was: 500x50, 20pt, color(0.1,0.1,0.1,0.85)
+- ShopUI stale copy fixed: "$crop selected! Left-click a tilled tile to plant." -> "$crop selected!"
+- PauseMenuUI now creates dedicated PauseCanvas (sortingOrder 100, CanvasScaler ScaleWithScreenSize)
+  - Was using FindFirstObjectByType<Canvas>() — fragile, parented to HUD canvas
+- SettingsUI slider fill rect anchors fixed (anchorMin=zero, anchorMax=one, offsetMin/Max=zero)
+  - Was: no anchor setup on fillRect after AddComponent<Image>() — rendered as 100x100 green blocks
+- Crop Growth Speed slider added to Settings (range 1-60, wired to FarmingManager.GrowthSpeedMultiplier)
+- FarmingManager.GrowthSpeedMultiplier changed from expression body to full get/set property
+
+### DOTween Juice
+**Status: Done**
+
+- Installed DOTween from Asset Store
+- CropGrowthVisual.UpdateVisual(): replaced BounceIn coroutine with DOScale(target, 0.35s, Ease.OutBack)
+  - Model spawns at scale zero, DOScale animates to final size
+- CropGrowthVisual.PlayWaterBounce(): replaced WaterBounce coroutine with DOPunchScale(0.25f, 0.3s, 4, 0.5f)
+- CropGrowthVisual.PopOutAndDestroy(): new method — DOTween.Sequence scale to 1.3x (0.08s OutQuad) then to zero (0.18s InBack)
+  - FarmingManager.HarvestTile(): game logic fires immediately; visual destroy deferred via callback
+- HarvestTile restructured: removes coord from cropVisuals dict immediately, defers Destroy via PopOutAndDestroy callback
+- Harvest particles: startSize 0.08-0.22 -> 0.2-0.5, startSpeed 1.5-4 -> 2-6, burst 30 -> 40, sizeOverLifetime start 0.3 -> 0.8, spawn height +0.5 -> +1.0, added Destroy fallback (3s)
+- Removed old BounceIn and WaterBounce coroutines entirely
+
+### DEV-59 — Offline Crop Growth
+**Status: Done**
+
+- FarmTile.ApplyOfflineGrowth(elapsedSeconds, speedMultiplier): advances GrowthProgress based on elapsed real time
+  - Rate: 1/GrowTimeSeconds * (IsWatered ? 1.3 : 1.0) * speedMultiplier
+- SaveManager.SaveGame(): saves DateTime.UtcNow.ToString("O") as saveTimestamp
+- SaveManager.LoadGame(): parses saveTimestamp, calculates offlineSeconds (capped at 7 days)
+  - Calls tile.ApplyOfflineGrowth() per planted tile after LoadFromSaveData, before RestoreFromSave
+  - Tracks readyCount + grewCount
+  - Shows notification if away > 60s: "N crops ready to harvest!" or "Your crops grew while you were away!"
+- GameSaveData: added public string saveTimestamp field
+- Backwards compatible: old saves without timestamp get offlineSeconds = 0
+
+### Bug Fixes / Canvas:
+- CanvasScaler scale (2,2,1) on HiDPI: confirmed CORRECT behavior — not a bug
+  - CanvasScaler.ScaleWithScreenSize sets canvas.transform.localScale to match screen DPI
+  - Prior bug was manually setting transform.localScale = Vector3.one — removed in previous session
+
+---
+
 ## Session 2026-03-23 — Camera, HUD Polish, Bug Fixes
 
 ### DEV-54 — UI Polish
@@ -104,9 +158,60 @@ Done:
 
 ---
 
+---
+
+## Session 2026-03-23 — Functional Buildings, Icons, Build Mode Polish
+
+### DEV-60 — Watering Well (Functional Building)
+**Status: Done**
+
+- `WateringWellComponent.cs` — MonoBehaviour attached to placed Well; coroutine waits 2s then calls `FarmingManager.WaterTile(coord, playEffects: false)` for all tiles in radius every interval seconds
+- `BuildingData` — added `autoWaterRadius` (int) and `autoWaterInterval` (float) serialised fields with public accessors
+- `BuildingManager.TryPlace` + `RestoreBuilding` — attach `WateringWellComponent` if `AutoWaterRadius > 0`
+- `FarmingManager.WaterTile()` — new `bool playEffects = true` param; when false skips audio, crop bounce, particles, and XP but still applies tile state + blue marker
+- WateringWell BuildingData: autoWaterRadius=1, autoWaterInterval=30; polyperfect Well prefab assigned (`_M/Prefabs_M/Medieval_M/Well.prefab`)
+- Notification: "Well watered N crops." shown after each auto-water pass
+
+### DEV-61 — Build Mode Placement Fixes
+**Status: Done**
+
+- `BuildingManager.UpdateGhostPosition` + `TryPlace` — added `Plane(Vector3.up, Vector3.zero)` fallback when physics raycast misses (terrain has no collider); uses `hit.point.y` for terrain height
+- `BuildingManager.CanPlace` — added `if (grid.IsValidCoord(cell)) return false` to block placement on any flower bed tile
+- Notification strings: pipe chars `|` replaced with `/` (Kenney Future ASCII rule)
+- `BuildModeUI` layout: VLG padding 8→6, swatch sizeDelta 60×50→70×55, button sizeDelta 160×120→120×125
+
+### DEV-62 — IconRenderer Editor Tool
+**Status: Done**
+
+- `Assets/_Project/Editor/IconRenderer.cs` — new editor tool at `Tools > CozyFarm > Render Icons`
+- Uses `PreviewRenderUtility` (URP-compatible): `AddSingleGO`, `BeginStaticPreview`, `camera.Render()`, `EndStaticPreview()`
+- Camera: orthographic, `Color.clear` background, 30°/-45° isometric angle, auto-framed to renderer bounds
+- Lights: key (intensity 1.3, warm, 35/-135/0), fill (intensity 0.4, cool, -10/50/0)
+- Crops: `GetCropIconPrefab()` uses last non-null `GrowthStagePrefabs[]` entry (stage 3 = harvest-ready)
+- Saves individual PNGs to `Assets/_Project/Art/Icons/Crops/` and `Buildings/`
+- Imports as Sprite (isReadable=true, Uncompressed, no mipmaps, alphaIsTransparency)
+- Assigns sprite back to `icon` field on CropData/BuildingData via SerializedObject
+- Packs power-of-2 atlas (bottom-up y for TMP), imports as Default texture
+- Creates `TMP_SpriteAsset` at `Assets/_Project/Art/Icons/Icons_SpriteAsset.asset` with embedded material
+- Usage in TMP text: `<sprite name="carrot">`
+
+### DEV-63 — UI Icon Integration
+**Status: Done**
+
+- `ShopUI.cs` — swatch uses `crop.Icon` sprite when available (`Color.white`, `preserveAspect=true`); falls back to `GetCropColour()`; size 36→48px
+- `InventoryUI.cs` — same pattern using `item.crop.Icon`; size 36→48px
+- `BuildModeUI.cs` — swatch uses `building.Icon` when available; falls back to `PlaceholderColor`; locked items get 40% alpha on icon
+
+### DEV-64 — Build Mode Interaction Lock
+**Status: Done**
+
+- `PlayerInteraction.cs` — added `IsInBuildMode` helper property (`BuildingManager.Instance.IsInBuildMode`)
+- `UpdateHoverHighlight()` — returns early and hides hover root when in build mode
+- `HandleLeftClick()` + `HandleRightClick()` — guarded with `if (IsInBuildMode) return`
+- Result: hovering flower beds in build mode shows no highlight and all farm actions are blocked
+
 ## Next Session Priorities:
-1. TileInfoUI — contextual hover panel for crop info
-2. DOTween — install + crop pop/bounce effects (plant, harvest, growth stage)
-3. Offline crop growth — DateTime save/load
-4. Canvas scale 2,2 fix (HiDPI/Retina root cause)
-5. Watering Well functional building
+1. Run Tools > CozyFarm > Render Icons to generate icon PNGs
+2. Building placeholder model replacements (Barn, Greenhouse, Market Stall)
+3. Mixamo animations (DEV-48)
+4. Better crop model matches: Potato, Strawberry, Chilli, Lavender

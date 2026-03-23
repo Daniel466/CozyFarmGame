@@ -469,25 +469,25 @@ public class HUDBuilder : Editor
             new Color(0f, 0f, 0f, 0.75f));
         buildPanel.SetActive(false);
 
-        // Side panel (right side)
+        // Side panel (right side) — 280px wide to fit hint text without wrapping
         var sidePanel = CreatePanelGO("BuildSidePanel", buildPanel.transform,
             new Vector2(1f, 0f), new Vector2(1f, 1f),
-            new Vector2(-110f, 0f), new Vector2(220f, 0f),
+            new Vector2(-140f, 0f), new Vector2(280f, 0f),
             new Color(0.12f, 0.1f, 0.07f, 0.97f));
 
         CreateText("BuildTitle", sidePanel.transform,
             new Vector2(0f, 1f), new Vector2(1f, 1f),
-            new Vector2(0f, -30f), new Vector2(0f, 50f),
-            "Build Mode", 26, new Color(1f, 0.9f, 0.6f), TextAlignmentOptions.Center);
+            new Vector2(0f, -28f), new Vector2(0f, 46f),
+            "Build Mode", 24, new Color(1f, 0.9f, 0.6f), TextAlignmentOptions.Center);
 
         CreateText("BuildHint", sidePanel.transform,
             new Vector2(0f, 1f), new Vector2(1f, 1f),
-            new Vector2(0f, -65f), new Vector2(0f, 30f),
-            "R: Rotate  /  Del: Remove  /  Esc: Cancel", 13,
+            new Vector2(0f, -66f), new Vector2(0f, 40f),
+            "R: Rotate  /  Del: Remove\nEsc: Cancel", 12,
             new Color(0.6f, 0.6f, 0.6f), TextAlignmentOptions.Center);
 
         var content = BuildScrollView(sidePanel.transform,
-            new Vector2(5f, 5f), new Vector2(-5f, -90f), useGrid: true);
+            new Vector2(5f, 5f), new Vector2(-5f, -104f), useGrid: true);
 
         // Add BuildModeUI component and wire via SerializedObject
         var buildUI = canvasGO.AddComponent<BuildModeUI>();
@@ -546,7 +546,7 @@ public class HUDBuilder : Editor
         if (useGrid)
         {
             var glg = contentGO.AddComponent<GridLayoutGroup>();
-            glg.cellSize = new Vector2(90f, 110f);
+            glg.cellSize = new Vector2(120f, 125f);
             glg.spacing = new Vector2(5f, 5f);
             glg.padding = new RectOffset(5, 5, 5, 5);
             glg.constraint = GridLayoutGroup.Constraint.FixedColumnCount;

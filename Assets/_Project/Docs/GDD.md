@@ -221,6 +221,8 @@ Not in v1.0 — consider for a future update post-launch.
 | Inventory UI | Done |
 | Build mode UI | Done |
 | HUD (coins, XP, level) | Done |
+| TileInfoUI (hover panel, progress bar, action hints) | Done |
+| Offline crop growth | Done |
 | Audio (hooks in place, clips needed) | Done |
 | Main Menu, Pause, Settings | Done |
 | Real 3D crop visuals | Done |

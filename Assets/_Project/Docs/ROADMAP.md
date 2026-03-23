@@ -6,20 +6,19 @@
 ## Current Status
 Core gameplay loop complete. Milestone 3 (Alpha) in progress.
 Mac and Windows builds playtested — feedback: core loop clear, controls confusing.
-UI polish sprint complete (TileInfoUI, DOTween, offline growth, notification redesign).
-Focus: functional buildings (Watering Well), then building models and animations.
+Functional buildings sprint complete: Watering Well live, icon system built, build mode fully isolated.
+Focus: building model replacements and Mixamo animations.
 
 ---
 
 ## Priority 1 — Next Session
 
-### 1. Watering Well (Functional Building)
-- [ ] Well placed on farm auto-waters adjacent 3x3 tiles once per growth cycle
-- [ ] First functional building — unblocks barn/greenhouse/market stall pattern
-
-### 2. Building Placeholder Models
+### 1. Building Placeholder Models
 - [ ] Replace coloured box placeholders with polyperfect models
-- [ ] Barn, Well, Greenhouse, Market Stall
+- [ ] Barn, Greenhouse, Market Stall (Well already assigned)
+
+### 2. Run Icon Pipeline
+- [ ] Run Tools > CozyFarm > Render Icons to generate PNGs and assign to all CropData/BuildingData
 
 ### 3. Mixamo Animations (DEV-48)
 - [ ] Harvest animation
@@ -39,7 +38,6 @@ Focus: functional buildings (Watering Well), then building models and animations
 - [ ] Decorative props: paths, lanterns, fences between beds
 
 ### UI
-- [ ] Shop / inventory icons (TMP Sprite Assets)
 - [ ] HUD crop growth % indicator per tile
 
 ---
@@ -77,6 +75,14 @@ Focus: functional buildings (Watering Well), then building models and animations
 - [x] Offline crop growth — DateTime save/load, ApplyOfflineGrowth, return notification
 - [x] FarmingManager query methods: GetPlantedCount(), GetNearestRemainingSeconds()
 - [x] BuildModeUI.IsOpen public property
+- [x] Watering Well — WateringWellComponent auto-waters 3x3 radius tiles on configurable timer
+- [x] BuildingData autoWaterRadius + autoWaterInterval fields
+- [x] FarmingManager.WaterTile() playEffects param (well skips audio/XP/bounce)
+- [x] Building placement raycast — Plane fallback for terrain with no collider
+- [x] CanPlace blocks flower bed tiles (IsValidCoord check)
+- [x] IconRenderer editor tool — renders 128x128 PNGs per CropData/BuildingData, packs TMP Sprite Asset atlas
+- [x] Shop, Inventory, BuildMode UI updated to use sprite icons with colour fallback
+- [x] Build mode isolates farm interactions — hover highlight hidden, plant/water/harvest blocked
 
 ### Camera
 - [x] Farm Together style orbit camera (FarmCamera.cs) — Q/E + middle-mouse rotation
