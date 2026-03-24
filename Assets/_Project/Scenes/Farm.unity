@@ -5804,7 +5804,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &275470749
 Transform:
   m_ObjectHideFlags: 0
@@ -20494,7 +20494,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &914314745
 Transform:
   m_ObjectHideFlags: 0
@@ -45855,9 +45855,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AmbienceManager
   ambienceClips:
-  - {fileID: 8300000, guid: 82731c663975f408d95e2414bcde314b, type: 3}
-  - {fileID: 8300000, guid: 202a9d93f1e434c7eaf3181c0a2d6050, type: 3}
-  ambienceVolume: 1
+  - {fileID: 8300000, guid: 21b79c3ea3f814961ba75e247e9ee1d7, type: 3}
+  - {fileID: 8300000, guid: ee7ce192543914ec7a8be29f77559f26, type: 3}
+  ambienceVolume: 0.5
 --- !u!114 &1975690720
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -45877,9 +45877,18 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 3d8dc007182e14e5393d10070d34f2fb, type: 3}
   musicVolume: 0.1
   tillSFX: {fileID: 8300000, guid: 2343819e1a8d94fd79dcb19921f3cf10, type: 3}
-  plantSFX: {fileID: 8300000, guid: 11b5e0d15c4674f0abaea0f8bb1a9bdc, type: 3}
+  plantSFXClips:
+  - {fileID: 8300000, guid: 926891102cf284ab397b61a4e20a33d8, type: 3}
+  - {fileID: 8300000, guid: fd588f6b992254124a415f1756ee5a53, type: 3}
+  - {fileID: 8300000, guid: 60d2c0959fbfd48a782fd7c3493d690b, type: 3}
+  - {fileID: 8300000, guid: 8b78524cb229c4344866c04d59b658ef, type: 3}
+  - {fileID: 8300000, guid: c35ae96aaf47a4ec6bda12458d4e54db, type: 3}
   waterSFX: {fileID: 8300000, guid: d27c89b17a2e34d0aaff0c0af6157aed, type: 3}
-  harvestSFX: {fileID: 8300000, guid: e53a5d145808f4e388cab52590f9f08c, type: 3}
+  harvestSFXClips:
+  - {fileID: 8300000, guid: a06e27fca0829409888066407322e9e7, type: 3}
+  - {fileID: 8300000, guid: 3784ebf80b6594981bbef420c429ca88, type: 3}
+  - {fileID: 8300000, guid: 88744432726df4bde9146507c44783f0, type: 3}
+  - {fileID: 8300000, guid: c1531a704a3ec411b890598bb08e03e9, type: 3}
   sellSFX: {fileID: 8300000, guid: a062ea6dde8bb412f84aa88f62be9f99, type: 3}
   buildPlaceSFX: {fileID: 8300000, guid: ce7f44aaae35f4c1bb3ad04e2cd51a91, type: 3}
   buildRemoveSFX: {fileID: 8300000, guid: ff5d2d53acb454b3893fa3e414773564, type: 3}
@@ -48232,7 +48241,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2046943160
 Transform:
   m_ObjectHideFlags: 0

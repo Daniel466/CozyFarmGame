@@ -5,29 +5,30 @@
 
 ## Current Status
 Core gameplay loop complete. Milestone 3 (Alpha) in progress.
-Mac and Windows builds playtested — feedback: core loop clear, controls confusing.
-Functional buildings sprint complete: Watering Well live, icon system built, build mode fully isolated.
-Focus: building model replacements and Mixamo animations.
+Synty POLYGON Farm Pack integrated — all 10 crops and 8 buildings assigned real 3D models.
+Raised flower beds replaced with flat soil tile system. Icons re-rendered with Synty models.
+Collectibles loop live. Market Stall auto-sell live.
+Focus: animal interactions and Mixamo animations.
 
 ---
 
 ## Priority 1 — Next Session
 
-### 1. Building Placeholder Models
-- [ ] Replace coloured box placeholders with polyperfect models
-- [ ] Barn, Greenhouse, Market Stall (Well already assigned)
+### 1. Dog Pet System
+- [ ] Choose dog model (Low Poly Ultimate Pack or Synty POLYGON Dog Pack)
+- [ ] Dog follows player
+- [ ] Pet interaction (E key proximity)
+- [ ] Optional feeding — crop growth speed boost
 
-### 2. Run Icon Pipeline
-- [ ] Run Tools > CozyFarm > Render Icons to generate PNGs and assign to all CropData/BuildingData
-
-### 3. Mixamo Animations (DEV-48)
+### 2. Mixamo Animations (DEV-48)
 - [ ] Harvest animation
 - [ ] Water animation
 - [ ] Plant animation
 
-### 4. Art Pass
+### 3. Art Pass
 - [ ] Better model matches: Potato, Strawberry, Chilli, Lavender
-- [ ] Cluster B flower beds (8 more, Z approx -5)
+- [ ] Stone Path and Lantern — assign Synty prefabs or source alternatives
+- [ ] Soil tile polish — replace procedural quad with proper dirt texture (polish stage)
 
 ---
 
@@ -46,14 +47,11 @@ Focus: building model replacements and Mixamo animations.
 > **Pre-launch blocker.** Core design gap — players need things to do during crop wait time.
 > See GDD Section 11 for full design notes.
 
-### Collectibles Loop (Scrounger) — HIGHEST PRIORITY
-- [ ] Spawn coins/seeds/items scattered around map at random positions
-- [ ] Visible sparkle/glint so player can spot them from a distance
-- [ ] Respawn every 5–10 minutes at new positions
-- [ ] Drop table: coins (common), bonus seeds (uncommon), rare decoration items (rare)
+### Collectibles Loop (Scrounger) — DONE
+- [x] Coins/seeds scattered around map, distance-based pickup, 5-min respawn, sparkle particles
 
-### Animal Interactions
-- [ ] Pet/feed interactions for sheep, dog, cat (already in scene)
+### Animal Interactions — UP NEXT
+- [ ] Pet/feed interactions for animals already in scene
 - [ ] Per-animal happiness state — fills on interact, drains over time
 - [ ] Small passive bonus for happy animals (e.g. dog alerts when crops ready)
 
@@ -140,8 +138,11 @@ Focus: building model replacements and Mixamo animations.
 - [x] Crop Growth Speed debug slider in Settings (1-60x)
 
 ### Visual / Art
-- [x] Polyperfect 3D crop models (all 10 crops assigned)
-- [x] Growth stage scaling (4 stages via CropGrowthVisual)
+- [x] Synty POLYGON Farm crop models — all 10 crops with per-stage prefabs (S/M/L/Group), tuned scales/rotations
+- [x] Synty POLYGON Farm building models — barn, greenhouse, silo, market stall, watering well, scarecrow, wooden fence, windmill
+- [x] Flat soil tile system — procedural quad per tile; replaces raised flower beds; farm-flower-bed + fence-shrub scene objects removed
+- [x] Icons re-rendered with Synty models (128x128 PNG, TMP Sprite Asset atlas)
+- [x] Growth stage scaling tuned for Synty sizes (0.7/0.85/0.95/1.0)
 - [x] Hollow square hover highlight (4-edge outline, yellow=planted, orange=ready, green=empty)
 - [x] Blue watered tile marker (scale 1.2, alpha 0.12)
 - [x] TileMarker stacking bug fixed (explicit destroy before spawn)

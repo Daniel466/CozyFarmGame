@@ -15,7 +15,7 @@ MonoBehaviour:
   buildingId: greenhouse
   buildingName: Greenhouse
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: b0eece96bb39344ef8e22012e24909c9, type: 3}
   buildingType: 0
   unlockLevel: 6
   cost: 800

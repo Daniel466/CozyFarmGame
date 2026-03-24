@@ -210,8 +210,63 @@ Done:
 - `HandleLeftClick()` + `HandleRightClick()` — guarded with `if (IsInBuildMode) return`
 - Result: hovering flower beds in build mode shows no highlight and all farm actions are blocked
 
+---
+
+## Session 2026-03-24 — Synty Models, Flat Soil Tiles, Collectibles, Market Stall
+
+### DEV-65 — Synty POLYGON Farm Pack Integration
+**Status: Done**
+
+- `CropModelAssigner.cs` — fully rewritten for Synty; maps each crop to 4 stage prefabs (S/M/L/Group) from `Assets/Synty/PolygonFarm/Prefabs/Plants/`
+  - Per-crop tuned scales: carrot 2.8, sunflower 1.8 (rotY -90), tomato 3.0, potato 2.6, strawberry 2.8, corn 1.0, pumpkin 1.6, grapes 1.8, chilli 3.0, lavender 1.8
+  - Menu: `Tools > CozyFarm > Assign Crop Models (Synty)`
+- `BuildingModelAssigner.cs` — new editor tool; maps building IDs to Synty prefab paths
+  - barn->SM_Bld_Barn_01, watering_well->SM_Prop_Well_01, greenhouse->SM_Bld_Greenhouse_01, silo->SM_Bld_Silo_01, market_stall->SM_Bld_ProduceStand_01, scarecrow->SM_Chr_Scarecrow_01, wooden_fence->SM_Prop_Fence_Wood_01, windmill->SM_Prop_Windmill_01
+  - Stone Path and Lantern skipped gracefully (no Synty match)
+  - Menu: `Tools > CozyFarm > Assign Building Models (Synty)`
+- `CropGrowthVisual.cs` — StageScales updated from {0.3, 0.5, 0.8, 1.0} to {0.7, 0.85, 0.95, 1.0} to complement Synty built-in size differences
+- Icons re-rendered with Synty models via `Tools > CozyFarm > Render Icons`
+
+### DEV-66 — Flat Soil Tile System
+**Status: Done**
+
+- `FarmGrid.cs` — added `SpawnFlatSoilTile()` procedural fallback; spawns a Quad per tile when `normalTilePrefab` is null
+  - Quad: `tileSize * 0.95f` square, rotated flat, warm brown material, spawns at `worldPos - Vector3.up * 0.005f` (5mm below grid origin so all crop stages sit above)
+  - When `normalTilePrefab` is assigned in Inspector, fallback is skipped automatically
+- `PlayerInteraction.cs` — hover highlight lowered from `+0.3f` to `+0.04f` (no longer needs to clear raised bed height)
+- Scene: removed `farm-flower-bed` and `fence-shrub` objects; `gridOrigin.y` set to 0.2 (terrain surface height)
+- Soil tile colour left as plain brown placeholder — will be replaced with proper dirt texture in polish stage
+
+### DEV-67 — Collectibles Loop
+**Status: Done**
+
+- `CollectibleItem.cs` — distance-based pickup (radius 1.8f); OnTriggerEnter not used (unreliable with CharacterController)
+  - Drop types: Coins (5-15), Seed (crop seed cost), LuckyFind (25-50 coins)
+  - Bob + spin idle animation; sparkle particle effect
+- `CollectibleSpawner.cs` — manages spawn slots, per-slot respawn timers (300s default), drop table (60% coins, 25% seed, 15% lucky)
+- `AudioManager.cs` — added `collectSFX` and `PlayCollect()` method
+
+### DEV-68 — Market Stall Auto-Sell
+**Status: Done**
+
+- `MarketStallComponent.cs` — attached to placed Market Stall; sells all inventory every 120s at 10% bonus
+- `InventoryManager.cs` — added `SellAllWithBonus(float bonus)` method
+- `BuildingData.cs` — added `description`, `autoSellInterval`, `autoSellBonus` fields
+- `BuildModeUI.cs` — shows description text under price in build card
+- `BuildingAssetGenerator.cs` — market_stall entry sets autoSellInterval=120, autoSellBonus=0.1; PascalCase filenames
+
+### DEV-69 — Audio Library Curator
+**Status: Done**
+
+- `AudioLibraryCurator.cs` — new editor tool at `Tools > CozyFarm > Audio Library Curator`
+- Scans `Assets/PaidAssets/Universal Sound FX`, groups clips by category, pre-checks 57 recommended clips
+- Recommended clips cover: farming (planting/dig/harvest), watering, selling, collectibles, level up, animals (dog/cat/sheep), ambience loops
+- Play button (triangle) per clip for in-editor auditioning
+- Copy Selected button — copies checked clips to `Assets/_Project/Audio/SFX/Universal/`
+- Delete Folder button — removes entire Universal Sound FX folder after copying
+
 ## Next Session Priorities:
-1. Run Tools > CozyFarm > Render Icons to generate icon PNGs
-2. Building placeholder model replacements (Barn, Greenhouse, Market Stall)
-3. Mixamo animations (DEV-48)
-4. Better crop model matches: Potato, Strawberry, Chilli, Lavender
+1. Dog pet system — follow player, pet interaction, optional feeding bonus
+2. Mixamo animations (DEV-48)
+3. Better crop model matches: Potato, Strawberry, Chilli, Lavender
+4. Stone Path and Lantern — find Synty prefab matches or source alternatives

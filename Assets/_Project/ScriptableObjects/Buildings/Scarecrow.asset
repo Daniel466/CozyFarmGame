@@ -15,7 +15,7 @@ MonoBehaviour:
   buildingId: scarecrow
   buildingName: Scarecrow
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: a0d14a615771b4fc79c16aee9d5d5b01, type: 3}
   buildingType: 1
   unlockLevel: 1
   cost: 50

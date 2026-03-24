@@ -1,5 +1,5 @@
 # Cozy Farm Game - TODO
-Last updated: 2026-03-23
+Last updated: 2026-03-25
 
 ---
 
@@ -10,19 +10,22 @@ Last updated: 2026-03-23
 
 ## Up Next (Priority Order)
 
-### Functional Buildings
-- [ ] Replace coloured box placeholders with polyperfect models (Barn, Greenhouse, Market Stall)
-- [ ] Run Tools > CozyFarm > Render Icons to generate icon PNGs and assign to assets
-- [ ] Set WateringWell BuildingData Description: "Auto-waters nearby crops every 30s"
+### Dog Pet System
+- [ ] Choose dog model (Low Poly Ultimate Pack Dog.prefab or buy Synty POLYGON Dog Pack)
+- [ ] Dog follows player (NavMesh or simple follow script)
+- [ ] Player can pet dog (E key proximity interaction)
+- [ ] Optional: feeding gives crop growth speed boost
+- [ ] Dog bark SFX from Universal Sound FX (ANIMAL_Dog_Bark_03 RR1-4)
 
 ### Bugs
 - [x] Shop coin display — was showing test value (8k coins), not a bug
 - [x] Icon backgrounds not transparent — fixed, re-run confirmed working
-- [ ] Crop icons inconsistent: grapes, lavender, chilli too dark/small — adjust IconRenderer lighting or camera framing per crop
+- [ ] Crop icons inconsistent: grapes, lavender, chilli too dark/small — check after Synty icon re-render
+- [ ] Stone Path and Lantern — no Synty prefab assigned, still placeholder visuals
 
 ### Art
+- [ ] Soil tile polish — replace procedural brown quad with proper dirt texture (polish stage)
 - [ ] Find better model matches: Potato, Strawberry, Chilli, Lavender
-- [ ] Cluster B flower beds (8 more, Z approx -5)
 
 ### Polish
 - [ ] Crop bloom/glow when ready to harvest
@@ -31,6 +34,14 @@ Last updated: 2026-03-23
 ---
 
 ## Done
+- [x] Flat soil tile system — replaced raised flower beds with procedural flat quads; FarmGrid auto-generates tiles when normalTilePrefab is null; hover highlight lowered to 0.04; farm-flower-bed and fence-shrub scene objects removed
+- [x] Synty POLYGON Farm crop models — all 10 crops assigned per-stage prefabs (S/M/L/Group) with tuned scales and rotations via CropModelAssigner editor tool
+- [x] Synty POLYGON Farm building models — barn, greenhouse, silo, market stall, watering well, scarecrow, wooden fence, windmill assigned via BuildingModelAssigner editor tool
+- [x] Collectibles loop — coins/seeds scattered around map, distance-based pickup, 5-min respawn, sparkle particles
+- [x] Market Stall auto-sell — MarketStallComponent sells all inventory every 120s at 10% bonus
+- [x] BuildingData description field — shown in build mode UI card under price
+- [x] Icons re-rendered with Synty models
+- [x] Audio Library Curator editor tool (Tools > CozyFarm > Audio Library Curator) — browse Universal Sound FX, pre-checks recommended clips, copy to _Project/Audio/SFX, delete source folder
 - [x] Unity 6 + URP setup
 - [x] GitHub repo
 - [x] Full farming loop (plant/water/grow/harvest) — no till step

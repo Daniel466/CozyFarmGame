@@ -19,10 +19,10 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private float musicVolume = 0.4f;
 
     [Header("SFX")]
-    [SerializeField] private AudioClip tillSFX;
-    [SerializeField] private AudioClip plantSFX;
-    [SerializeField] private AudioClip waterSFX;
-    [SerializeField] private AudioClip harvestSFX;
+    [SerializeField] private AudioClip[] tillSFXClips;    // Randomised per dig action
+    [SerializeField] private AudioClip[] plantSFXClips;   // Randomised per plant action
+    [SerializeField] private AudioClip[] waterSFXClips;   // Randomised per water action
+    [SerializeField] private AudioClip[] harvestSFXClips; // Randomised per harvest action
     [SerializeField] private AudioClip sellSFX;
     [SerializeField] private AudioClip buildPlaceSFX;
     [SerializeField] private AudioClip buildRemoveSFX;
@@ -123,14 +123,20 @@ public class AudioManager : MonoBehaviour
     }
 
     // Convenience methods for each farming action
-    public void PlayTill()     => PlaySFX(tillSFX);
-    public void PlayPlant()    => PlaySFX(plantSFX);
-    public void PlayWater()    => PlaySFX(waterSFX);
-    public void PlayHarvest()  => PlaySFX(harvestSFX);
+    public void PlayTill()     => PlaySFX(RandomClip(tillSFXClips));
+    public void PlayPlant()    => PlaySFX(RandomClip(plantSFXClips));
+    public void PlayWater()    => PlaySFX(RandomClip(waterSFXClips));
+    public void PlayHarvest()  => PlaySFX(RandomClip(harvestSFXClips));
     public void PlaySell()     => PlaySFX(sellSFX);
     public void PlayBuild()    => PlaySFX(buildPlaceSFX);
     public void PlayRemove()   => PlaySFX(buildRemoveSFX);
     public void PlayLevelUp()  => PlaySFX(levelUpSFX, 1.2f);
     public void PlayUIClick()  => PlaySFX(uiClickSFX, 0.6f);
     public void PlayCollect()  => PlaySFX(collectSFX ?? sellSFX, 1.1f);
+
+    private AudioClip RandomClip(AudioClip[] clips)
+    {
+        if (clips == null || clips.Length == 0) return null;
+        return clips[Random.Range(0, clips.Length)];
+    }
 }

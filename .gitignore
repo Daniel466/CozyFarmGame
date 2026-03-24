@@ -116,3 +116,13 @@ InitTestScene*.unity*
 *.aiff.meta
 *.aif.meta
 *.flac.meta
+
+# Paid Assets
+Assets/PaidAssets/
+Assets/Synty/
+Assets/PolygonDogPack/
+Assets/Low Poly Ultimate Pack/
+Assets/Universal Sound FX/
+
+# Unity asset store packages
+*.unitypackage

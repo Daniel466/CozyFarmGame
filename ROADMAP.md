@@ -55,8 +55,11 @@ Last updated: 2026-03-23
 - [x] SettingsUI sliders fixed (no green blocks), Crop Growth Speed slider (1-60x)
 
 ### Visual / Art
-- [x] Polyperfect 3D crop models (all 10 crops assigned)
-- [x] Growth stage scaling (4 stages via CropGrowthVisual)
+- [x] Synty POLYGON Farm crop models — all 10 crops with per-stage prefabs (S/M/L/Group), tuned scales/rotations
+- [x] Synty POLYGON Farm building models — barn, greenhouse, silo, market stall, watering well, scarecrow, wooden fence, windmill
+- [x] Flat soil tile system — procedural quad per tile; replaces raised flower beds
+- [x] Icons re-rendered with Synty models (128x128 PNG, TMP Sprite Asset atlas)
+- [x] Growth stage scaling tuned for Synty sizes (0.7/0.85/0.95/1.0)
 - [x] Hollow square hover highlight (4-edge outline, yellow=planted, orange=ready, green=empty)
 - [x] Blue watered tile marker (scale 1.2, alpha 0.12)
 - [x] TileMarker stacking bug fixed
@@ -89,19 +92,19 @@ Last updated: 2026-03-23
 
 ## NEXT — Priority Order
 
-### 1. Run Icon Pipeline
-- [ ] Run Tools > CozyFarm > Render Icons to generate PNGs and assign to all assets
+### 1. Dog Pet System
+- [ ] Choose dog model (Low Poly Ultimate Pack or Synty POLYGON Dog Pack)
+- [ ] Dog follows player
+- [ ] Pet interaction (E key proximity)
+- [ ] Optional feeding — crop growth speed boost
 
-### 2. Building Placeholder Models
-- [ ] Replace coloured box placeholders with polyperfect models
-- [ ] Barn, Greenhouse, Market Stall (Well already assigned)
-
-### 3. Mixamo Animations (DEV-48)
+### 2. Mixamo Animations (DEV-48)
 - [ ] Harvest, water, plant animations
 
-### 4. Art Pass
+### 3. Art Pass
 - [ ] Better model matches: Potato, Strawberry, Chilli, Lavender
-- [ ] Cluster B flower beds (8 more, Z ~ -5)
+- [ ] Stone Path and Lantern — assign Synty prefabs or source alternatives
+- [ ] Soil tile polish — replace procedural quad with proper dirt texture (polish stage)
 
 ---
 
@@ -119,8 +122,8 @@ Last updated: 2026-03-23
 ## Priority 3 — Player Engagement While Crops Grow
 > **Pre-launch blocker.** Players need things to do during crop wait time. See GDD §11.
 
-- [ ] Collectibles loop — coins/seeds/items scattered around map, respawn every 5–10 min, visible sparkle
-- [ ] Animal interactions — pet/feed sheep, dog, cat already in scene; happiness state + small bonus
+- [x] Collectibles loop — coins/seeds scattered around map, distance-based pickup, 5-min respawn, sparkle particles
+- [ ] Animal interactions — pet/feed animals already in scene; happiness state + small bonus
 - [ ] Decorating — expand BuildingDatabase with paths, fences, props; 3 XP per item placed
 
 ## Priority 4 — Content
