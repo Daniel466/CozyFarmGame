@@ -215,6 +215,11 @@ public class BuildingManager : MonoBehaviour
             var well = placed.AddComponent<WateringWellComponent>();
             well.Initialise(coord, selectedBuilding.AutoWaterRadius, selectedBuilding.AutoWaterInterval);
         }
+        if (selectedBuilding.AutoSellInterval > 0)
+        {
+            var stall = placed.AddComponent<MarketStallComponent>();
+            stall.Initialise(selectedBuilding.AutoSellInterval, selectedBuilding.AutoSellBonus);
+        }
 
         // Award XP
         GameManager.Instance.Progression.AddXP(selectedBuilding.PlaceXP);
@@ -283,6 +288,11 @@ public class BuildingManager : MonoBehaviour
         {
             var well = placed.AddComponent<WateringWellComponent>();
             well.Initialise(coord, data.AutoWaterRadius, data.AutoWaterInterval);
+        }
+        if (data.AutoSellInterval > 0)
+        {
+            var stall = placed.AddComponent<MarketStallComponent>();
+            stall.Initialise(data.AutoSellInterval, data.AutoSellBonus);
         }
     }
 

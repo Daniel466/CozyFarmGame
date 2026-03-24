@@ -33,8 +33,12 @@ public class BuildingData : ScriptableObject
     [SerializeField] private int placeXP = 10;
 
     [Header("Auto Watering (0 = disabled)")]
-    [SerializeField] private int autoWaterRadius = 0;       // Grid cells radius; 1 = 3x3 area
-    [SerializeField] private float autoWaterInterval = 30f; // Seconds between auto-water cycles
+    [SerializeField] private int autoWaterRadius = 0;
+    [SerializeField] private float autoWaterInterval = 30f;
+
+    [Header("Auto Selling (0 = disabled)")]
+    [SerializeField] private float autoSellInterval = 0f;  // Seconds between auto-sell cycles
+    [SerializeField] private float autoSellBonus = 0.1f;   // 0.1 = 10% bonus on top of sell value
 
     // Public accessors
     public string BuildingId => buildingId;
@@ -50,6 +54,8 @@ public class BuildingData : ScriptableObject
     public int PlaceXP => placeXP;
     public int AutoWaterRadius => autoWaterRadius;
     public float AutoWaterInterval => autoWaterInterval;
+    public float AutoSellInterval => autoSellInterval;
+    public float AutoSellBonus => autoSellBonus;
 }
 
 public enum BuildingType

@@ -75,6 +75,21 @@ public class InventoryManager : MonoBehaviour
         return earned;
     }
 
+    /// <summary>Sells all crops at a bonus rate. Used by Market Stall.</summary>
+    public int SellAllWithBonus(float bonus)
+    {
+        if (items.Count == 0) return 0;
+        int totalCoins = 0;
+        foreach (var item in items.Values)
+            totalCoins += Mathf.RoundToInt(item.crop.SellValue * item.quantity * (1f + bonus));
+        int xpEarned = Mathf.FloorToInt(totalCoins / 10f);
+        items.Clear();
+        GameManager.Instance.Economy.AddCoins(totalCoins);
+        GameManager.Instance.Progression.AddXP(xpEarned);
+        OnInventoryChanged?.Invoke();
+        return totalCoins;
+    }
+
     // Sell all crops in inventory
     public int SellAll()
     {

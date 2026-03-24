@@ -13,4 +13,14 @@ MonoBehaviour:
   m_Name: BuildingDatabase
   m_EditorClassIdentifier: Assembly-CSharp::BuildingDatabase
   buildings:
+  - {fileID: 11400000, guid: fbc59f5fdc90e45bd9e862fad8be0786, type: 2}
   - {fileID: 11400000, guid: 6556da52045f64227b9695c39991e748, type: 2}
+  - {fileID: 11400000, guid: f0bb8002fc9f64689b6d61548e0f171c, type: 2}
+  - {fileID: 11400000, guid: 37c191eadd29f4bf093baf8c81c2accd, type: 2}
+  - {fileID: 11400000, guid: ae3357aaa01bd46828cb7aa9fde8cd5e, type: 2}
+  - {fileID: 11400000, guid: 4e27aaa2a40dc47fbab64119ca85f371, type: 2}
+  - {fileID: 11400000, guid: 27ffde528a1cc46d9b2306d1e8fc5475, type: 2}
+  - {fileID: 11400000, guid: 67049e5ab5a644266af4d1ca81062bd2, type: 2}
+  - {fileID: 11400000, guid: 84e2d9fe5238f4a818fbd15ebb311fe6, type: 2}
+  - {fileID: 11400000, guid: e346555d2ae3b4c05aea825b7a49854c, type: 2}
+  - {fileID: 11400000, guid: 4df680600241c4380afc3f6f68260743, type: 2}

@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cd8c189b36e64d62a30c608d370862f, type: 3}
+  m_Name: MarketStall
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingData
+  buildingId: market_stall
+  buildingName: Market Stall
+  description: Auto-sells crops at a 10% bonus rate
+  icon: {fileID: 21300000, guid: 16cd748dae82a40c69a812a846eb6a74, type: 3}
+  buildingType: 0
+  unlockLevel: 10
+  cost: 1000
+  size: {x: 2, y: 2}
+  prefab: {fileID: 1000012306397774, guid: 3956c670eaf2649c0981c63c7d3100b7, type: 3}
+  placeholderColor: {r: 0.9, g: 0.65, b: 0.2, a: 0}
+  placeXP: 10
+  autoWaterRadius: 0
+  autoWaterInterval: 30
+  autoSellInterval: 120
+  autoSellBonus: 0.1
