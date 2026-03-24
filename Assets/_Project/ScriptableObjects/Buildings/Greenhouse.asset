@@ -14,11 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BuildingData
   buildingId: greenhouse
   buildingName: Greenhouse
+  description: 
   icon: {fileID: 0}
   buildingType: 0
   unlockLevel: 6
   cost: 800
   size: {x: 3, y: 2}
-  prefab: {fileID: 0}
+  prefab: {fileID: 1595881250035684, guid: d18a58184e042eb4cbffba24a88ad835, type: 3}
   placeholderColor: {r: 0.69803923, g: 0.9490196, b: 0.69803923, a: 1}
   placeXP: 10
+  autoWaterRadius: 0
+  autoWaterInterval: 30
+  autoSellInterval: 0
+  autoSellBonus: 0.1

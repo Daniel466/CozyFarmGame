@@ -7,7 +7,7 @@ public class CropGrowthVisual : MonoBehaviour
     private int currentStage = -1;
     private GameObject currentModel;
 
-    private static readonly float[] StageScales = { 0.3f, 0.5f, 0.8f, 1.0f };
+    private static readonly float[] StageScales = { 0.7f, 0.85f, 0.95f, 1.0f };
 
     private static readonly System.Collections.Generic.Dictionary<string, Color> CropColours =
         new System.Collections.Generic.Dictionary<string, Color>

@@ -39,8 +39,33 @@ public class FarmGrid : MonoBehaviour
 
                 if (normalTilePrefab != null)
                     Instantiate(normalTilePrefab, worldPos, Quaternion.identity, transform);
+                else
+                    SpawnFlatSoilTile(worldPos);
             }
         }
+    }
+
+    /// <summary>
+    /// Procedural fallback: spawns a flat quad as a soil tile when no normalTilePrefab is assigned.
+    /// Replace with a real Synty soil tile prefab in the Inspector when ready.
+    /// </summary>
+    private void SpawnFlatSoilTile(Vector3 worldPos)
+    {
+        var quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
+        quad.transform.SetParent(transform, false);
+        quad.transform.position    = worldPos - Vector3.up * 0.005f;
+        quad.transform.rotation    = Quaternion.Euler(90f, 0f, 0f);
+        quad.transform.localScale  = new Vector3(tileSize * 0.95f, tileSize * 0.95f, 1f);
+        quad.name = "SoilTile";
+        quad.layer = 0; // Default — ground raycast can still hit it if needed
+
+        Destroy(quad.GetComponent<Collider>()); // Ground plane handles raycasts
+
+        var mat = new Material(Shader.Find("Universal Render Pipeline/Lit")
+                   ?? Shader.Find("Standard"));
+        // Warm brown soil colour — swap this material for a Synty dirt texture later
+        mat.SetColor("_BaseColor", new Color(0.42f, 0.28f, 0.16f));
+        quad.GetComponent<Renderer>().material = mat;
     }
 
     public FarmTile GetTile(Vector2Int coord)

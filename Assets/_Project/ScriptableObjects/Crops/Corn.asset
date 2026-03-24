@@ -20,12 +20,12 @@ MonoBehaviour:
   sellValue: 50
   growTimeSeconds: 1200
   growthStagePrefabs:
-  - {fileID: 1234570512433102, guid: 5b6062007637241e0b729ae8d458864b, type: 3}
-  - {fileID: 1234570512433102, guid: 5b6062007637241e0b729ae8d458864b, type: 3}
-  - {fileID: 1234570512433102, guid: 5b6062007637241e0b729ae8d458864b, type: 3}
-  - {fileID: 1234570512433102, guid: 5b6062007637241e0b729ae8d458864b, type: 3}
+  - {fileID: 1238140437920138, guid: 23303cb0efade674b946eb8d8fb90e7f, type: 3}
+  - {fileID: 1238140437920138, guid: 23303cb0efade674b946eb8d8fb90e7f, type: 3}
+  - {fileID: 1388164955493668, guid: 0ca4c36c8ef89f04392b4d0bbf5fea10, type: 3}
+  - {fileID: 1388164955493668, guid: 0ca4c36c8ef89f04392b4d0bbf5fea10, type: 3}
   modelRotationOffset: {x: 0, y: 0, z: 0}
-  modelBaseScale: 2.5
+  modelBaseScale: 1
   harvestXP: 5
   plantXP: 2
   waterXP: 1

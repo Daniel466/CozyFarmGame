@@ -3,27 +3,26 @@ using UnityEditor;
 
 public class CropModelAssigner : EditorWindow
 {
-    private const string FOOD_PREFABS    = "Assets/polyperfect/Low Poly Ultimate Pack/_M/Prefabs_M/Food_M";
-    private const string FLOWERS_PREFABS = "Assets/polyperfect/Low Poly Ultimate Pack/_M/Prefabs_M/Nature_M/Flowers_M";
-    private const string EMPIRE_PREFABS  = "Assets/polyperfect/Low Poly Ultimate Pack/_M/Prefabs_M/Empire_M";
-    private const string CROPS_PATH      = "Assets/_Project/ScriptableObjects/Crops";
+    private const string SYNTY_PLANTS = "Assets/Synty/PolygonFarm/Prefabs/Plants";
+    private const string CROPS_PATH   = "Assets/_Project/ScriptableObjects/Crops";
 
-    private static readonly System.Collections.Generic.Dictionary<string, (string folder, string prefab, float scale, float rotY)> CropMap =
-        new System.Collections.Generic.Dictionary<string, (string, string, float, float)>
+    // Per crop: stage0 (S), stage1 (M), stage2 (L), stage3 (Group/harvest), scale, rotY
+    private static readonly System.Collections.Generic.Dictionary<string, (string s0, string s1, string s2, string s3, float scale, float rotY)> CropMap =
+        new System.Collections.Generic.Dictionary<string, (string, string, string, string, float, float)>
     {
-        { "carrot",     (FOOD_PREFABS,    "Carrot",               3.0f,  0f   ) },
-        { "sunflower",  (FLOWERS_PREFABS, "Sunflower",            0.7f,  -90f ) },
-        { "tomato",     (FOOD_PREFABS,    "Tomato",               4.0f,  0f   ) },
-        { "potato",     (FOOD_PREFABS,    "Bread_Round",          3.0f,  0f   ) },
-        { "strawberry", (FOOD_PREFABS,    "Apple",                3.0f,  0f   ) },
-        { "corn",       (FOOD_PREFABS,    "Corn",                 2.5f,  0f   ) },
-        { "pumpkin",    (FLOWERS_PREFABS, "Pumkin",               1.0f,  0f   ) },
-        { "grapes",     (EMPIRE_PREFABS,  "Grapes_Purple_Empire", 2.0f,  0f   ) },
-        { "chilli",     (FOOD_PREFABS,    "Eggplant",             4.0f,  0f   ) },
-        { "lavender",   (FLOWERS_PREFABS, "Carnations",           0.8f,  0f   ) },
+        { "carrot",     ("SM_Prop_Carrot_01",           "SM_Prop_Carrot_01",           "SM_Prop_Carrot_01_L",          "SM_Prop_Carrot_01_Group",      2.8f,  0f  ) },
+        { "sunflower",  ("SM_Prop_Sunflower_01",        "SM_Prop_Sunflower_01",        "SM_Prop_Sunflower_01",         "SM_Prop_Sunflower_01",         1.8f, -90f ) },
+        { "tomato",     ("SM_Prop_Tomato_01",           "SM_Prop_Tomato_01",           "SM_Prop_Tomato_01_L",          "SM_Prop_Tomato_01_L",          3.0f,  0f  ) },
+        { "potato",     ("SM_Prop_Plant_Potato_01_S",   "SM_Prop_Plant_Potato_01_M",   "SM_Prop_Potato_01",            "SM_Prop_Potato_01_Group",      2.6f,  0f  ) },
+        { "strawberry", ("SM_Prop_Strawberry_01_S",     "SM_Prop_Strawberry_01_S",     "SM_Prop_Strawberry_01_L",      "SM_Prop_Strawberry_01_Group",  2.8f,  0f  ) },
+        { "corn",       ("SM_Prop_Plant_Corn_01_S",     "SM_Prop_Plant_Corn_01_S",     "SM_Prop_Plant_Corn_01_L",      "SM_Prop_Plant_Corn_01_L",      1.0f,  0f  ) },
+        { "pumpkin",    ("SM_Prop_Pumpkin_01_M",        "SM_Prop_Pumpkin_01_M",        "SM_Prop_Pumpkin_01_L",         "SM_Prop_Pumpkin_01_L",         1.6f,  0f  ) },
+        { "grapes",     ("SM_Prop_Plant_Bush_02_S",     "SM_Prop_Plant_Bush_02_S",     "SM_Prop_Plant_Bush_02_M",      "SM_Prop_Plant_Bush_02_M",      1.8f,  0f  ) },
+        { "chilli",     ("SM_Prop_Chilli_01",           "SM_Prop_Chilli_01_M",         "SM_Prop_Chilli_01_L",          "SM_Prop_Chilli_01_Group",      3.0f,  0f  ) },
+        { "lavender",   ("SM_Prop_Plant_Bush_03_S",     "SM_Prop_Plant_Bush_03_S",     "SM_Prop_Plant_Bush_03_M",      "SM_Prop_Plant_Bush_03_M",      1.8f,  0f  ) },
     };
 
-    [MenuItem("Tools/CozyFarm/Assign Crop Models")]
+    [MenuItem("Tools/CozyFarm/Assign Crop Models (Synty)")]
     public static void AssignCropModels()
     {
         string[] guids = AssetDatabase.FindAssets("t:CropData", new[] { CROPS_PATH });
@@ -38,29 +37,42 @@ public class CropModelAssigner : EditorWindow
             if (crop == null) continue;
 
             string cropId = crop.CropId.ToLower().Trim();
-            if (!CropMap.ContainsKey(cropId)) { Debug.LogWarning($"[CropModelAssigner] No mapping for '{cropId}'"); skipped++; continue; }
+            if (!CropMap.TryGetValue(cropId, out var entry))
+            {
+                Debug.LogWarning($"[CropModelAssigner] No mapping for '{cropId}'");
+                skipped++; continue;
+            }
 
-            var (folder, prefabName, scale, rotY) = CropMap[cropId];
-            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>($"{folder}/{prefabName}.prefab");
-            if (prefab == null) { Debug.LogWarning($"[CropModelAssigner] Not found: {folder}/{prefabName}.prefab"); skipped++; continue; }
+            string[] prefabNames = { entry.s0, entry.s1, entry.s2, entry.s3 };
+            GameObject[] prefabs = new GameObject[4];
+            bool allFound = true;
+
+            for (int i = 0; i < 4; i++)
+            {
+                string path = $"{SYNTY_PLANTS}/{prefabNames[i]}.prefab";
+                prefabs[i] = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                if (prefabs[i] == null)
+                {
+                    Debug.LogWarning($"[CropModelAssigner] Not found: {path}");
+                    allFound = false;
+                }
+            }
+
+            if (!allFound) { skipped++; continue; }
 
             SerializedObject so = new SerializedObject(crop);
 
-            SerializedProperty stageProp = so.FindProperty("growthStagePrefabs");
-            if (stageProp == null || !stageProp.isArray) { skipped++; continue; }
+            var stageProp = so.FindProperty("growthStagePrefabs");
             stageProp.arraySize = 4;
             for (int i = 0; i < 4; i++)
-                stageProp.GetArrayElementAtIndex(i).objectReferenceValue = prefab;
+                stageProp.GetArrayElementAtIndex(i).objectReferenceValue = prefabs[i];
 
-            SerializedProperty scaleProp = so.FindProperty("modelBaseScale");
-            if (scaleProp != null) scaleProp.floatValue = scale;
-
-            SerializedProperty rotProp = so.FindProperty("modelRotationOffset");
-            if (rotProp != null) rotProp.vector3Value = new Vector3(0f, rotY, 0f);
+            so.FindProperty("modelBaseScale").floatValue        = entry.scale;
+            so.FindProperty("modelRotationOffset").vector3Value = new Vector3(0f, entry.rotY, 0f);
 
             so.ApplyModifiedProperties();
             EditorUtility.SetDirty(crop);
-            Debug.Log($"[CropModelAssigner] {crop.CropName} -> {prefabName} scale:{scale} rotY:{rotY}");
+            Debug.Log($"[CropModelAssigner] {crop.CropName} -> {entry.s0} / {entry.s1} / {entry.s2} / {entry.s3}");
             assigned++;
         }
 
@@ -80,8 +92,7 @@ public class CropModelAssigner : EditorWindow
             CropData crop = AssetDatabase.LoadAssetAtPath<CropData>(AssetDatabase.GUIDToAssetPath(guid));
             if (crop == null) continue;
             SerializedObject so = new SerializedObject(crop);
-            SerializedProperty stageProp = so.FindProperty("growthStagePrefabs");
-            if (stageProp == null || !stageProp.isArray) continue;
+            var stageProp = so.FindProperty("growthStagePrefabs");
             for (int i = 0; i < stageProp.arraySize; i++)
                 stageProp.GetArrayElementAtIndex(i).objectReferenceValue = null;
             so.ApplyModifiedProperties();

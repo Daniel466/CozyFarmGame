@@ -1538,6 +1538,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: shrub-round (17)
       objectReference: {fileID: 0}
+    - target: {fileID: 1849145652443360, guid: 8c3c37f818a12421c870b08339e74c2a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4098545655392818, guid: 8c3c37f818a12421c870b08339e74c2a, type: 3}
       propertyPath: m_RootOrder
       value: 268
@@ -3248,6 +3252,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 8723730200069982568, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3516,6 +3524,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 8723730200069982568, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3724,6 +3736,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: fence-shrub (17)
       objectReference: {fileID: 0}
+    - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4806168695186922, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_RootOrder
       value: 250
@@ -3909,6 +3925,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 8723730200069982568, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3978,6 +3998,10 @@ PrefabInstance:
     - target: {fileID: 8723730200069982568, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
       propertyPath: m_Layer
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8723730200069982568, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5091,6 +5115,10 @@ PrefabInstance:
     - target: {fileID: 8723730200069982568, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
       propertyPath: m_Layer
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8723730200069982568, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8723730200072181672, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -7493,6 +7521,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: shrub-round (16)
       objectReference: {fileID: 0}
+    - target: {fileID: 1849145652443360, guid: 8c3c37f818a12421c870b08339e74c2a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4098545655392818, guid: 8c3c37f818a12421c870b08339e74c2a, type: 3}
       propertyPath: m_RootOrder
       value: 267
@@ -7896,6 +7928,10 @@ PrefabInstance:
     - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_Name
       value: fence-shrub (24)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4806168695186922, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_RootOrder
@@ -9467,6 +9503,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: fence-shrub (27)
       objectReference: {fileID: 0}
+    - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4806168695186922, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_RootOrder
       value: 260
@@ -9580,6 +9620,10 @@ PrefabInstance:
     - target: {fileID: 8723730200069982568, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
       propertyPath: m_Layer
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8723730200069982568, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -11608,6 +11652,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: fence-shrub (10)
       objectReference: {fileID: 0}
+    - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4806168695186922, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_RootOrder
       value: 243
@@ -11928,6 +11976,10 @@ PrefabInstance:
     - target: {fileID: 8723730200069982568, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
       propertyPath: m_Layer
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8723730200069982568, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8723730200072181672, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -12284,6 +12336,10 @@ PrefabInstance:
     - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_Name
       value: fence-shrub (20)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4806168695186922, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_RootOrder
@@ -13668,6 +13724,10 @@ PrefabInstance:
     - target: {fileID: 8723730200069982568, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
       propertyPath: m_Layer
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8723730200069982568, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8723730200072181672, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -15319,6 +15379,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 8723730200069982568, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8723730200072181672, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -15793,6 +15857,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: fence-shrub (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4806168695186922, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_RootOrder
       value: 235
@@ -15929,6 +15997,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: fence-shrub (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4806168695186922, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_RootOrder
       value: 237
@@ -16042,6 +16114,10 @@ PrefabInstance:
     - target: {fileID: 8723730200069982568, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
       propertyPath: m_Layer
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8723730200069982568, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8723730200072181672, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -17756,6 +17832,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: fence-shrub (9)
       objectReference: {fileID: 0}
+    - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4806168695186922, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_RootOrder
       value: 242
@@ -18378,6 +18458,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: fence-shrub (14)
       objectReference: {fileID: 0}
+    - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4806168695186922, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_RootOrder
       value: 247
@@ -18712,6 +18796,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: fence-shrub (8)
       objectReference: {fileID: 0}
+    - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4806168695186922, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_RootOrder
       value: 241
@@ -18957,6 +19045,10 @@ PrefabInstance:
     - target: {fileID: 8723730200069982568, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
       propertyPath: m_Layer
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8723730200069982568, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8723730200072181672, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -19991,6 +20083,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: shrub-round (12)
       objectReference: {fileID: 0}
+    - target: {fileID: 1849145652443360, guid: 8c3c37f818a12421c870b08339e74c2a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4098545655392818, guid: 8c3c37f818a12421c870b08339e74c2a, type: 3}
       propertyPath: m_RootOrder
       value: 263
@@ -20639,7 +20735,7 @@ MonoBehaviour:
   gridWidth: 4
   gridHeight: 4
   tileSize: 4
-  gridOrigin: {x: -6, y: 0.15, z: 13}
+  gridOrigin: {x: -6, y: 0.2, z: 13}
   normalTilePrefab: {fileID: 0}
   tilledTilePrefab: {fileID: 0}
 --- !u!114 &919467193
@@ -21285,6 +21381,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 8723730200069982568, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -21893,6 +21993,10 @@ PrefabInstance:
     - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_Name
       value: fence-shrub (21)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4806168695186922, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_RootOrder
@@ -24345,6 +24449,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: fence-shrub (6)
       objectReference: {fileID: 0}
+    - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4806168695186922, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_RootOrder
       value: 239
@@ -24613,6 +24721,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: fence-shrub (26)
       objectReference: {fileID: 0}
+    - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4806168695186922, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_RootOrder
       value: 259
@@ -24858,6 +24970,10 @@ PrefabInstance:
     - target: {fileID: 8723730200069982568, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
       propertyPath: m_Layer
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8723730200069982568, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8723730200072181672, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -25350,6 +25466,10 @@ PrefabInstance:
     - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_Name
       value: fence-shrub
+      objectReference: {fileID: 0}
+    - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4806168695186922, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_RootOrder
@@ -26728,6 +26848,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: fence-shrub (7)
       objectReference: {fileID: 0}
+    - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4806168695186922, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_RootOrder
       value: 240
@@ -27189,6 +27313,10 @@ PrefabInstance:
     - target: {fileID: 8723730200069982568, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
       propertyPath: m_Layer
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8723730200069982568, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -30297,6 +30425,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: fence-shrub (12)
       objectReference: {fileID: 0}
+    - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4806168695186922, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_RootOrder
       value: 245
@@ -30429,6 +30561,10 @@ PrefabInstance:
     - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_Name
       value: fence-shrub (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4806168695186922, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_RootOrder
@@ -30966,6 +31102,10 @@ PrefabInstance:
     - target: {fileID: 1849145652443360, guid: 8c3c37f818a12421c870b08339e74c2a, type: 3}
       propertyPath: m_Name
       value: shrub-round (14)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1849145652443360, guid: 8c3c37f818a12421c870b08339e74c2a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4098545655392818, guid: 8c3c37f818a12421c870b08339e74c2a, type: 3}
       propertyPath: m_RootOrder
@@ -32687,6 +32827,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: fence-shrub (15)
       objectReference: {fileID: 0}
+    - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4806168695186922, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_RootOrder
       value: 248
@@ -33193,6 +33337,10 @@ PrefabInstance:
     - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_Name
       value: fence-shrub (23)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4806168695186922, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_RootOrder
@@ -33757,6 +33905,10 @@ PrefabInstance:
     - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_Name
       value: fence-shrub (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4806168695186922, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_RootOrder
@@ -35980,6 +36132,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: shrub-round (13)
       objectReference: {fileID: 0}
+    - target: {fileID: 1849145652443360, guid: 8c3c37f818a12421c870b08339e74c2a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4098545655392818, guid: 8c3c37f818a12421c870b08339e74c2a, type: 3}
       propertyPath: m_RootOrder
       value: 264
@@ -36726,6 +36882,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 8723730200069982568, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8723730200072181672, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -36799,6 +36959,10 @@ PrefabInstance:
     - target: {fileID: 8723730200069982568, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
       propertyPath: m_Layer
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8723730200069982568, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8723730200072181672, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -37074,6 +37238,10 @@ PrefabInstance:
     - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_Name
       value: fence-shrub (28)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4806168695186922, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_RootOrder
@@ -38823,6 +38991,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: fence-shrub (13)
       objectReference: {fileID: 0}
+    - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4806168695186922, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_RootOrder
       value: 246
@@ -39935,6 +40107,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: fence-shrub (16)
       objectReference: {fileID: 0}
+    - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4806168695186922, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_RootOrder
       value: 249
@@ -40067,6 +40243,10 @@ PrefabInstance:
     - target: {fileID: 1849145652443360, guid: 8c3c37f818a12421c870b08339e74c2a, type: 3}
       propertyPath: m_Name
       value: shrub-round (18)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1849145652443360, guid: 8c3c37f818a12421c870b08339e74c2a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4098545655392818, guid: 8c3c37f818a12421c870b08339e74c2a, type: 3}
       propertyPath: m_RootOrder
@@ -41607,6 +41787,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: fence-shrub (22)
       objectReference: {fileID: 0}
+    - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4806168695186922, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_RootOrder
       value: 255
@@ -43048,6 +43232,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: fence-shrub (25)
       objectReference: {fileID: 0}
+    - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4806168695186922, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_RootOrder
       value: 258
@@ -43455,6 +43643,10 @@ PrefabInstance:
     - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_Name
       value: fence-shrub (11)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4806168695186922, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_RootOrder
@@ -46644,6 +46836,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: shrub-round (15)
       objectReference: {fileID: 0}
+    - target: {fileID: 1849145652443360, guid: 8c3c37f818a12421c870b08339e74c2a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4098545655392818, guid: 8c3c37f818a12421c870b08339e74c2a, type: 3}
       propertyPath: m_RootOrder
       value: 266
@@ -47051,6 +47247,10 @@ PrefabInstance:
     - target: {fileID: 8723730200069982568, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
       propertyPath: m_Layer
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8723730200069982568, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8723730200072181672, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -48256,6 +48456,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 8723730200069982568, guid: 459fba7dc47f81f479d256ba01cfd883, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -48625,6 +48829,10 @@ PrefabInstance:
     - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_Name
       value: fence-shrub (29)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4806168695186922, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_RootOrder
@@ -49099,6 +49307,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: fence-shrub (18)
       objectReference: {fileID: 0}
+    - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4806168695186922, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_RootOrder
       value: 251
@@ -49515,6 +49727,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: fence-shrub (5)
       objectReference: {fileID: 0}
+    - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4806168695186922, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -49646,6 +49862,10 @@ PrefabInstance:
     - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_Name
       value: fence-shrub (19)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1694978722104928, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4806168695186922, guid: 4938eefdf61ec4b9097a1398980b421c, type: 3}
       propertyPath: m_RootOrder

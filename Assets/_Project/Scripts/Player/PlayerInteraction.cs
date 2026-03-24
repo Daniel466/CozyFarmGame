@@ -134,7 +134,7 @@ public class PlayerInteraction : MonoBehaviour
         }
 
         Vector3 worldPos = grid.GridToWorld(coord.Value);
-        hoverRoot.transform.position = worldPos + Vector3.up * 0.3f;
+        hoverRoot.transform.position = worldPos + Vector3.up * 0.04f;
         hoverRoot.SetActive(true);
 
         Color c;

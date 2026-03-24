@@ -20,7 +20,7 @@ MonoBehaviour:
   unlockLevel: 8
   cost: 600
   size: {x: 1, y: 2}
-  prefab: {fileID: 0}
+  prefab: {fileID: 1957237772272410, guid: ca2a787328680534488b66d6a68eae8d, type: 3}
   placeholderColor: {r: 0.8, g: 0.75, b: 0.55, a: 1}
   placeXP: 10
   autoWaterRadius: 0

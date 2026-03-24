@@ -14,11 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BuildingData
   buildingId: barn
   buildingName: Barn
+  description: 
   icon: {fileID: 0}
   buildingType: 0
   unlockLevel: 1
   cost: 0
   size: {x: 2, y: 2}
-  prefab: {fileID: 0}
+  prefab: {fileID: 1427016662113696, guid: 1135f5bcd489da04cb5f4fcb4355006b, type: 3}
   placeholderColor: {r: 0.72156864, g: 0.2509804, b: 0.1882353, a: 1}
   placeXP: 10
+  autoWaterRadius: 0
+  autoWaterInterval: 30
+  autoSellInterval: 0
+  autoSellBonus: 0.1
