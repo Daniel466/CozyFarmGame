@@ -20,6 +20,7 @@ public class BuildingAssetGenerator
             new BuildingDef("greenhouse",   "Greenhouse",    BuildingType.Functional,  6,  800, 3, 2, new Color(0.70f, 0.95f, 0.70f), 10),
             new BuildingDef("silo",         "Silo",          BuildingType.Functional,  8,  600, 1, 2, new Color(0.80f, 0.75f, 0.55f), 10),
             new BuildingDef("market_stall", "Market Stall",  BuildingType.Functional, 10, 1000, 2, 2, new Color(0.90f, 0.65f, 0.20f), 10, 120f, 0.1f),
+            new BuildingDef("doghouse",     "Doghouse",      BuildingType.Functional,  3,  300, 1, 1, new Color(0.55f, 0.38f, 0.20f), 15, isDoghouse: true),
             new BuildingDef("scarecrow",    "Scarecrow",     BuildingType.Decoration,  1,   50, 1, 1, new Color(0.80f, 0.60f, 0.20f),  3),
             new BuildingDef("wooden_fence", "Wooden Fence",  BuildingType.Decoration,  1,   20, 1, 1, new Color(0.55f, 0.35f, 0.15f),  3),
             new BuildingDef("flower_bed",   "Flower Bed",    BuildingType.Decoration,  1,   30, 1, 1, new Color(0.95f, 0.40f, 0.60f),  3),
@@ -57,6 +58,7 @@ public class BuildingAssetGenerator
             so.FindProperty("placeXP").intValue = def.placeXP;
             so.FindProperty("autoSellInterval").floatValue = def.autoSellInterval;
             so.FindProperty("autoSellBonus").floatValue = def.autoSellBonus;
+            so.FindProperty("isDoghouse").boolValue = def.isDoghouse;
             so.ApplyModifiedProperties();
 
             AssetDatabase.CreateAsset(asset, assetPath);
@@ -99,10 +101,11 @@ public class BuildingAssetGenerator
         public int unlockLevel, cost, sizeX, sizeY, placeXP;
         public Color color;
         public float autoSellInterval, autoSellBonus;
+        public bool isDoghouse;
 
         public BuildingDef(string id, string name, BuildingType type,
             int unlockLevel, int cost, int sizeX, int sizeY, Color color, int placeXP,
-            float autoSellInterval = 0f, float autoSellBonus = 0.1f)
+            float autoSellInterval = 0f, float autoSellBonus = 0.1f, bool isDoghouse = false)
         {
             this.id = id; this.name = name; this.type = type;
             this.unlockLevel = unlockLevel; this.cost = cost;
@@ -110,6 +113,7 @@ public class BuildingAssetGenerator
             this.color = color; this.placeXP = placeXP;
             this.autoSellInterval = autoSellInterval;
             this.autoSellBonus = autoSellBonus;
+            this.isDoghouse = isDoghouse;
         }
     }
 }

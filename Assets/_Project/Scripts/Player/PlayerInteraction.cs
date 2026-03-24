@@ -239,6 +239,9 @@ public class PlayerInteraction : MonoBehaviour
 
     public void SetTool(PlayerTool tool) => CurrentTool = tool;
 
+    /// <summary>Returns the crop currently selected by the player, or null if none.</summary>
+    public CropData SelectedCrop => selectedCrop;
+
     public void SetSelectedCrop(CropData crop)
     {
         selectedCrop = crop;

@@ -22,6 +22,23 @@ public class FarmingManager : MonoBehaviour
         set => growthSpeedMultiplier = value;
     }
 
+    // Additive bonus applied on top of growthSpeedMultiplier — owned exclusively by DogController.
+    // Kept separate so the dog never corrupts the Inspector-set base value.
+    private float dogGrowthBonus;
+
+    /// <summary>
+    /// Additive growth speed bonus granted by the dog's happiness (set by DogController).
+    /// Combined with growthSpeedMultiplier at tick time.
+    /// </summary>
+    public float DogGrowthBonus
+    {
+        get => dogGrowthBonus;
+        set => dogGrowthBonus = Mathf.Max(0f, value);
+    }
+
+    /// <summary>Effective multiplier used for crop growth ticks.</summary>
+    public float EffectiveGrowthMultiplier => growthSpeedMultiplier + dogGrowthBonus;
+
     private FarmGrid grid;
 
     private void Awake()
@@ -182,7 +199,7 @@ public class FarmingManager : MonoBehaviour
         // Tick growth for all planted tiles
         foreach (var tile in tileCache.Values)
         {
-            if (tile.IsPlanted) tile.UpdateGrowth(Time.deltaTime * growthSpeedMultiplier);
+            if (tile.IsPlanted) tile.UpdateGrowth(Time.deltaTime * EffectiveGrowthMultiplier);
         }
     }
 

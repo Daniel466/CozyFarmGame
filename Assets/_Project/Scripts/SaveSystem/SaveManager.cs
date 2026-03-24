@@ -67,6 +67,9 @@ public class SaveManager : MonoBehaviour
             }
         }
 
+        // Dog happiness
+        data.dogHappiness = DogManager.Instance?.ActiveDog?.Happiness ?? 0.5f;
+
         File.WriteAllText(SavePath, JsonUtility.ToJson(data, prettyPrint: true));
         Debug.Log($"[Save] Saved — coins:{data.coins} level:{data.level} " +
                   $"tiles:{data.tiles.Count} inventory:{data.inventoryItems.Count} buildings:{data.buildings.Count}");
@@ -158,6 +161,10 @@ public class SaveManager : MonoBehaviour
             }
         }
 
+        // Restore dog happiness after buildings (doghouse spawns dog during RestoreBuilding)
+        if (DogManager.Instance?.ActiveDog != null)
+            DogManager.Instance.ActiveDog.SetHappiness(data.dogHappiness);
+
         Debug.Log($"[Save] Loaded — coins:{data.coins} level:{data.level} " +
                   $"tiles:{data.tiles?.Count} inventory:{data.inventoryItems?.Count} buildings:{data.buildings?.Count}");
 
@@ -191,6 +198,7 @@ public class GameSaveData
     public int    xp;
     public int    level;
     public string saveTimestamp;
+    public float  dogHappiness = 0.5f;
     public List<InventorySaveItem> inventoryItems;
     public List<FarmTileSaveData>  tiles;
     public List<BuildingSaveData>  buildings;

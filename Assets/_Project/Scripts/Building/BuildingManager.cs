@@ -220,6 +220,8 @@ public class BuildingManager : MonoBehaviour
             var stall = placed.AddComponent<MarketStallComponent>();
             stall.Initialise(selectedBuilding.AutoSellInterval, selectedBuilding.AutoSellBonus);
         }
+        if (selectedBuilding.IsDoghouse)
+            DogManager.Instance?.SpawnDog(worldPos);
 
         // Award XP
         GameManager.Instance.Progression.AddXP(selectedBuilding.PlaceXP);
@@ -232,6 +234,10 @@ public class BuildingManager : MonoBehaviour
     public bool RemoveBuilding(Vector2Int coord)
     {
         if (!placedBuildings.TryGetValue(coord, out PlacedBuilding building)) return false;
+
+        // Despawn dog before destroying doghouse GO
+        if (building.data.IsDoghouse)
+            DogManager.Instance?.DespawnDog();
 
         Destroy(building.gameObject);
         FreeCells(coord, building.data);
@@ -249,13 +255,19 @@ public class BuildingManager : MonoBehaviour
 
     private bool CanPlace(Vector2Int coord, BuildingData building)
     {
+        // Only one doghouse allowed
+        if (building.IsDoghouse && DogManager.Instance != null && DogManager.Instance.HasDog)
+        {
+            HUDManager.Instance?.ShowNotification("Max already has a home!");
+            return false;
+        }
+
         for (int x = 0; x < building.Size.x; x++)
         {
             for (int y = 0; y < building.Size.y; y++)
             {
                 Vector2Int cell = coord + new Vector2Int(x, y);
                 if (placedBuildings.ContainsKey(cell)) return false;
-                // Block placement on farm grid tiles (flower beds)
                 if (grid.IsValidCoord(cell)) return false;
             }
         }
@@ -294,6 +306,8 @@ public class BuildingManager : MonoBehaviour
             var stall = placed.AddComponent<MarketStallComponent>();
             stall.Initialise(data.AutoSellInterval, data.AutoSellBonus);
         }
+        if (data.IsDoghouse)
+            DogManager.Instance?.SpawnDog(worldPos);
     }
 
     private void OccupyCells(Vector2Int origin, BuildingData building)

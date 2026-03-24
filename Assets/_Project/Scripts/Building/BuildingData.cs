@@ -40,6 +40,10 @@ public class BuildingData : ScriptableObject
     [SerializeField] private float autoSellInterval = 0f;  // Seconds between auto-sell cycles
     [SerializeField] private float autoSellBonus = 0.1f;   // 0.1 = 10% bonus on top of sell value
 
+    [Header("Dog System")]
+    [Tooltip("If true, placing this building spawns the dog companion and removing it despawns it.")]
+    [SerializeField] private bool isDoghouse = false;
+
     // Public accessors
     public string BuildingId => buildingId;
     public string BuildingName => buildingName;
@@ -56,6 +60,7 @@ public class BuildingData : ScriptableObject
     public float AutoWaterInterval => autoWaterInterval;
     public float AutoSellInterval => autoSellInterval;
     public float AutoSellBonus => autoSellBonus;
+    public bool IsDoghouse => isDoghouse;
 }
 
 public enum BuildingType

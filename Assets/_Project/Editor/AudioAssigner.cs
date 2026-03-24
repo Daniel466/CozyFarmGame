@@ -50,6 +50,10 @@ public static class AudioAssigner
         AssignSingle(so, "buildPlaceSFX",  ref assigned, "Build Placed");
         AssignSingle(so, "buildRemoveSFX", ref assigned, "Remove Build");
 
+        AssignArray(so, "dogBarkClips", ref assigned,
+            "ANIMAL_Dog_Bark_03_RR01_mono", "ANIMAL_Dog_Bark_03_RR02_mono",
+            "ANIMAL_Dog_Bark_03_RR03_mono", "ANIMAL_Dog_Bark_03_RR04_mono");
+
         // Array fields
         AssignArray(so, "tillSFXClips",    ref assigned,
             "SPADE_Dig_01_mono", "SPADE_Dig_02_mono", "SPADE_Dig_03_mono",
