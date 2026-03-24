@@ -42,9 +42,29 @@ Focus: building model replacements and Mixamo animations.
 
 ---
 
-## Priority 3 — Content
+## Priority 3 — Player Engagement While Crops Grow
+> **Pre-launch blocker.** Core design gap — players need things to do during crop wait time.
+> See GDD Section 11 for full design notes.
 
-- [ ] Scrounger loop: collectibles scattered around map
+### Collectibles Loop (Scrounger) — HIGHEST PRIORITY
+- [ ] Spawn coins/seeds/items scattered around map at random positions
+- [ ] Visible sparkle/glint so player can spot them from a distance
+- [ ] Respawn every 5–10 minutes at new positions
+- [ ] Drop table: coins (common), bonus seeds (uncommon), rare decoration items (rare)
+
+### Animal Interactions
+- [ ] Pet/feed interactions for sheep, dog, cat (already in scene)
+- [ ] Per-animal happiness state — fills on interact, drains over time
+- [ ] Small passive bonus for happy animals (e.g. dog alerts when crops ready)
+
+### Decorating
+- [ ] Expand BuildingDatabase with path, fence, and prop decoration items
+- [ ] Placing decorations gives 3 XP (already in progression table)
+
+---
+
+## Priority 4 — Content
+
 - [ ] Seasonal crops
 - [ ] Rare / hybrid blooms
 - [ ] Character cosmetics

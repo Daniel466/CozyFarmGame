@@ -16,8 +16,8 @@ Last updated: 2026-03-23
 - [ ] Set WateringWell BuildingData Description: "Auto-waters nearby crops every 30s"
 
 ### Bugs
-- [ ] Shop "YOUR COINS: 0" not reading correctly — coins display broken in ShopUI
-- [ ] Icon backgrounds not transparent — IconRenderer transparent RT fix needs re-run
+- [x] Shop coin display — was showing test value (8k coins), not a bug
+- [x] Icon backgrounds not transparent — fixed, re-run confirmed working
 - [ ] Crop icons inconsistent: grapes, lavender, chilli too dark/small — adjust IconRenderer lighting or camera framing per crop
 
 ### Art

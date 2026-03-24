@@ -189,7 +189,55 @@ Not in v1.0 — consider for a future update post-launch.
 
 ---
 
-## 11. Out of Scope for v1.0
+## 11. Player Engagement While Crops Grow
+
+> **Design Priority:** This is a core gap that must be solved before itch.io launch.
+> The farming loop creates mandatory wait time (5–35 min per crop). Without things to do during that window, players will quit. Every feature below addresses this directly.
+
+### The Problem
+After planting and watering, the player has nothing to do until crops are ready. In a real session this could be 10–30 minutes of dead time. The game needs a secondary activity layer that:
+- Fills wait time without feeling like a chore
+- Rewards exploration and attention
+- Fits the cozy, low-pressure tone
+
+### Solutions (Priority Order for Launch)
+
+#### 1. Collectibles Loop (Scrounger)
+*Already in roadmap — highest priority*
+
+Coins, seeds, and small items scattered around the map, respawning on a timer. Player explores between harvests to find them.
+- Collectibles should feel discoverable, not grind-y — visible glint/sparkle from a distance
+- Respawn every 5–10 real minutes at random map positions
+- Drop types: coins (most common), bonus seeds, rare decoration items
+- Ties into the economy loop: extra coins = more seeds = more planting
+
+#### 2. Animal Interactions
+*Sheep, dog, and cat already exist in the polyperfect scene*
+
+Simple one-button interactions: pet, feed, or play with the farm animals.
+- Each animal has a "happiness" state — interacting fills it, it drains slowly over time
+- Happy animals could give a small passive bonus (e.g. fed dog barks to alert when crops are ready)
+- Low implementation cost — the models and placement already exist
+- Very high feel-good / cozy value for the player
+
+#### 3. Decorating
+*Paths, fences, and props are already in building system design*
+
+Players can spend their wait time arranging and personalising the farm.
+- Placing a path, fence section, or decorative prop takes ~5 seconds
+- Decorating gives small XP (3 XP per item — already in progression table)
+- Players naturally do a "decorating pass" while waiting for the next harvest
+- Requires: unlock more decoration items in BuildingDatabase
+
+### Design Notes
+- These three loops should all be active at the same time — a player session looks like:
+  *plant → water → explore for collectibles → pet animals → place a fence → harvest → repeat*
+- None of these should feel required — they're options, not obligations
+- Collectibles are the highest-leverage feature: cheap to implement, immediately adds a reason to walk around
+
+---
+
+## 12. Out of Scope for v1.0
 
 - Multiplayer / co-op
 - Seasonal crop system
@@ -203,7 +251,7 @@ Not in v1.0 — consider for a future update post-launch.
 
 ---
 
-## 12. Implementation Status
+## 13. Implementation Status
 *Updated: 2026-03-23*
 
 | Feature | Status |

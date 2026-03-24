@@ -116,9 +116,15 @@ Last updated: 2026-03-23
 
 ---
 
-## Priority 3 — Content
+## Priority 3 — Player Engagement While Crops Grow
+> **Pre-launch blocker.** Players need things to do during crop wait time. See GDD §11.
 
-- [ ] Scrounger loop: collectibles scattered around map
+- [ ] Collectibles loop — coins/seeds/items scattered around map, respawn every 5–10 min, visible sparkle
+- [ ] Animal interactions — pet/feed sheep, dog, cat already in scene; happiness state + small bonus
+- [ ] Decorating — expand BuildingDatabase with paths, fences, props; 3 XP per item placed
+
+## Priority 4 — Content
+
 - [ ] Seasonal crops
 - [ ] Rare / hybrid blooms
 - [ ] Character cosmetics

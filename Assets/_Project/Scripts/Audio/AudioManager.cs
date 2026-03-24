@@ -28,6 +28,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip buildRemoveSFX;
     [SerializeField] private AudioClip levelUpSFX;
     [SerializeField] private AudioClip uiClickSFX;
+    [SerializeField] private AudioClip collectSFX;
     [SerializeField] private float sfxVolume = 0.8f;
 
     private int currentTrackIndex = 0;
@@ -131,4 +132,5 @@ public class AudioManager : MonoBehaviour
     public void PlayRemove()   => PlaySFX(buildRemoveSFX);
     public void PlayLevelUp()  => PlaySFX(levelUpSFX, 1.2f);
     public void PlayUIClick()  => PlaySFX(uiClickSFX, 0.6f);
+    public void PlayCollect()  => PlaySFX(collectSFX ?? sellSFX, 1.1f);
 }
