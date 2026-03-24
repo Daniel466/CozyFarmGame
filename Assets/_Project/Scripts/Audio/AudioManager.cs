@@ -30,7 +30,6 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip uiClickSFX;
     [SerializeField] private AudioClip collectSFX;
     [SerializeField] private AudioClip[] dogBarkClips;    // ANIMAL_Dog_Bark_03 RR1-4
-    [SerializeField] private AudioClip petSFX;            // Optional soft pet sound
     [SerializeField] private float sfxVolume = 0.8f;
 
     private int currentTrackIndex = 0;
@@ -136,7 +135,6 @@ public class AudioManager : MonoBehaviour
     public void PlayUIClick()  => PlaySFX(uiClickSFX, 0.6f);
     public void PlayCollect()  => PlaySFX(collectSFX ?? sellSFX, 1.1f);
     public void PlayDogBark()  => PlaySFX(RandomClip(dogBarkClips), 0.9f);
-    public void PlayPet()      => PlaySFX(petSFX, 0.7f);
 
     private AudioClip RandomClip(AudioClip[] clips)
     {

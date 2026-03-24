@@ -1,5 +1,5 @@
 # Cozy Farm Game - TODO
-Last updated: 2026-03-25
+Last updated: 2026-03-24
 
 ---
 
@@ -10,13 +10,6 @@ Last updated: 2026-03-25
 
 ## Up Next (Priority Order)
 
-### Dog Pet System
-- [ ] Choose dog model (Low Poly Ultimate Pack Dog.prefab or buy Synty POLYGON Dog Pack)
-- [ ] Dog follows player (NavMesh or simple follow script)
-- [ ] Player can pet dog (E key proximity interaction)
-- [ ] Optional: feeding gives crop growth speed boost
-- [ ] Dog bark SFX from Universal Sound FX (ANIMAL_Dog_Bark_03 RR1-4)
-
 ### Bugs
 - [x] Shop coin display — was showing test value (8k coins), not a bug
 - [x] Icon backgrounds not transparent — fixed, re-run confirmed working
@@ -26,10 +19,28 @@ Last updated: 2026-03-25
 ### Art
 - [ ] Soil tile polish — replace procedural brown quad with proper dirt texture (polish stage)
 - [ ] Find better model matches: Potato, Strawberry, Chilli, Lavender
+- [ ] Doghouse — replace Synty Outhouse placeholder with proper kennel model
 
 ### Polish
 - [ ] Crop bloom/glow when ready to harvest
 - [ ] Decorative props: paths, lanterns, fences between beds
+
+---
+
+## Done
+
+### Dog Pet System (DEV-70)
+- [x] ShibaInu model from Ultimate Animated Animals — Wander/Follow/Return state machine
+- [x] Player can pet dog (E key proximity) — happiness gain, Pet animation, bark SFX
+- [x] Feeding with selected crop — larger happiness gain, Eating animation
+- [x] Happiness drives FarmingManager.DogGrowthBonus (up to +0.5x additive)
+- [x] Crop ready alert — dog barks and notifies when crops ready to harvest
+- [x] Interaction highlight ring — pulsing ground ring when in interaction range
+- [x] Context hint — "E: Pet Max - Happy: N%" in bottom hint bar
+- [x] DogHappinessHUD — fill bar with red/green colour lerp
+- [x] One doghouse limit — CanPlace blocks second placement
+- [x] Happiness saved/restored across sessions
+- [x] NavMesh-safe spawn position
 
 ---
 

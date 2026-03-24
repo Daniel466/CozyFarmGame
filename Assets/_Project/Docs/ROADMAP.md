@@ -1,26 +1,20 @@
 # CozyFarmGame — Development Roadmap
-*Last updated: 2026-03-23*
+*Last updated: 2026-03-24*
 
 ---
 
 ## Current Status
 Core gameplay loop complete. Milestone 3 (Alpha) in progress.
 Synty POLYGON Farm Pack integrated — all 10 crops and 8 buildings assigned real 3D models.
-Raised flower beds replaced with flat soil tile system. Icons re-rendered with Synty models.
-Collectibles loop live. Market Stall auto-sell live.
-Focus: animal interactions and Mixamo animations.
+Dog companion system live — ShibaInu follows player, pet/feed interactions, happiness → growth bonus.
+Collectibles loop, Market Stall auto-sell, Watering Well all live.
+Focus: Mixamo player animations and polish.
 
 ---
 
 ## Priority 1 — Next Session
 
-### 1. Dog Pet System
-- [ ] Choose dog model (Low Poly Ultimate Pack or Synty POLYGON Dog Pack)
-- [ ] Dog follows player
-- [ ] Pet interaction (E key proximity)
-- [ ] Optional feeding — crop growth speed boost
-
-### 2. Mixamo Animations (DEV-48)
+### 1. Mixamo Animations (DEV-48)
 - [ ] Harvest animation
 - [ ] Water animation
 - [ ] Plant animation
@@ -50,10 +44,10 @@ Focus: animal interactions and Mixamo animations.
 ### Collectibles Loop (Scrounger) — DONE
 - [x] Coins/seeds scattered around map, distance-based pickup, 5-min respawn, sparkle particles
 
-### Animal Interactions — UP NEXT
-- [ ] Pet/feed interactions for animals already in scene
-- [ ] Per-animal happiness state — fills on interact, drains over time
-- [ ] Small passive bonus for happy animals (e.g. dog alerts when crops ready)
+### Animal Interactions — DONE
+- [x] Pet/feed interactions — E key proximity, happiness state, drain over time
+- [x] Dog alerts when crops ready to harvest
+- [x] Dog happiness → crop growth speed bonus (up to +0.5x additive)
 
 ### Decorating
 - [ ] Expand BuildingDatabase with path, fence, and prop decoration items

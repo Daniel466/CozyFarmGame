@@ -265,8 +265,46 @@ Done:
 - Copy Selected button — copies checked clips to `Assets/_Project/Audio/SFX/Universal/`
 - Delete Folder button — removes entire Universal Sound FX folder after copying
 
+---
+
+## Session 2026-03-24 — Dog Companion System (DEV-70)
+
+### DEV-70 — Dog Pet System
+**Status: Done**
+
+- `DogController.cs` — Wander/Follow/Return state machine
+  - Wander: roams within `wanderRadius` (5f) of doghouse via coroutine; random bark ~10% chance per waypoint
+  - Follow: player within `followTriggerRange` (12f); walks/runs to `followStopDistance` (1.8f); run threshold 7f
+  - Return: player beyond `returnRange` (60f); walks home; re-engages Follow at `reFollowRange` (10f) with hysteresis
+  - Animation driven by `agent.velocity.sqrMagnitude` to prevent walk flicker at stop boundary
+  - Animator contract: Speed float (0=Idle, 1=Walk, 2=Gallop), Pet trigger, Eat trigger
+  - Interaction highlight ring: pulsing yellow/white hollow square on ground within interaction range
+  - Context hint: "E: Pet Max - Happy: N%" / "E: Feed Max - Happy: N%" via HUDManager.SetContextHint
+  - Happiness: drains 0.004f/s, pet +0.30, feed +0.50; drives FarmingManager.DogGrowthBonus (0-0.5x additive)
+  - Crop alert: barks and notifies when crops ready (30s check interval, 120s cooldown, happiness threshold 0.30)
+- `DogManager.cs` — singleton lifecycle
+  - `SpawnDog(Vector3)`: NavMesh.SamplePosition validated spawn, calls SetHome, shows HUD panel
+  - `DespawnDog()`: destroys instance, hides HUD panel
+  - `HasDog` property used by CanPlace to block second doghouse
+- `DogHappinessHUD.cs` — fill bar with red/green colour lerp, % label; hidden until doghouse placed
+- `ShibaInuSetup.cs` — editor tool at Tools > CozyFarm > Setup ShibaInu Dog
+  - Builds `ShibaInu_AC.controller` with correct `AnimalArmature|` prefixed clip names
+  - Unpacks FBX prefab instance, strips pack MonoBehaviours, forces all children active
+  - Builds `ShibaInu_Dog.prefab`: root (NavMeshAgent + CapsuleCollider + DogController) + model child + InteractionPrompt
+- `DogAnimatorGenerator.cs` — EditorWindow for manual clip assignment (fallback tool)
+- `Doghouse.asset` — BuildingData: level 3, cost 300, 1x1, isDoghouse=true, Synty Outhouse placeholder prefab
+- `BuildingManager.CanPlace` — blocks second doghouse with "Max already has a home!" notification
+- `SaveManager` — persists `dogHappiness` float; restored via `DogController.SetHappiness()` after buildings load
+- `FarmingManager.DogGrowthBonus` — additive float separate from base multiplier; zeroed on dog destroy
+
+### Bug Fixes:
+- Dog walking animation showing when idle at player's side — fixed by driving Speed from agent.velocity not distance
+- Dog model disabled at runtime — caused by pack MonoBehaviour on FBX; stripped in ShibaInuSetup via UnpackPrefabInstance + DestroyImmediate
+- ShibaInuSetup IndexOutOfRangeException — fixed by deleting and recreating controller instead of clearing layers in-place
+- ShibaInuSetup MissingComponentException — fixed by calling PrefabUtility.UnpackPrefabInstance before adding components
+
 ## Next Session Priorities:
-1. Dog pet system — follow player, pet interaction, optional feeding bonus
-2. Mixamo animations (DEV-48)
-3. Better crop model matches: Potato, Strawberry, Chilli, Lavender
-4. Stone Path and Lantern — find Synty prefab matches or source alternatives
+1. Mixamo animations (DEV-48) — harvest, water, plant on player character
+2. Crop bloom/glow when ready to harvest
+3. Stone Path and Lantern — find Synty prefab matches or source alternatives
+4. Better crop model matches: Potato, Strawberry, Chilli, Lavender
