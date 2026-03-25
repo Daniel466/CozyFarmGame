@@ -1,19 +1,33 @@
 using UnityEngine;
+using System.Collections;
 
 /// <summary>
 /// Handles player interaction with farm tiles via mouse clicks.
-/// Left click = interact (till / plant / harvest)
-/// Right click = water
-/// F = sell all
+/// Left click  = walk to tile, then plant / harvest
+/// Right click = walk to tile, then water
+/// F           = sell all
+///
+/// Flow: click → auto-walk → face tile → animation → action fires mid-animation
 /// </summary>
 public class PlayerInteraction : MonoBehaviour
 {
     [Header("Settings")]
-    [SerializeField] private float interactionRange = 10f;
+    [Tooltip("Distance at which the player stops walking toward a tile before acting.")]
+    [SerializeField] private float walkStopDistance   = 2.5f;
+    [Tooltip("Maximum raycast distance for the hover highlight and click detection.")]
+    [SerializeField] private float hoverRange         = 10f;
+    [SerializeField] private float plantActionDelay   = 0.6f; // seconds into anim when crop spawns
+    [SerializeField] private float waterActionDelay   = 0.4f;
+    [SerializeField] private float harvestActionDelay = 0.5f;
     [SerializeField] private LayerMask groundLayer;
 
     [Header("Tool")]
     [SerializeField] private CropData selectedCrop;
+
+    [Header("References")]
+    [SerializeField] private PlayerController playerController;
+
+    private Coroutine pendingInteraction;
 
     private FarmingManager farming;
     private FarmGrid grid;
@@ -177,7 +191,7 @@ public class PlayerInteraction : MonoBehaviour
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         LayerMask mask = groundLayer.value == 0 ? ~0 : groundLayer;
         if (!Physics.Raycast(ray, out RaycastHit hit, 100f, mask)) return null;
-        if (Vector3.Distance(transform.position, hit.point) > interactionRange) return null;
+        if (Vector3.Distance(transform.position, hit.point) > hoverRange) return null;
         Vector2Int coord = grid.WorldToGrid(hit.point);
         return grid.GetTile(coord) != null ? coord : null;
     }
@@ -200,19 +214,32 @@ public class PlayerInteraction : MonoBehaviour
         FarmTile tile = grid.GetTile(coord.Value);
         if (tile == null) return;
 
-        // Flower beds are pre-tilled — no till step needed (Farm Together style)
-        if (tile.IsReadyToHarvest)
+        if (!tile.IsReadyToHarvest && tile.IsPlanted)
         {
-            farming.HarvestTile(coord.Value);
+            // Already growing — cancel any pending interaction and do nothing
+            CancelPendingInteraction();
+            return;
         }
-        else if (!tile.IsPlanted && selectedCrop != null)
+        if (!tile.IsPlanted && selectedCrop == null)
         {
-            farming.PlantCrop(coord.Value, selectedCrop);
-        }
-        else if (!tile.IsPlanted && selectedCrop == null)
-        {
+            CancelPendingInteraction();
             HUDManager.Instance?.ShowNotification("No crop selected - press B to open shop!");
+            return;
         }
+
+        // Snapshot crop at click time — prevents mid-walk shop changes from affecting this action
+        StartInteraction(coord.Value, isWater: false, selectedCrop);
+    }
+
+    private void CancelPendingInteraction()
+    {
+        if (pendingInteraction != null)
+        {
+            StopCoroutine(pendingInteraction);
+            pendingInteraction = null;
+        }
+        playerController?.EndAction();
+        playerController?.CancelAutoMove();
     }
 
     private void HandleRightClick()
@@ -220,7 +247,72 @@ public class PlayerInteraction : MonoBehaviour
         if (IsInBuildMode) return;
         Vector2Int? coord = GetClickedTileCoord();
         if (!coord.HasValue) return;
-        farming.WaterTile(coord.Value);
+        StartInteraction(coord.Value, isWater: true, null);
+    }
+
+    private void StartInteraction(Vector2Int coord, bool isWater, CropData crop)
+    {
+        CancelPendingInteraction();
+        pendingInteraction = StartCoroutine(WalkThenAct(coord, isWater, crop));
+    }
+
+    private IEnumerator WalkThenAct(Vector2Int coord, bool isWater, CropData crop)
+    {
+        Vector3 tileWorldPos = grid.GridToWorld(coord);
+
+        // --- Walk to tile (skip if already close enough) ---
+        float distToTile = Vector3.Distance(transform.position, tileWorldPos);
+        if (distToTile > walkStopDistance)
+        {
+            bool arrived = false;
+            playerController?.WalkTo(tileWorldPos, walkStopDistance, () => arrived = true);
+
+            yield return new WaitUntil(() => arrived || playerController == null || !playerController.IsAutoMoving);
+
+            // Player pressed WASD mid-walk — abort
+            if (!arrived) yield break;
+        }
+
+        // --- Face the tile ---
+        playerController?.FacePosition(tileWorldPos);
+        yield return null; // one frame for rotation to apply
+
+        // --- Re-read tile state (may have changed while walking) ---
+        FarmTile tile = grid.GetTile(coord);
+        if (tile == null) yield break;
+
+        if (isWater)
+        {
+            if (!tile.IsPlanted || tile.IsWatered)
+            {
+                HUDManager.Instance?.ShowNotification(tile.IsWatered ? "Already watered!" : "Nothing planted here!");
+                yield break;
+            }
+            playerController?.TriggerWater();
+            yield return new WaitForSeconds(waterActionDelay);
+            farming.WaterTile(coord);
+            playerController?.EndAction();
+        }
+        else if (tile.IsReadyToHarvest)
+        {
+            playerController?.TriggerHarvest();
+            yield return new WaitForSeconds(harvestActionDelay);
+            farming.HarvestTile(coord);
+            playerController?.EndAction();
+        }
+        else if (!tile.IsPlanted && crop != null)
+        {
+            playerController?.TriggerPlant();
+            yield return new WaitForSeconds(plantActionDelay);
+            farming.PlantCrop(coord, crop);
+            playerController?.EndAction();
+        }
+        else if (!tile.IsPlanted && crop == null)
+        {
+            HUDManager.Instance?.ShowNotification("No crop selected - press B to open shop!");
+        }
+
+        pendingInteraction = null;
     }
 
     private Vector2Int? GetClickedTileCoord()
@@ -231,8 +323,8 @@ public class PlayerInteraction : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit, 100f, mask))
         {
-            if (Vector3.Distance(transform.position, hit.point) > interactionRange) return null;
-            return grid.WorldToGrid(hit.point);
+            Vector2Int coord = grid.WorldToGrid(hit.point);
+            return grid.GetTile(coord) != null ? coord : null;
         }
         return null;
     }

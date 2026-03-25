@@ -12,6 +12,7 @@ public class CollectibleItem : MonoBehaviour
     private CollectibleType type;
     private int coinAmount;
     private string label; // crop name for seed drops
+    private GameObject collectFXPrefab;
 
     private Vector3 startPos;
     private float bobOffset;
@@ -21,13 +22,14 @@ public class CollectibleItem : MonoBehaviour
     // Notifies the spawner slot so it can start its respawn timer
     public System.Action OnCollected;
 
-    public void Initialise(CollectibleType collectibleType, int coins, string displayLabel)
+    public void Initialise(CollectibleType collectibleType, int coins, string displayLabel, GameObject collectFX = null)
     {
-        type       = collectibleType;
-        coinAmount = coins;
-        label      = displayLabel;
-        startPos   = transform.position;
-        bobOffset  = Random.Range(0f, Mathf.PI * 2f);
+        type             = collectibleType;
+        coinAmount       = coins;
+        label            = displayLabel;
+        collectFXPrefab  = collectFX;
+        startPos         = transform.position;
+        bobOffset        = Random.Range(0f, Mathf.PI * 2f);
 
         var playerGO = GameObject.FindGameObjectWithTag("Player");
         if (playerGO != null) playerTransform = playerGO.transform;
@@ -63,6 +65,12 @@ public class CollectibleItem : MonoBehaviour
 
         HUDManager.Instance?.ShowNotification(msg);
         AudioManager.Instance?.PlayCollect();
+
+        if (collectFXPrefab != null)
+        {
+            var fx = Instantiate(collectFXPrefab, transform.position, Quaternion.identity);
+            Destroy(fx, 3f);
+        }
 
         OnCollected?.Invoke();
         Destroy(gameObject);

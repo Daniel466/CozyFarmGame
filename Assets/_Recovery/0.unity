@@ -2581,7 +2581,7 @@ MonoBehaviour:
   gravity: -9.81
   characterModel: {fileID: 1926434523}
   modelScale: 1
-  modelOffset: {x: 0, y: 1, z: 0}
+  modelOffset: {x: 0, y: 0, z: 0}
   animator: {fileID: 1926434522}
 --- !u!143 &112115799
 CharacterController:
@@ -20759,11 +20759,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FarmingManager
   cropVisualPrefab: {fileID: 8905606864023788519, guid: bf34193840c304f9e9b5ba522c9d516d, type: 3}
-  harvestReadyFXPrefab: {fileID: 1497030318103322, guid: 3313c584bfb0ca54584fe5b29871dfc2, type: 3}
-  harvestFXPrefab: {fileID: 1575721338728490, guid: 4171bb92c5c591848b14be1db6f3efe2, type: 3}
-  waterFXPrefab: {fileID: 1932552764689772, guid: 55c7caedf64d935419e00dac831d338a, type: 3}
-  plantFXPrefab: {fileID: 1696364401450348, guid: d599d264aedd3aa4684f39e078823d4e, type: 3}
-  growthSpeedMultiplier: 1
+  harvestParticles: {fileID: 0}
+  waterParticles: {fileID: 0}
+  growthSpeedMultiplier: 60
 --- !u!114 &919467192
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -44320,8 +44318,6 @@ MonoBehaviour:
   - {fileID: 358237889}
   respawnSeconds: 300
   cropDatabase: {fileID: 11400000, guid: 583ce83ef71ab4cd1a0eefb5a3219a3c, type: 2}
-  idleFXPrefab: {fileID: 1083241253003144, guid: 4baff87aa850bb94fbaeecfbaaaa1ba1, type: 3}
-  collectFXPrefab: {fileID: 1586284866332922, guid: 5a98cb783d692744e8e305c5b0b5f551, type: 3}
 --- !u!4 &1878628566
 Transform:
   m_ObjectHideFlags: 0
@@ -52487,7 +52483,6 @@ SceneRoots:
   - {fileID: 1975690721}
   - {fileID: 1034175803}
   - {fileID: 1439942993}
-  - {fileID: 1878628566}
   - {fileID: 91506407}
   - {fileID: 1721878420}
   - {fileID: 1579751350}
@@ -52507,3 +52502,4 @@ SceneRoots:
   - {fileID: 2034927532}
   - {fileID: 262297659}
   - {fileID: 1563280019}
+  - {fileID: 1878628566}

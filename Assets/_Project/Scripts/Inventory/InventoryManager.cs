@@ -95,13 +95,16 @@ public class InventoryManager : MonoBehaviour
     {
         int totalCoins = 0;
         foreach (var item in items.Values)
-        {
             totalCoins += item.crop.SellValue * item.quantity;
+
+        if (totalCoins > 0)
+        {
             int xpEarned = Mathf.FloorToInt(totalCoins / 10f);
+            GameManager.Instance.Economy.AddCoins(totalCoins);
             GameManager.Instance.Progression.AddXP(xpEarned);
         }
+
         items.Clear();
-        GameManager.Instance.Economy.AddCoins(totalCoins);
         OnInventoryChanged?.Invoke();
         return totalCoins;
     }

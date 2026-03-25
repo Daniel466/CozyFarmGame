@@ -329,7 +329,8 @@ public class HUDManager : MonoBehaviour
                 tileInfoTimeText.text = "";
             else
             {
-                float secs = tile.GetRemainingSeconds();
+                float secs = tile.GetRemainingSeconds(
+                    FarmingManager.Instance?.EffectiveGrowthMultiplier ?? 1f);
                 tileInfoTimeText.text = secs > 0f ? FormatTime(secs) + " remaining" : "";
             }
         }

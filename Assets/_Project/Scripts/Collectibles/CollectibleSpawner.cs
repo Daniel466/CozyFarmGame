@@ -27,6 +27,10 @@ public class CollectibleSpawner : MonoBehaviour
     [SerializeField] private float respawnSeconds = 300f; // 5 minutes
     [SerializeField] private CropDatabase cropDatabase;
 
+    [Header("FX")]
+    [SerializeField] private GameObject idleFXPrefab;    // FX_Fairy_01 — loops on collectible
+    [SerializeField] private GameObject collectFXPrefab; // FX_Pickup_Heart_01 — burst on pickup
+
     // Per-slot state
     private CollectibleItem[] activeItems;
     private float[]           respawnTimers; // > 0 means on cooldown
@@ -72,7 +76,7 @@ public class CollectibleSpawner : MonoBehaviour
 
         // Pick drop
         var (type, coins, lbl) = RollDrop();
-        item.Initialise(type, coins, lbl);
+        item.Initialise(type, coins, lbl, collectFXPrefab);
         SetCollectibleColor(go, color, type);
 
         int captured = slotIndex;
@@ -136,8 +140,12 @@ public class CollectibleSpawner : MonoBehaviour
         var col = go.GetComponent<SphereCollider>();
         if (col != null) Object.Destroy(col);
 
-        // Sparkle particles
-        AddSparkleParticles(go);
+        // Idle FX — loops above collectible
+        if (idleFXPrefab != null)
+        {
+            var fx = Object.Instantiate(idleFXPrefab, pos, Quaternion.identity);
+            fx.transform.SetParent(go.transform, true);
+        }
 
         item  = go.AddComponent<CollectibleItem>();
         color = Color.white; // placeholder — set after drop roll
@@ -163,43 +171,4 @@ public class CollectibleSpawner : MonoBehaviour
         go.GetComponent<Renderer>().material = mat;
     }
 
-    private static void AddSparkleParticles(GameObject parent)
-    {
-        var psGO = new GameObject("Sparkle");
-        psGO.transform.SetParent(parent.transform, false);
-        psGO.transform.localPosition = Vector3.zero;
-
-        var ps   = psGO.AddComponent<ParticleSystem>();
-        var main = ps.main;
-        main.loop           = true;
-        main.startLifetime  = new ParticleSystem.MinMaxCurve(0.6f, 1.2f);
-        main.startSpeed     = new ParticleSystem.MinMaxCurve(0.3f, 0.8f);
-        main.startSize      = new ParticleSystem.MinMaxCurve(0.04f, 0.10f);
-        main.startColor     = new ParticleSystem.MinMaxGradient(
-                                  new Color(1f, 0.95f, 0.4f, 1f),
-                                  new Color(1f, 1f,    1f,   0.6f));
-        main.simulationSpace = ParticleSystemSimulationSpace.World;
-        main.stopAction      = ParticleSystemStopAction.None;
-
-        var emission = ps.emission;
-        emission.rateOverTime = 6f;
-
-        var shape = ps.shape;
-        shape.shapeType = ParticleSystemShapeType.Sphere;
-        shape.radius    = 0.5f;
-
-        var sol = ps.sizeOverLifetime;
-        sol.enabled = true;
-        sol.size    = new ParticleSystem.MinMaxCurve(1f,
-            new AnimationCurve(new Keyframe(0f, 0f), new Keyframe(0.2f, 1f), new Keyframe(1f, 0f)));
-
-        var shader = Shader.Find("Universal Render Pipeline/Particles/Unlit")
-                  ?? Shader.Find("Particles/Standard Unlit")
-                  ?? Shader.Find("Standard");
-        var mat = new Material(shader);
-        mat.SetColor("_BaseColor", new Color(1f, 0.95f, 0.5f, 1f));
-        psGO.GetComponent<ParticleSystemRenderer>().material = mat;
-
-        ps.Play();
-    }
 }

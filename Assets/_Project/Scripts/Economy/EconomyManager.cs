@@ -14,9 +14,15 @@ public class EconomyManager : MonoBehaviour
     public int Coins => coins;
     public UnityEvent<int> OnCoinsChanged = new UnityEvent<int>();
 
+    private bool initialized;
+
     private void Start()
     {
-        coins = startingCoins;
+        if (!initialized)
+        {
+            coins = startingCoins;
+            initialized = true;
+        }
         // Delay the initial event by one frame so HUDManager has time to subscribe
         StartCoroutine(FireInitialEvent());
     }
@@ -44,6 +50,7 @@ public class EconomyManager : MonoBehaviour
     public void SetCoins(int amount)
     {
         coins = amount;
+        initialized = true; // prevent Start from overwriting loaded value
         OnCoinsChanged?.Invoke(coins);
     }
 }

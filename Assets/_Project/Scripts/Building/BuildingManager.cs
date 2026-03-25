@@ -268,7 +268,7 @@ public class BuildingManager : MonoBehaviour
             {
                 Vector2Int cell = coord + new Vector2Int(x, y);
                 if (placedBuildings.ContainsKey(cell)) return false;
-                if (grid.IsValidCoord(cell)) return false;
+                if (!grid.IsValidCoord(cell)) return false;
             }
         }
         return true;

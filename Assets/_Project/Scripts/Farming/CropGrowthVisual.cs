@@ -7,6 +7,12 @@ public class CropGrowthVisual : MonoBehaviour
     private int currentStage = -1;
     private GameObject currentModel;
 
+    private GameObject readyFXPrefab;
+    private GameObject readyFXInstance;
+    private bool wasReady = false;
+
+    [SerializeField] private float readyFXYOffset = 0.7f;
+
     private static readonly float[] StageScales = { 0.7f, 0.85f, 0.95f, 1.0f };
 
     private static readonly System.Collections.Generic.Dictionary<string, Color> CropColours =
@@ -24,19 +30,49 @@ public class CropGrowthVisual : MonoBehaviour
         { "lavender",   new Color(0.7f, 0.5f,  0.9f)  },
     };
 
-    public void Initialise(FarmTile farmTile)
+    public void Initialise(FarmTile farmTile, GameObject readyFX = null)
     {
-        tile = farmTile;
+        tile         = farmTile;
+        readyFXPrefab = readyFX;
     }
 
     private void Update()
     {
         if (tile == null || !tile.IsPlanted) return;
+
         int stage = tile.GetGrowthStage();
         if (stage != currentStage)
         {
             UpdateVisual(stage);
             currentStage = stage;
+        }
+
+        UpdateReadyFX();
+    }
+
+    private void UpdateReadyFX()
+    {
+        bool isReady = tile.IsReadyToHarvest;
+        if (isReady == wasReady) return;
+        wasReady = isReady;
+
+        if (isReady)
+        {
+            if (readyFXPrefab != null && readyFXInstance == null)
+            {
+                readyFXInstance = Instantiate(readyFXPrefab,
+                    transform.position + Vector3.up * readyFXYOffset,
+                    Quaternion.identity,
+                    transform);
+            }
+        }
+        else
+        {
+            if (readyFXInstance != null)
+            {
+                Destroy(readyFXInstance);
+                readyFXInstance = null;
+            }
         }
     }
 

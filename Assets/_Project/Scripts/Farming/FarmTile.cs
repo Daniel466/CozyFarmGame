@@ -69,13 +69,15 @@ public class FarmTile
     /// </summary>
     /// <summary>
     /// Estimated real-world seconds until the crop is ready to harvest.
-    /// Accounts for the 1.3× watered bonus. Returns 0 if not planted or already ready.
+    /// Accounts for the 1.3x watered bonus and the current growth speed multiplier.
+    /// Returns 0 if not planted or already ready.
     /// </summary>
-    public float GetRemainingSeconds()
+    public float GetRemainingSeconds(float growthMultiplier = 1f)
     {
         if (!IsPlanted || IsReadyToHarvest) return 0f;
         float rate = IsWatered ? 1.3f : 1.0f;
-        return PlantedCrop.GrowTimeSeconds * (1f - GrowthProgress) / rate;
+        float effectiveMultiplier = Mathf.Max(growthMultiplier, 0.001f);
+        return PlantedCrop.GrowTimeSeconds * (1f - GrowthProgress) / (rate * effectiveMultiplier);
     }
 
     public int GetGrowthStage()
