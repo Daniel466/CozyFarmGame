@@ -70,9 +70,9 @@ public class HUDManager : MonoBehaviour
         { "strawberry", new Color(0.9f, 0.15f, 0.25f) },
         { "corn",       new Color(1.0f, 0.9f,  0.2f)  },
         { "pumpkin",    new Color(0.9f, 0.45f, 0.05f) },
-        { "grapes",     new Color(0.5f, 0.1f,  0.7f)  },
-        { "chilli",     new Color(0.9f, 0.1f,  0.05f) },
-        { "lavender",   new Color(0.7f, 0.5f,  0.9f)  },
+        { "watermelon", new Color(0.25f, 0.75f, 0.2f)  },
+        { "leek",       new Color(0.4f,  0.75f, 0.3f)  },
+        { "wheat",      new Color(0.85f, 0.72f, 0.15f) },
     };
 
     private void Awake()
@@ -257,8 +257,8 @@ public class HUDManager : MonoBehaviour
         var fm = FarmingManager.Instance;
         if (fm == null) { selectedCropStatsText.text = ""; return; }
 
-        int count = fm.GetPlantedCount(currentSelectedCrop.CropId);
-        float nearest = fm.GetNearestRemainingSeconds(currentSelectedCrop.CropId);
+        int count   = fm.GetPlantedCount(currentSelectedCrop.CropId);
+        int days    = fm.GetRemainingDays(currentSelectedCrop.CropId);
 
         if (count == 0)
         {
@@ -267,7 +267,7 @@ public class HUDManager : MonoBehaviour
         }
 
         string countStr = count == 1 ? "1 planted" : $"{count} planted";
-        string timerStr = nearest <= 0f ? ", Ready!" : $", Next: {FormatTime(nearest)}";
+        string timerStr = days <= 0 ? ", Ready!" : $", {days}d left";
         selectedCropStatsText.text = countStr + timerStr;
     }
 
@@ -329,9 +329,8 @@ public class HUDManager : MonoBehaviour
                 tileInfoTimeText.text = "";
             else
             {
-                float secs = tile.GetRemainingSeconds(
-                    FarmingManager.Instance?.EffectiveGrowthMultiplier ?? 1f);
-                tileInfoTimeText.text = secs > 0f ? FormatTime(secs) + " remaining" : "";
+                int days = tile.GetRemainingDays();
+                tileInfoTimeText.text = days > 0 ? $"{days} day{(days == 1 ? "" : "s")} remaining" : "";
             }
         }
 

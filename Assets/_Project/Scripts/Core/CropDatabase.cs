@@ -32,8 +32,8 @@ public class CropDatabase : ScriptableObject
 
     public List<CropData> GetAllCrops() => crops;
 
-    public List<CropData> GetUnlockedCrops(int playerLevel)
+    public List<CropData> GetCropsForSeason(Season season)
     {
-        return crops.FindAll(c => c.UnlockLevel <= playerLevel);
+        return crops.FindAll(c => c != null && c.CanGrowIn(season));
     }
 }

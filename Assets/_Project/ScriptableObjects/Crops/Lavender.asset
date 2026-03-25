@@ -12,18 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb670d95431954c30b2c92f9a588af5f, type: 3}
   m_Name: Lavender
   m_EditorClassIdentifier: Assembly-CSharp::CropData
-  cropId: lavender
-  cropName: Lavender
+  cropId: wheat
+  cropName: Wheat
   icon: {fileID: 21300000, guid: 8590d8c98cc014bd7961b068572bf41a, type: 3}
-  unlockLevel: 14
-  seedCost: 60
-  sellValue: 100
-  growTimeSeconds: 2100
+  growingSeason: 4
+  growthDays: 4
+  seedCost: 15
+  sellValue: 40
   growthStagePrefabs:
-  - {fileID: 1708558889204626, guid: 104301d7a2073214aaacfc6c76062938, type: 3}
-  - {fileID: 1708558889204626, guid: 104301d7a2073214aaacfc6c76062938, type: 3}
-  - {fileID: 1369296744457648, guid: 53848b3668c371945a42e67cc6233f75, type: 3}
-  - {fileID: 1369296744457648, guid: 53848b3668c371945a42e67cc6233f75, type: 3}
+  - {fileID: 5434359768121638842, guid: 3aca748daa700dc4e87f2c8884bd554a, type: 3}
+  - {fileID: 3070220235933255936, guid: d84440e507d6795479b780e2e40210bc, type: 3}
+  - {fileID: 4910843138276733055, guid: 4ea47264058a9434c8e935ce42f89099, type: 3}
+  - {fileID: 4937819704338583726, guid: 94874b51ceb7d2d409f4ee9c5c017149, type: 3}
   modelRotationOffset: {x: 0, y: 0, z: 0}
   modelBaseScale: 1.8
   harvestXP: 10

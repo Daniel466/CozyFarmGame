@@ -76,13 +76,7 @@ public class SettingsUI : MonoBehaviour
         ambienceSlider = AddSlider(window.transform, 0.25f, (val) =>
             AmbienceManager.Instance?.SetVolume(val));
 
-        // Growth speed (debug)
-        AddLabel(window.transform, "Crop Growth Speed (1=normal, 60=fast)", 16f,
-            new Color(0.6f, 0.6f, 0.6f), FontStyles.Italic);
-        AddSlider(window.transform,
-            FarmingManager.Instance != null ? FarmingManager.Instance.GrowthSpeedMultiplier : 1f,
-            (val) => { if (FarmingManager.Instance != null) FarmingManager.Instance.GrowthSpeedMultiplier = val; },
-            1f, 60f);
+        // Growth speed debug removed — crops now grow by game-day in Phase 1
 
         // Close button
         AddButton(window.transform, "Close", new Color(0.3f, 0.65f, 0.3f), Hide);

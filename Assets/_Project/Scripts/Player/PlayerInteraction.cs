@@ -19,7 +19,16 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField] private float plantActionDelay   = 0.6f; // seconds into anim when crop spawns
     [SerializeField] private float waterActionDelay   = 0.4f;
     [SerializeField] private float harvestActionDelay = 0.5f;
+    [Tooltip("Set this to the 'Ground' layer only. If unset, raycast hits ALL colliders (terrain, props, etc).")]
     [SerializeField] private LayerMask groundLayer;
+
+    [Header("Hover Tuning")]
+    [Tooltip("Height offset above the grid surface to prevent Z-fighting with floor meshes.")]
+    [SerializeField] private float hoverYOffset = 0.08f;
+
+    [Header("Debug")]
+    [Tooltip("Enable to log raycast hit targets to the Console each frame.")]
+    [SerializeField] private bool debugRaycast = false;
 
     [Header("Tool")]
     [SerializeField] private CropData selectedCrop;
@@ -79,18 +88,14 @@ public class PlayerInteraction : MonoBehaviour
         hoverMaterial.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
         hoverMaterial.SetColor("_BaseColor", ColourEmpty);
 
-        // Tile footprint: 3.5 × 3.5 units. Border thickness: 0.1 units.
-        // Top/Bottom edges span the full 3.5 width.
-        // Left/Right edges span the inner 3.3 height (3.5 - 2 × 0.1) to fill the gap cleanly.
-        const float tile      = 3.5f;
-        const float thick     = 0.1f;
-        const float half      = tile  / 2f;          // 1.75
-        const float innerHalf = (tile - 2f * thick) / 2f; // 1.65
+        float tile  = grid != null ? grid.TileSize : 1.5f;
+        float thick = tile * 0.06f; // border thickness scales with tile size
+        float half  = tile / 2f;
 
-        CreateEdge(new Vector3( 0,     0,  half), new Vector3(tile,  thick, 1f)); // top
-        CreateEdge(new Vector3( 0,     0, -half), new Vector3(tile,  thick, 1f)); // bottom
-        CreateEdge(new Vector3(-half,  0,  0),    new Vector3(thick, tile - 2f * thick, 1f)); // left
-        CreateEdge(new Vector3( half,  0,  0),    new Vector3(thick, tile - 2f * thick, 1f)); // right
+        CreateEdge(new Vector3( 0,    0,  half), new Vector3(tile,  thick, 1f)); // top
+        CreateEdge(new Vector3( 0,    0, -half), new Vector3(tile,  thick, 1f)); // bottom
+        CreateEdge(new Vector3(-half, 0,  0),    new Vector3(thick, tile - 2f * thick, 1f)); // left
+        CreateEdge(new Vector3( half, 0,  0),    new Vector3(thick, tile - 2f * thick, 1f)); // right
 
         hoverRoot.SetActive(false);
     }
@@ -148,7 +153,7 @@ public class PlayerInteraction : MonoBehaviour
         }
 
         Vector3 worldPos = grid.GridToWorld(coord.Value);
-        hoverRoot.transform.position = worldPos + Vector3.up * 0.04f;
+        hoverRoot.transform.position = worldPos + Vector3.up * hoverYOffset;
         hoverRoot.SetActive(true);
 
         Color c;
@@ -166,8 +171,8 @@ public class PlayerInteraction : MonoBehaviour
         }
         else if (tile.IsPlanted)
         {
-            float secs = tile.GetRemainingSeconds();
-            string timeStr = FormatGrowTime(secs);
+            int days = tile.GetRemainingDays();
+            string timeStr  = days <= 0 ? "Ready!" : $"{days} day{(days == 1 ? "" : "s")} left";
             string waterHint = tile.IsWatered ? "" : "  -  Right Click to Water";
             HUDManager.Instance?.SetContextHint($"Growing: {timeStr}{waterHint}");
             HUDManager.Instance?.ShowTileInfo(tile);
@@ -189,12 +194,65 @@ public class PlayerInteraction : MonoBehaviour
     {
         if (mainCamera == null) return null;
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-        LayerMask mask = groundLayer.value == 0 ? ~0 : groundLayer;
-        if (!Physics.Raycast(ray, out RaycastHit hit, 100f, mask)) return null;
+
+        if (!Physics.Raycast(ray, out RaycastHit hit, 100f, GetGroundMask())) return null;
+
+        if (debugRaycast)
+        {
+            Debug.Log($"[Hover Raycast] Hit: '{hit.collider.name}' " +
+                      $"(Layer: {LayerMask.LayerToName(hit.collider.gameObject.layer)}, " +
+                      $"Tag: {hit.collider.tag}) at {hit.point}", hit.collider.gameObject);
+            Debug.DrawRay(ray.origin, ray.direction * hit.distance, Color.green);
+        }
+
         if (Vector3.Distance(transform.position, hit.point) > hoverRange) return null;
+
         Vector2Int coord = grid.WorldToGrid(hit.point);
+        if (!grid.IsValidCoord(coord)) return null;
+
+        // Verify the hit point is actually within this tile's bounds, not just snapped to it
+        Vector3 tileCenter = grid.GridToWorld(coord);
+        float half = grid.TileSize * 0.5f;
+        if (Mathf.Abs(hit.point.x - tileCenter.x) > half) return null;
+        if (Mathf.Abs(hit.point.z - tileCenter.z) > half) return null;
+
         return grid.GetTile(coord) != null ? coord : null;
     }
+
+    private const string FARM_INTERACT_LAYER = "FarmInteract";
+
+    /// <summary>
+    /// Returns the configured ground layer mask. Logs a warning once if the mask is empty,
+    /// which means the raycast would hit nothing (instead of silently hitting everything).
+    /// </summary>
+    private LayerMask GetGroundMask()
+    {
+        if (groundLayer.value != 0) return groundLayer;
+
+        // Warn once and auto-resolve to the "FarmInteract" layer if it exists
+        if (!hasWarnedAboutMissingLayer)
+        {
+            hasWarnedAboutMissingLayer = true;
+            int farmLayerIndex = LayerMask.NameToLayer(FARM_INTERACT_LAYER);
+            if (farmLayerIndex >= 0)
+            {
+                Debug.LogWarning($"[PlayerInteraction] groundLayer mask is empty! " +
+                                 $"Auto-using '{FARM_INTERACT_LAYER}' layer ({farmLayerIndex}). " +
+                                 $"Assign it in the Inspector to silence this warning.",
+                                 this);
+                groundLayer = 1 << farmLayerIndex;
+            }
+            else
+            {
+                Debug.LogError($"[PlayerInteraction] groundLayer mask is empty and no '{FARM_INTERACT_LAYER}' layer exists! " +
+                               $"Create '{FARM_INTERACT_LAYER}' in Project Settings > Tags and Layers, " +
+                               "then set groundLayer in the Inspector.", this);
+                groundLayer = ~0; // last resort fallback — hits everything
+            }
+        }
+        return groundLayer;
+    }
+    private bool hasWarnedAboutMissingLayer;
 
     private void SellAll()
     {
@@ -319,14 +377,25 @@ public class PlayerInteraction : MonoBehaviour
     {
         if (mainCamera == null) return null;
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-        LayerMask mask = groundLayer.value == 0 ? ~0 : groundLayer;
 
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f, mask))
+        if (!Physics.Raycast(ray, out RaycastHit hit, 100f, GetGroundMask())) return null;
+
+        if (debugRaycast)
         {
-            Vector2Int coord = grid.WorldToGrid(hit.point);
-            return grid.GetTile(coord) != null ? coord : null;
+            Debug.Log($"[Click Raycast] Hit: '{hit.collider.name}' " +
+                      $"(Layer: {LayerMask.LayerToName(hit.collider.gameObject.layer)}) " +
+                      $"at {hit.point}", hit.collider.gameObject);
         }
-        return null;
+
+        Vector2Int coord = grid.WorldToGrid(hit.point);
+        if (!grid.IsValidCoord(coord)) return null;
+
+        Vector3 tileCenter = grid.GridToWorld(coord);
+        float half = grid.TileSize * 0.5f;
+        if (Mathf.Abs(hit.point.x - tileCenter.x) > half) return null;
+        if (Mathf.Abs(hit.point.z - tileCenter.z) > half) return null;
+
+        return grid.GetTile(coord) != null ? coord : null;
     }
 
     public void SetTool(PlayerTool tool) => CurrentTool = tool;

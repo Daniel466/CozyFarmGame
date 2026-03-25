@@ -2,7 +2,7 @@ using UnityEngine;
 
 /// <summary>
 /// ScriptableObject defining all data for a crop type.
-/// Create assets via: Right-click > Create > CozyFarm > Crop Data
+/// Create via: Right-click > Create > CozyFarm > Crop Data
 /// </summary>
 [CreateAssetMenu(fileName = "NewCrop", menuName = "CozyFarm/Crop Data")]
 public class CropData : ScriptableObject
@@ -12,38 +12,41 @@ public class CropData : ScriptableObject
     [SerializeField] private string cropName;
     [SerializeField] private Sprite icon;
 
-    [Header("Progression")]
-    [SerializeField] private int unlockLevel = 1;
+    [Header("Season")]
+    [SerializeField] private GrowingSeason growingSeason = GrowingSeason.Spring;
+
+    [Header("Growth")]
+    [SerializeField] private int growthDays = 4; // days to grow from planted to ripe
 
     [Header("Economy")]
-    [SerializeField] private int seedCost = 5;
-    [SerializeField] private int sellValue = 10;
+    [SerializeField] private int seedCost  = 20;
+    [SerializeField] private int sellValue = 50;
 
-    [Header("Farming")]
-    [SerializeField] private float growTimeSeconds = 300f;
+    [Header("Model")]
     [SerializeField] private GameObject[] growthStagePrefabs = new GameObject[4];
+    [SerializeField] private Vector3 modelRotationOffset = Vector3.zero;
+    [SerializeField] private float   modelBaseScale      = 1f;
 
-    [Header("Model Settings")]
-    [SerializeField] private Vector3 modelRotationOffset = Vector3.zero; // e.g. (0, 90, 0) to fix sideways models
-    [SerializeField] private float modelBaseScale = 1f;                  // Adjust if model is too big or small
-
-    [Header("XP")]
+    [Header("XP (legacy — kept for compatibility)")]
     [SerializeField] private int harvestXP = 5;
-    [SerializeField] private int plantXP = 2;
-    [SerializeField] private int waterXP = 1;
+    [SerializeField] private int plantXP   = 2;
+    [SerializeField] private int waterXP   = 1;
 
-    // Public accessors
-    public string CropId => cropId;
-    public string CropName => cropName;
-    public Sprite Icon => icon;
-    public int UnlockLevel => unlockLevel;
-    public int SeedCost => seedCost;
-    public int SellValue => sellValue;
-    public float GrowTimeSeconds => growTimeSeconds;
+    // Accessors
+    public string       CropId             => cropId;
+    public string       CropName           => cropName;
+    public Sprite       Icon               => icon;
+    public GrowingSeason GrowingSeason     => growingSeason;
+    public int          GrowthDays         => Mathf.Max(1, growthDays);
+    public int          SeedCost           => seedCost;
+    public int          SellValue          => sellValue;
     public GameObject[] GrowthStagePrefabs => growthStagePrefabs;
-    public Vector3 ModelRotationOffset => modelRotationOffset;
-    public float ModelBaseScale => modelBaseScale;
-    public int HarvestXP => harvestXP;
-    public int PlantXP => plantXP;
-    public int WaterXP => waterXP;
+    public Vector3      ModelRotationOffset => modelRotationOffset;
+    public float        ModelBaseScale      => modelBaseScale;
+    public int          HarvestXP          => harvestXP;
+    public int          PlantXP            => plantXP;
+    public int          WaterXP            => waterXP;
+
+    /// <summary>Returns true if this crop can be planted in the given season.</summary>
+    public bool CanGrowIn(Season season) => growingSeason.CanGrowIn(season);
 }

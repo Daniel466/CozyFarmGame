@@ -164,8 +164,7 @@ public class DogController : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (FarmingManager.Instance != null)
-            FarmingManager.Instance.DogGrowthBonus = 0f;
+        // DogGrowthBonus removed in Phase 1 rewrite (day-based growth)
         if (highlightRing != null) Destroy(highlightRing);
     }
 
@@ -439,7 +438,7 @@ public class DogController : MonoBehaviour
             bonus   = Mathf.Lerp(0f, maxGrowthBonus, t);
         }
 
-        FarmingManager.Instance.DogGrowthBonus = bonus;
+        // DogGrowthBonus removed in Phase 1 rewrite — re-implement in Phase 2
     }
 
     // -------------------------------------------------------------------------

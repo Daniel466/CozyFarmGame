@@ -77,13 +77,13 @@ public class ShopUI : MonoBehaviour
         foreach (Transform child in itemGrid)
             Destroy(child.gameObject);
 
-        int playerLevel = GameManager.Instance.Progression.CurrentLevel;
         int coins = GameManager.Instance.Economy.Coins;
+        Season currentSeason = GameTimeManager.Instance?.CurrentSeason ?? Season.Spring;
         List<CropData> allCrops = cropDatabase.GetAllCrops();
 
         foreach (var crop in allCrops)
         {
-            bool unlocked = crop.UnlockLevel <= playerLevel;
+            bool unlocked = crop.CanGrowIn(currentSeason);
             bool canAfford = coins >= crop.SeedCost;
 
             // Create row
@@ -136,8 +136,8 @@ public class ShopUI : MonoBehaviour
 
             // Grow time & cost
             string details = unlocked
-                ? $"{crop.GrowTimeSeconds / 60f:0.0} min | Sells for {crop.SellValue} coins"
-                : $"Unlocks at Level {crop.UnlockLevel}";
+                ? $"{crop.GrowthDays} days | Sells for {crop.SellValue} coins"
+                : $"Not in season ({crop.GrowingSeason})";
             AddText(info.transform, details, 14f, new Color(0.6f, 0.6f, 0.6f), FontStyles.Normal);
 
             // Buy button
@@ -204,9 +204,9 @@ public class ShopUI : MonoBehaviour
         "strawberry" => new Color(0.9f, 0.15f, 0.25f),
         "corn"       => new Color(1.0f, 0.9f,  0.2f),
         "pumpkin"    => new Color(0.9f, 0.45f, 0.05f),
-        "grapes"     => new Color(0.5f, 0.1f,  0.7f),
-        "chilli"     => new Color(0.9f, 0.1f,  0.05f),
-        "lavender"   => new Color(0.7f, 0.5f,  0.9f),
+        "watermelon" => new Color(0.25f, 0.75f, 0.2f),
+        "leek"       => new Color(0.4f,  0.75f, 0.3f),
+        "wheat"      => new Color(0.85f, 0.72f, 0.15f),
         _            => Color.green
     };
 }

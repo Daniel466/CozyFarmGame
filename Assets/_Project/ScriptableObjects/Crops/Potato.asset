@@ -15,15 +15,15 @@ MonoBehaviour:
   cropId: potato
   cropName: Potato
   icon: {fileID: 21300000, guid: 9213a4f05a19446179a15658952587dd, type: 3}
-  unlockLevel: 1
-  seedCost: 10
-  sellValue: 20
-  growTimeSeconds: 600
+  growingSeason: 1
+  growthDays: 6
+  seedCost: 30
+  sellValue: 80
   growthStagePrefabs:
-  - {fileID: 1347292578903898, guid: 53e5ab917382c9749a58810d6e170537, type: 3}
-  - {fileID: 1640550028191666, guid: 5a7f5d66e03803f48ab0fc24d088724d, type: 3}
-  - {fileID: 1122645316887246, guid: 1cb0f8921511a0745b94d2e0d83e1644, type: 3}
-  - {fileID: 1051072968604244, guid: 1afbbfde3cb344d4e919e75fcaf3aaa9, type: 3}
+  - {fileID: 1814211692266875853, guid: 6baa4d27f0e9fb74e8786d17c6484cb9, type: 3}
+  - {fileID: 9064490904899940175, guid: bc660d3856add464889a7a843a9b5d18, type: 3}
+  - {fileID: 2468444199692371827, guid: acbbdb97c09e4f64085eb7e911de4e24, type: 3}
+  - {fileID: 5262228152530772506, guid: bdee30a74bb73c24fb78f668e5b2a6e8, type: 3}
   modelRotationOffset: {x: 0, y: 0, z: 0}
   modelBaseScale: 2.6
   harvestXP: 5

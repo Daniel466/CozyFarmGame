@@ -7,22 +7,44 @@ using UnityEngine;
 public class FarmGrid : MonoBehaviour
 {
     [Header("Grid Settings")]
-    [SerializeField] private int gridWidth = 20;
-    [SerializeField] private int gridHeight = 20;
-    [SerializeField] private float tileSize = 1f;
-
-    [Header("Grid Origin")]
-    [SerializeField] private Vector3 gridOrigin = Vector3.zero; // Set to match flower bed positions
-
-    [Header("Tile Visuals")]
-    [SerializeField] private GameObject normalTilePrefab;
-    [SerializeField] private GameObject tilledTilePrefab;
+    [SerializeField] private int gridWidth  = 10;   // Phase 1: one 10x10 plot (100 tiles)
+    [SerializeField] private int gridHeight = 10;
+    [SerializeField] private float tileSize = 1.5f; // 1.5 matches Poly Universal Pack crop model scale
 
     private Dictionary<Vector2Int, FarmTile> tiles = new Dictionary<Vector2Int, FarmTile>();
 
     private void Start()
     {
         GenerateGrid();
+        CreateGroundCollider();
+    }
+
+    private const string FARM_INTERACT_LAYER = "FarmInteract";
+
+    /// <summary>
+    /// Spawns an invisible flat box collider covering the entire grid so raycasts always register.
+    /// Sits on the "FarmInteract" layer — PlayerInteraction.groundLayer must include this layer.
+    /// </summary>
+    private void CreateGroundCollider()
+    {
+        var go = new GameObject("FarmGridCollider");
+        go.transform.SetParent(transform, false);
+        go.transform.position = transform.position;
+
+        int layerIndex = LayerMask.NameToLayer(FARM_INTERACT_LAYER);
+        if (layerIndex < 0)
+        {
+            Debug.LogError($"[FarmGrid] Layer '{FARM_INTERACT_LAYER}' not found! " +
+                           "Add it in Project Settings > Tags and Layers. Falling back to Default.");
+            layerIndex = 0;
+        }
+        go.layer = layerIndex;
+
+        var col = go.AddComponent<BoxCollider>();
+        float w = gridWidth  * tileSize;
+        float h = gridHeight * tileSize;
+        col.size   = new Vector3(w, 0.02f, h);
+        col.center = Vector3.zero; // grid is centred on transform
     }
 
     private void GenerateGrid()
@@ -36,36 +58,8 @@ public class FarmGrid : MonoBehaviour
 
                 FarmTile tile = new FarmTile(coord, worldPos);
                 tiles[coord] = tile;
-
-                if (normalTilePrefab != null)
-                    Instantiate(normalTilePrefab, worldPos, Quaternion.identity, transform);
-                else
-                    SpawnFlatSoilTile(worldPos);
             }
         }
-    }
-
-    /// <summary>
-    /// Procedural fallback: spawns a flat quad as a soil tile when no normalTilePrefab is assigned.
-    /// Replace with a real Synty soil tile prefab in the Inspector when ready.
-    /// </summary>
-    private void SpawnFlatSoilTile(Vector3 worldPos)
-    {
-        var quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
-        quad.transform.SetParent(transform, false);
-        quad.transform.position    = worldPos - Vector3.up * 0.005f;
-        quad.transform.rotation    = Quaternion.Euler(90f, 0f, 0f);
-        quad.transform.localScale  = new Vector3(tileSize * 0.95f, tileSize * 0.95f, 1f);
-        quad.name = "SoilTile";
-        quad.layer = 0; // Default — ground raycast can still hit it if needed
-
-        Destroy(quad.GetComponent<Collider>()); // Ground plane handles raycasts
-
-        var mat = new Material(Shader.Find("Universal Render Pipeline/Lit")
-                   ?? Shader.Find("Standard"));
-        // Warm brown soil colour — swap this material for a Synty dirt texture later
-        mat.SetColor("_BaseColor", new Color(0.42f, 0.28f, 0.16f));
-        quad.GetComponent<Renderer>().material = mat;
     }
 
     public FarmTile GetTile(Vector2Int coord)
@@ -80,18 +74,26 @@ public class FarmGrid : MonoBehaviour
         return GetTile(coord);
     }
 
+    // Grid is centred on transform.position so you can position it by placing the GameObject at the pad centre.
+    private Vector3 GridOffset => new Vector3(
+        (gridWidth  - 1) * tileSize * 0.5f,
+        0f,
+        (gridHeight - 1) * tileSize * 0.5f);
+
     public Vector3 GridToWorld(Vector2Int coord)
     {
+        Vector3 centre = transform.position;
         return new Vector3(
-            gridOrigin.x + coord.x * tileSize,
-            gridOrigin.y,
-            gridOrigin.z + coord.y * tileSize);
+            centre.x + coord.x * tileSize - GridOffset.x,
+            centre.y,
+            centre.z + coord.y * tileSize - GridOffset.z);
     }
 
     public Vector2Int WorldToGrid(Vector3 worldPos)
     {
-        int x = Mathf.RoundToInt((worldPos.x - gridOrigin.x) / tileSize);
-        int z = Mathf.RoundToInt((worldPos.z - gridOrigin.z) / tileSize);
+        Vector3 centre = transform.position;
+        int x = Mathf.RoundToInt((worldPos.x - centre.x + GridOffset.x) / tileSize);
+        int z = Mathf.RoundToInt((worldPos.z - centre.z + GridOffset.z) / tileSize);
         return new Vector2Int(x, z);
     }
 
@@ -102,6 +104,8 @@ public class FarmGrid : MonoBehaviour
 
     public Dictionary<Vector2Int, FarmTile> GetAllTiles() => tiles;
 
+    public float TileSize => tileSize;
+
 #if UNITY_EDITOR
     /// <summary>
     /// Draws the grid in the Scene view so you can visually align it with flower beds.
@@ -111,7 +115,8 @@ public class FarmGrid : MonoBehaviour
     {
         // Draw outer grid boundary in yellow
         UnityEditor.Handles.color = Color.yellow;
-        Vector3 origin = gridOrigin - new Vector3(tileSize * 0.5f, 0, tileSize * 0.5f);
+        Vector3 gridStart = GridToWorld(Vector2Int.zero);
+        Vector3 origin = gridStart - new Vector3(tileSize * 0.5f, 0, tileSize * 0.5f);
         float w = gridWidth * tileSize;
         float h = gridHeight * tileSize;
 
@@ -136,9 +141,9 @@ public class FarmGrid : MonoBehaviour
             UnityEditor.Handles.DrawLine(start, end);
         }
 
-        // Draw centre cross on tile (0,0)
+        // Draw centre cross on tile (0,0) — this is where the FarmGrid GameObject sits
         UnityEditor.Handles.color = Color.red;
-        Vector3 tile00 = GridToWorld(Vector2Int.zero);
+        Vector3 tile00 = transform.position;
         UnityEditor.Handles.DrawLine(tile00 - Vector3.right * 0.5f, tile00 + Vector3.right * 0.5f);
         UnityEditor.Handles.DrawLine(tile00 - Vector3.forward * 0.5f, tile00 + Vector3.forward * 0.5f);
     }

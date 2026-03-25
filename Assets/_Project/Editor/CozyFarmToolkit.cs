@@ -152,7 +152,7 @@ public class CozyFarmToolkit : EditorWindow
     {
         if (BigButton("Assign Crop Models",
             "Assigns polyperfect prefabs to all 10 CropData ScriptableObjects"))
-            CropModelAssigner.AssignCropModels();
+            CropModelAssigner.AssignAll();
 
         GUILayout.Space(2);
 

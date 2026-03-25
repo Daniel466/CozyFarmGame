@@ -1,6 +1,6 @@
-# 🌾 Game Design Document (GDD)
-## Cozy Farming Game — v0.1
-*Created: March 2026 | Status: Living document — update as design evolves*
+# Game Design Document
+## Harvest & Homestead — v2.1
+*Updated: March 2026 | Direction: Life Sim x Farming Simulator*
 
 ---
 
@@ -8,277 +8,264 @@
 
 | Field | Detail |
 |-------|--------|
-| Genre | 3D Cozy Farming / Building |
+| Genre | 3D Life Sim / Farming Simulator hybrid |
 | Platform | PC (Windows) — itch.io launch |
 | Engine | Unity 6 (URP) |
-| Inspiration | Farm Together, Hokko Life, Stardew Valley |
-| Team | Game Designer/Producer + Unity Developer |
-| Target Audience | Casual gamers who enjoy relaxing, creative experiences |
+| Inspiration | Stardew Valley, Story of Seasons, Farming Simulator 25 |
+| Target Audience | Players who want a relaxing but deep farming experience |
 
 ### Elevator Pitch
-A warm, low-pressure 3D farming game where you plant and harvest crops, build and decorate your dream farm, and progress at your own pace. No fail states. No timers. Just cozy.
+You inherit a neglected farm. Work the land through seasons, invest in equipment, manage your crops and economy, and build something you are proud of. The heart of a life sim with the depth of a farming simulator.
 
 ---
 
-## 2. Core Gameplay Loop
+## 2. Core Fantasy
 
-```
-Plant seed → Water crop → Wait for growth → Harvest → Sell for coins
-→ Buy seeds & items → Earn XP & level up → Unlock new crops & buildings
-→ Decorate & expand farm
-```
+Start with one small field and hand tools. Over time expand to multiple plots, upgrade equipment, and grow a thriving farm operation. The game rewards planning, patience, and good decisions — not grinding.
 
 ---
 
-## 3. Crops
+## 3. Core Loop
 
-Total: **10 crops** — 4 starter, 6 unlocked through progression.
+**Each day:**
+- Wake up
+- Work the farm (till, plant, water, harvest)
+- Drop harvested goods in the shipping crate
+- Sleep to advance to the next day
 
-| # | Crop | Unlock Level | Grow Time | Seed Cost | Sell Value | Notes |
-|---|------|-------------|-----------|-----------|------------|-------|
-| 1 | Carrot | Starter | 5 min | 5 coins | 10 coins | First crop, tutorial crop |
-| 2 | Sunflower | Starter | 8 min | 8 coins | 15 coins | Decorative feel |
-| 3 | Tomato | Starter | 12 min | 12 coins | 25 coins | Mid-value starter |
-| 4 | Potato | Starter | 10 min | 10 coins | 20 coins | Reliable earner |
-| 5 | Strawberry | Level 3 | 15 min | 20 coins | 35 coins | First unlock |
-| 6 | Corn | Level 5 | 20 min | 30 coins | 50 coins | Tall, visually striking |
-| 7 | Pumpkin | Level 7 | 30 min | 45 coins | 80 coins | Slow but high value |
-| 8 | Grapes | Level 9 | 25 min | 38 coins | 65 coins | On a trellis structure |
-| 9 | Chilli | Level 11 | 18 min | 32 coins | 55 coins | Spicy personality |
-| 10 | Lavender | Level 14 | 35 min | 60 coins | 100 coins | Rare, prestige crop |
+**Each season (28 days):**
+- Only season-appropriate crops can be planted
+- Unharvested crops die at season end
+- Market prices shift with the season
+- Winter: forage for items instead of farming
 
-### Crop Growth Stages (all crops)
-0. **Planted** — seed in soil
-1. **Sprouting** — small shoot
-2. **Growing** — mid-size plant
-3. **Ready** — fully grown, glowing/sparkle effect
+**Year arc:**
+- Year 1: build the farm, pay off debt by season end
+- Year 2+: expand plots, upgrade tools, build processing buildings
 
-### Watering
-Watering a crop reduces its grow time by **30%**. Each crop needs watering once per growth cycle.
-
-### Seasons
-Not in v1.0 — consider for a future update post-launch.
+*Note: Weather system is planned for Phase 2. Not in Phase 1.*
 
 ---
 
-## 4. Buildings
+## 4. Systems — Phase 1
 
-### 4a. Functional Buildings
+### 4a. Time
+- The day advances only when the player sleeps (bed interaction)
+- Passing out at midnight: lose 100 coin penalty, wake up next morning
+- No offline growth — game time only passes when playing
+- Auto-saves on sleep and on quit (single save slot)
 
-| Building | Unlock Level | Cost | Function |
-|----------|-------------|------|----------|
-| Barn | Starter | Free | Increases inventory capacity (+20 slots) |
-| Watering Well | Level 2 | 200 coins | Auto-waters adjacent 3x3 tiles once per cycle |
-| Greenhouse | Level 6 | 800 coins | Crops inside grow 50% faster |
-| Silo | Level 8 | 600 coins | Stores harvested crops (overflow storage) |
-| Market Stall | Level 10 | 1000 coins | Auto-sells crops at a 10% bonus rate |
+### 4b. Energy
 
-### 4b. Decorative Items
+| Action | Energy Cost |
+|--------|------------|
+| Tilling | 10 |
+| Planting | 4 |
+| Watering | 2 |
+| Harvesting | 8 |
 
-| Category | Items |
-|----------|-------|
-| Fencing | Wooden fence, stone wall, picket fence, hedge |
-| Paths | Dirt path, stone path, brick path, grass stepping stones |
-| Flowers | Rose bush, daisy patch, tulip bed, wildflowers |
-| Structures | Scarecrow, mailbox, well, signpost, bird bath, lantern |
-| Trees | Apple tree, cherry blossom, oak tree, pine tree |
-| Misc | Hay bale, wooden crate, garden bench, windmill (animated) |
+- Max energy: 100 per day, fully restored on sleep
+- At 0 energy all farm actions are blocked — player must eat or sleep
+- Eating food items restores 20 energy
+- **Typical full day:** 10 tiles tilled (100e) or 20 tiles watered (40e) + 5 harvested (40e) + 5 planted (20e) = 100e. Balanced.
+
+### 4c. Seasons
+- 4 seasons: Spring / Summer / Fall / Winter — 28 days each
+- Crops are season-locked (see crop table)
+- Season end: unharvested crops die, all tilled empty tiles reset
+- Season change announced with a full-screen UI moment
+- **Winter:** no crops grow — player forages instead (see 4i)
+
+### 4d. Crops
+
+| Crop | Season | Days | Seed Cost | Sell Value | Profit/Tile |
+|------|--------|------|-----------|------------|-------------|
+| Carrot | Spring | 4 | 20 | 50 | 30 |
+| Potato | Spring | 6 | 30 | 80 | 50 |
+| Strawberry | Spring | 8 | 50 | 120 | 70 |
+| Tomato | Summer | 5 | 35 | 90 | 55 |
+| Corn | Summer | 7 | 45 | 110 | 65 |
+| Watermelon | Summer | 10 | 80 | 200 | 120 |
+| Pumpkin | Fall | 8 | 60 | 150 | 90 |
+| Sunflower | Fall | 5 | 30 | 75 | 45 |
+| Wheat | Fall | 4 | 15 | 40 | 25 |
+| Leek | Fall + Winter | 6 | 25 | 65 | 40 |
+
+- 4 growth stages: Seedling / Young / Mature / Ripe
+- Watered crops grow 1 day per day. Unwatered crops pause growth (no death)
+- Leek is the only Winter crop — gives players a reason to farm in Winter
+
+### 4e. Tools
+
+| Tool | Key | Action | Energy | Notes |
+|------|-----|--------|--------|-------|
+| Hoe | 1 | Tills one tile | 10 | Required before planting |
+| Watering Can | 2 | Waters one tile | 2 | Capacity: 20 uses, refill at well |
+| Sickle | 3 | Harvests ripe crop | 8 | Must be equipped |
+| — | — | Plant seed | 4 | No tool needed, uses selected crop from inventory |
+
+- Tool toolbar always visible at bottom of HUD
+- Watering can shows remaining capacity as a number badge
+- Bare hands (no tool): can interact with buildings and objects only
+- Tile hover highlight changes by equipped tool:
+  - Hoe → brown highlight on untilled tiles
+  - Watering Can → blue highlight on unwatered planted tiles
+  - Sickle → gold highlight on ripe tiles
+
+### 4f. Farm Grid
+- Start: one 10×10 plot (100 tiles)
+- Practical active area: ~20–30 tiles given energy limits
+- Second plot unlocks start of Year 2
+- Tilled but unplanted tiles reset at season end
+
+### 4g. Economy
+- Coins are the only Phase 1 currency
+- **Shipping crate** (free, starter): drop goods in, paid next morning
+- Prices vary by season — selling out of season earns up to 50% more
+- **Silo**: store harvested crops to sell in a later season at higher prices
+- Starting coins: 500
+- Farm debt: 2000 coins owed by end of Year 1
+  - Debt not paid → rolls over to Year 2 with 20% penalty added (not game over)
+  - First-time players who struggle in Spring can still recover in Summer/Fall
+
+### 4h. Progression
+- **Farm level based on total shipping revenue only** (coins earned via the crate)
+- Buying and selling without farming does not count
+- "Total Shipped" displayed as farm milestone tracker on HUD
+- Levels unlock buildings and bonuses — no XP, no level grinding
+
+### 4i. Winter Foraging
+- Winter has no plantable crops (except Leek)
+- Enhanced collectibles spawn around the farm: pinecones, winter berries, frost mushrooms
+- Higher spawn rate and higher coin value than normal collectibles (15–40 coins each)
+- Foraging gives players 28 days of meaningful activity without complex systems
+- Foraged seeds can drop as rare finds — safety net for players who run low on coins
+
+### 4j. Fail States
+
+| Situation | Outcome |
+|-----------|---------|
+| 0 coins, can't buy seeds | Foraged seeds drop in winter; collectibles always provide some income |
+| Debt not paid by Year 1 end | Debt rolls over + 20% penalty; game continues |
+| Pass out (midnight) | Wake up next day, lose 100 coins |
+| Run out of energy | Farm actions blocked; eat or sleep to continue |
+
+- No game over states in Phase 1 — the game always lets you continue
+- No way to sell tools or buildings — no softlock risk
+
+### 4k. Save System
+- Auto-saves on sleep (every day advance)
+- Auto-saves on quit
+- Single save slot
+- Saves: coins, farm time (day/season/year), energy, tool state, inventory, all tiles, all buildings
 
 ---
 
-## 5. Player Progression
+## 5. Systems — Phase 2 (Planned)
 
-### XP Sources
-
-| Action | XP Earned |
-|--------|-----------|
-| Planting a crop | 2 XP |
-| Watering a crop | 1 XP |
-| Harvesting a crop | 5 XP |
-| Placing a building | 10 XP |
-| Placing a decoration | 3 XP |
-| Selling crops | 1 XP per 10 coins earned |
-
-### Level Table (1–15)
-
-| Level | XP Required | Unlock |
-|-------|------------|--------|
-| 1 | 0 | Starter crops, Barn |
-| 2 | 100 | Watering Well, Wooden Fence |
-| 3 | 250 | Strawberry, Stone Path |
-| 4 | 450 | Flower decorations, Bird Bath |
-| 5 | 700 | Corn, Picket Fence |
-| 6 | 1,000 | Greenhouse, Cherry Blossom Tree |
-| 7 | 1,400 | Pumpkin, Scarecrow |
-| 8 | 1,900 | Silo, Hay Bale |
-| 9 | 2,500 | Grapes, Trellis, Lantern |
-| 10 | 3,200 | Market Stall, Windmill |
-| 11 | 4,000 | Chilli, Garden Bench |
-| 12 | 5,000 | Expanded farm tiles, Apple Tree |
-| 13 | 6,200 | Premium fence & path sets |
-| 14 | 7,500 | Lavender (prestige crop) |
-| 15 | 9,000 | MAX — all items unlocked, cosmetic title "Master Farmer" |
+- Weather: sunny (default) / rainy (auto-waters all tiles) — 30% rain chance per day
+- Tool upgrades via blacksmith NPC
+- Crop quality tiers (Standard / Premium / Artisan)
+- Livestock: chickens (eggs), cows (milk)
+- 2–3 NPCs with basic shop and dialogue
+- Shipping contracts (bonus pay for bulk orders)
+- Soil quality and fertilizer
 
 ---
 
-## 6. Economy
+## 6. Systems — Phase 3 (Full vision)
 
-| Item | Seed Cost | Sell Value | Profit Margin |
-|------|-----------|------------|---------------|
-| Carrot | 5 coins | 10 coins | 2× |
-| Sunflower | 8 coins | 15 coins | 1.9× |
-| Tomato | 12 coins | 25 coins | 2.1× |
-| Potato | 10 coins | 20 coins | 2× |
-| Strawberry | 20 coins | 35 coins | 1.75× |
-| Corn | 30 coins | 50 coins | 1.67× |
-| Pumpkin | 45 coins | 80 coins | 1.78× |
-| Grapes | 38 coins | 65 coins | 1.71× |
-| Chilli | 32 coins | 55 coins | 1.72× |
-| Lavender | 60 coins | 100 coins | 1.67× |
-
-**Economy Rule of Thumb:** Sell value is ~2–3× seed cost for starter crops, tapering to ~1.5–2× for later crops to keep the economy balanced.
+- Processing buildings (mill, press, dairy)
+- Full NPC town with relationships
+- Tractor and machinery
+- Multiple farm plots with distinct soil types
+- Marriage / story arc
 
 ---
 
-## 7. Player Character
+## 7. Buildings — Phase 1
 
-- **Type:** Fixed, pre-designed character
-- **Style:** Friendly, gender-neutral, cozy aesthetic (overalls, boots, sun hat)
-- **Animations:** Idle, walk, watering, harvesting, building placement, wave (emote)
-- No character customisation in v1.0 — consider cosmetic unlocks (hats, outfits) post-launch
-
----
-
-## 8. Camera
-
-- **Type:** Soft isometric / angled third-person (similar to Farm Together)
-- **Controls:** WASD to move character, scroll wheel to zoom, middle-mouse drag to pan
-- **Angle:** Fixed ~45° angle, rotatable in 90° increments (Q/E keys)
+| Building | Cost | Function |
+|----------|------|----------|
+| Farmhouse | Free (starter) | Sleep to advance day |
+| Shipping Crate | Free (starter) | Drop off goods, paid next morning |
+| Water Well | 300 coins | Refill watering can to full |
+| Barn | 500 coins | Increases carry capacity (+20 crop slots) |
+| Silo | 800 coins | Store harvested crops to sell later at better prices |
+| Greenhouse | 1500 coins | Grow any crop regardless of season |
 
 ---
 
-## 9. Controls (PC)
+## 8. Player
+
+- Synty POLYGON character with Mixamo animations
+- Animations: Idle, Walk, Till, Plant, Water, Harvest
+- Energy bar in HUD
+- Tool toolbar in HUD (always visible, shows can capacity)
+
+---
+
+## 9. Camera
+
+- Isometric third-person (Stardew / Farm Together style)
+- WASD moves player, scroll zooms, Q/E rotates
+- Camera follows player with soft lag
+
+---
+
+## 10. Controls
 
 | Action | Input |
 |--------|-------|
 | Move | WASD |
-| Interact / Plant / Harvest | Left Click |
-| Water | Right Click (with watering can equipped) |
+| Use tool / interact | Left Click |
+| Switch tool | 1 / 2 / 3 |
 | Open inventory | Tab |
 | Open shop | B |
 | Toggle build mode | G |
-| Rotate object (build mode) | R |
+| Sleep (near bed) | E |
 | Zoom | Scroll Wheel |
 | Rotate camera | Q / E |
-| Pause menu | Escape |
+| Pause | Escape |
 
 ---
 
-## 10. Audio Direction
+## 11. Audio
 
 | Element | Style |
 |---------|-------|
-| Background music | Lo-fi acoustic, gentle piano, soft guitar loops |
-| Harvesting | Satisfying pop/pluck sound |
-| Watering | Gentle splashing |
-| Planting | Soft thud/pat |
-| Building placement | Wooden click/thunk |
-| Level up | Warm chime fanfare |
-| UI buttons | Soft click |
-| Ambience | Birds, breeze, distant nature sounds |
+| Music | Acoustic, seasonal — gentle spring, warm summer, melancholic fall, sparse winter |
+| Tilling | Earthy thud |
+| Watering | Gentle splash |
+| Planting | Soft pat |
+| Harvesting | Satisfying pop |
+| Season change | Warm chime |
+| Ambience | Birds, wind, seasonal sounds layered under music |
+
+*Full audio spec (track count, looping, volume priorities) to be defined when sourcing assets.*
 
 ---
 
-## 11. Player Engagement While Crops Grow
+## 12. Economy Stress Test
 
-> **Design Priority:** This is a core gap that must be solved before itch.io launch.
-> The farming loop creates mandatory wait time (5–35 min per crop). Without things to do during that window, players will quit. Every feature below addresses this directly.
+| Scenario | Math |
+|----------|------|
+| Debt target | 2000 coins by end of Year 1 (112 days) |
+| Spring max (Strawberry) | 20 tiles × 70 profit × 3 harvests = 4200 coins |
+| Summer max (Tomato) | 20 tiles × 55 profit × 5 harvests = 5500 coins |
+| Fall max (Pumpkin) | 20 tiles × 90 profit × 3 harvests = 5400 coins |
+| New player (Carrot only) | 10 tiles × 30 profit × 7 harvests = 2100 coins (Spring alone clears debt) |
 
-### The Problem
-After planting and watering, the player has nothing to do until crops are ready. In a real session this could be 10–30 minutes of dead time. The game needs a secondary activity layer that:
-- Fills wait time without feeling like a chore
-- Rewards exploration and attention
-- Fits the cozy, low-pressure tone
-
-### Solutions (Priority Order for Launch)
-
-#### 1. Collectibles Loop (Scrounger)
-*Already in roadmap — highest priority*
-
-Coins, seeds, and small items scattered around the map, respawning on a timer. Player explores between harvests to find them.
-- Collectibles should feel discoverable, not grind-y — visible glint/sparkle from a distance
-- Respawn every 5–10 real minutes at random map positions
-- Drop types: coins (most common), bonus seeds, rare decoration items
-- Ties into the economy loop: extra coins = more seeds = more planting
-
-#### 2. Animal Interactions
-*Sheep, dog, and cat already exist in the polyperfect scene*
-
-Simple one-button interactions: pet, feed, or play with the farm animals.
-- Each animal has a "happiness" state — interacting fills it, it drains slowly over time
-- Happy animals could give a small passive bonus (e.g. fed dog barks to alert when crops are ready)
-- Low implementation cost — the models and placement already exist
-- Very high feel-good / cozy value for the player
-
-#### 3. Decorating
-*Paths, fences, and props are already in building system design*
-
-Players can spend their wait time arranging and personalising the farm.
-- Placing a path, fence section, or decorative prop takes ~5 seconds
-- Decorating gives small XP (3 XP per item — already in progression table)
-- Players naturally do a "decorating pass" while waiting for the next harvest
-- Requires: unlock more decoration items in BuildingDatabase
-
-### Design Notes
-- These three loops should all be active at the same time — a player session looks like:
-  *plant → water → explore for collectibles → pet animals → place a fence → harvest → repeat*
-- None of these should feel required — they're options, not obligations
-- Collectibles are the highest-leverage feature: cheap to implement, immediately adds a reason to walk around
+Debt is achievable even for a cautious first-time player in Spring alone. The 20% rollover penalty is a soft lesson, not a punishment.
 
 ---
 
-## 12. Out of Scope for v1.0
+## 13. Out of Scope for Phase 1
 
-- Multiplayer / co-op
-- Seasonal crop system
+- Weather system (Phase 2)
+- Multiplayer
+- Mobile / controller support
+- NPCs (Phase 2)
+- Crafting / processing (Phase 3)
+- Livestock (Phase 2)
 - Character customisation
-- NPCs / quests / story
-- Mobile support
-- Controller support
-- Crafting system
-
-*All great candidates for post-launch updates!*
-
----
-
-## 13. Implementation Status
-*Updated: 2026-03-23*
-
-| Feature | Status |
-|---------|--------|
-| Core farming loop | Done |
-| All 10 crops | Done |
-| Functional buildings (Barn, Well, Greenhouse) | Partial |
-| Decorative items | Partial |
-| XP and 15 level progression | Done |
-| Economy and coins | Done |
-| Save/load | Done |
-| Player character (polyperfect model) | Done |
-| Camera (isometric, zoom, rotate) | Done |
-| Shop UI | Done |
-| Inventory UI | Done |
-| Build mode UI | Done |
-| HUD (coins, XP, level) | Done |
-| TileInfoUI (hover panel, progress bar, action hints) | Done |
-| Offline crop growth | Done |
-| Audio (hooks in place, clips needed) | Done |
-| Main Menu, Pause, Settings | Done |
-| Real 3D crop visuals | Done |
-| Real 3D building visuals | To Do |
-| Watering Well auto-water function | To Do |
-| Greenhouse grow speed bonus | To Do |
-| Silo overflow storage | To Do |
-| Market Stall auto-sell | To Do |
-| Windmill animation | To Do |
-| Harvest/water/till animations | To Do |
-| Alpha playtesting | In Progress |

@@ -2,31 +2,39 @@ using UnityEngine;
 
 /// <summary>
 /// Represents a single tile on the farm grid.
-/// Tracks tilled state, planted crop, watered state, and growth progress.
+/// Growth is day-based: crops advance one stage per day IF watered.
+/// Unwatered crops pause growth but do not die (Phase 1 simplicity).
+/// At season end, unripe crops are killed and empty tilled tiles reset.
 /// </summary>
 [System.Serializable]
 public class FarmTile
 {
-    public Vector2Int Coord { get; private set; }
-    public Vector3 WorldPosition { get; private set; }
+    public Vector2Int Coord         { get; private set; }
+    public Vector3    WorldPosition { get; private set; }
 
-    public bool IsTilled { get; private set; }
-    public bool IsWatered { get; private set; }
+    public bool IsTilled  { get; private set; }
+    public bool IsWatered { get; private set; } // watered today
     public bool IsPlanted => PlantedCrop != null;
 
-    public CropData PlantedCrop { get; private set; }
-    public float GrowthProgress { get; private set; }  // 0f to 1f
-    public float PlantedTime { get; private set; }
-    public bool IsReadyToHarvest => IsPlanted && GrowthProgress >= 1f;
+    public CropData PlantedCrop    { get; private set; }
+    public int      DaysGrown      { get; private set; }  // days of growth applied
+    public bool     IsReadyToHarvest => IsPlanted && DaysGrown >= PlantedCrop.GrowthDays;
+
+    // GrowthProgress: 0-1 float derived from DaysGrown, drives visual stages
+    public float GrowthProgress => IsPlanted
+        ? Mathf.Clamp01((float)DaysGrown / PlantedCrop.GrowthDays)
+        : 0f;
 
     public FarmTile(Vector2Int coord, Vector3 worldPosition)
     {
-        Coord = coord;
+        Coord         = coord;
         WorldPosition = worldPosition;
-        IsTilled = true;  // Flower beds are pre-tilled — no till step required
-        IsWatered = false;
-        GrowthProgress = 0f;
+        IsTilled      = false;
+        IsWatered     = false;
+        DaysGrown     = 0;
     }
+
+    // ── Player actions ───────────────────────────────────────────────────────
 
     public void Till()
     {
@@ -36,10 +44,9 @@ public class FarmTile
     public bool Plant(CropData crop)
     {
         if (!IsTilled || IsPlanted) return false;
-
         PlantedCrop = crop;
-        GrowthProgress = 0f;
-        PlantedTime = Time.time;
+        DaysGrown   = 0;
+        IsWatered   = false;
         return true;
     }
 
@@ -49,100 +56,98 @@ public class FarmTile
             IsWatered = true;
     }
 
-    /// <summary>
-    /// Called every frame to advance crop growth.
-    /// Watered crops grow 30% faster as per GDD.
-    /// </summary>
-    public void UpdateGrowth(float deltaTime)
+    public CropData Harvest()
     {
-        if (!IsPlanted || IsReadyToHarvest) return;
+        if (!IsReadyToHarvest) return null;
+        CropData harvested = PlantedCrop;
+        PlantedCrop = null;
+        DaysGrown   = 0;
+        IsWatered   = false;
+        // Tile stays tilled after harvest
+        return harvested;
+    }
 
-        float growthRate = 1f / (PlantedCrop.GrowTimeSeconds);
-        if (IsWatered) growthRate *= 1.3f; // 30% faster when watered
+    // ── Day advance ──────────────────────────────────────────────────────────
 
-        GrowthProgress = Mathf.Clamp01(GrowthProgress + growthRate * deltaTime);
+    /// <summary>
+    /// Called by FarmingManager when the day advances.
+    /// Watered crops grow one day. Watered flag resets for the new day.
+    /// </summary>
+    public void AdvanceDay()
+    {
+        if (IsPlanted && !IsReadyToHarvest && IsWatered)
+            DaysGrown++;
+
+        IsWatered = false; // reset for the new day
     }
 
     /// <summary>
-    /// Returns the current growth stage index (0–3) for visual updates.
-    /// 0 = Planted, 1 = Sprouting, 2 = Growing, 3 = Ready
+    /// Called at season end. Kills unripe crops. Resets tilled state on empty tiles.
     /// </summary>
-    /// <summary>
-    /// Estimated real-world seconds until the crop is ready to harvest.
-    /// Accounts for the 1.3x watered bonus and the current growth speed multiplier.
-    /// Returns 0 if not planted or already ready.
-    /// </summary>
-    public float GetRemainingSeconds(float growthMultiplier = 1f)
+    public void OnSeasonEnd()
     {
-        if (!IsPlanted || IsReadyToHarvest) return 0f;
-        float rate = IsWatered ? 1.3f : 1.0f;
-        float effectiveMultiplier = Mathf.Max(growthMultiplier, 0.001f);
-        return PlantedCrop.GrowTimeSeconds * (1f - GrowthProgress) / (rate * effectiveMultiplier);
+        if (IsPlanted && !IsReadyToHarvest)
+        {
+            // Crop didn't make it — dies
+            PlantedCrop = null;
+            DaysGrown   = 0;
+            IsWatered   = false;
+            IsTilled    = false; // field reverts to untilled
+        }
+        else if (!IsPlanted && IsTilled)
+        {
+            IsTilled = false; // unused tilled tile resets
+        }
+        // Ready-to-harvest crops survive season end (player can still collect them)
     }
 
+    // ── Visual helpers ───────────────────────────────────────────────────────
+
+    /// <summary>Growth stage 0-3 used by CropGrowthVisual.</summary>
     public int GetGrowthStage()
     {
         if (!IsPlanted) return -1;
         if (GrowthProgress < 0.33f) return 0;
         if (GrowthProgress < 0.66f) return 1;
-        if (GrowthProgress < 1f) return 2;
+        if (GrowthProgress < 1f)    return 2;
         return 3;
     }
 
-    /// <summary>
-    /// Advances growth by the equivalent of elapsedSeconds of real time.
-    /// Used by the offline growth system on load.
-    /// </summary>
-    public void ApplyOfflineGrowth(float elapsedSeconds, float speedMultiplier)
+    /// <summary>Estimated days remaining until harvest.</summary>
+    public int GetRemainingDays()
     {
-        if (!IsPlanted || IsReadyToHarvest || PlantedCrop == null) return;
-        float rate = 1f / PlantedCrop.GrowTimeSeconds;
-        if (IsWatered) rate *= 1.3f;
-        GrowthProgress = Mathf.Clamp01(GrowthProgress + rate * elapsedSeconds * speedMultiplier);
+        if (!IsPlanted || IsReadyToHarvest) return 0;
+        return PlantedCrop.GrowthDays - DaysGrown;
     }
 
-    public CropData Harvest()
-    {
-        if (!IsReadyToHarvest) return null;
+    // ── Save / Load ──────────────────────────────────────────────────────────
 
-        CropData harvested = PlantedCrop;
-        PlantedCrop = null;
-        GrowthProgress = 0f;
-        IsWatered = false;
-        // Tile stays tilled after harvest
-        return harvested;
-    }
-
-    // --- Save/Load support ---
-    public FarmTileSaveData ToSaveData()
+    public FarmTileSaveData ToSaveData() => new FarmTileSaveData
     {
-        return new FarmTileSaveData
-        {
-            coordX = Coord.x,
-            coordY = Coord.y,
-            isTilled = IsTilled,
-            isWatered = IsWatered,
-            cropId = PlantedCrop != null ? PlantedCrop.CropId : "",
-            growthProgress = GrowthProgress
-        };
-    }
+        coordX    = Coord.x,
+        coordY    = Coord.y,
+        isTilled  = IsTilled,
+        isWatered = IsWatered,
+        cropId    = PlantedCrop != null ? PlantedCrop.CropId : "",
+        daysGrown = DaysGrown,
+    };
 
     public void LoadFromSaveData(FarmTileSaveData data, CropData crop)
     {
-        IsTilled = data.isTilled;
-        IsWatered = data.isWatered;
+        IsTilled    = data.isTilled;
+        IsWatered   = data.isWatered;
         PlantedCrop = crop;
-        GrowthProgress = data.growthProgress;
+        DaysGrown   = data.daysGrown;
     }
 }
 
 [System.Serializable]
 public class FarmTileSaveData
 {
-    public int coordX;
-    public int coordY;
-    public bool isTilled;
-    public bool isWatered;
+    public int    coordX;
+    public int    coordY;
+    public bool   isTilled;
+    public bool   isWatered;
     public string cropId;
-    public float growthProgress;
+    public int    daysGrown;
 }

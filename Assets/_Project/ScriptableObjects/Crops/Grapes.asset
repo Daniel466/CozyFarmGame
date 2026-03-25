@@ -12,18 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb670d95431954c30b2c92f9a588af5f, type: 3}
   m_Name: Grapes
   m_EditorClassIdentifier: Assembly-CSharp::CropData
-  cropId: grapes
-  cropName: Grapes
+  cropId: watermelon
+  cropName: Watermelon
   icon: {fileID: 21300000, guid: d313b0bdee94e4301a4679beec370283, type: 3}
-  unlockLevel: 9
-  seedCost: 38
-  sellValue: 65
-  growTimeSeconds: 1500
+  growingSeason: 2
+  growthDays: 10
+  seedCost: 80
+  sellValue: 200
   growthStagePrefabs:
-  - {fileID: 1994261357479266, guid: 30a37dec18fc3b14e9615797cd33da06, type: 3}
-  - {fileID: 1994261357479266, guid: 30a37dec18fc3b14e9615797cd33da06, type: 3}
-  - {fileID: 1147994195056072, guid: 458eec3309cb86842af7105085ef67fc, type: 3}
-  - {fileID: 1147994195056072, guid: 458eec3309cb86842af7105085ef67fc, type: 3}
+  - {fileID: 1409552111394913192, guid: c1e5694ec4bbb314090f147d485c45bb, type: 3}
+  - {fileID: 2038743783107661464, guid: 222cd786b69e1404ea5194f13fa609fa, type: 3}
+  - {fileID: 965322641646943678, guid: f56815cb9fdbbee46a8780154f10209b, type: 3}
+  - {fileID: 1150367671925854907, guid: fb1024aa9e3d41e4dbaec693044d181e, type: 3}
   modelRotationOffset: {x: 0, y: 0, z: 0}
   modelBaseScale: 1.8
   harvestXP: 7

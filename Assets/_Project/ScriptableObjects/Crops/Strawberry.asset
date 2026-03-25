@@ -15,15 +15,15 @@ MonoBehaviour:
   cropId: strawberry
   cropName: Strawberry
   icon: {fileID: 21300000, guid: faa6848b8e4b7412db527c73d20fa427, type: 3}
-  unlockLevel: 3
-  seedCost: 20
-  sellValue: 35
-  growTimeSeconds: 900
+  growingSeason: 1
+  growthDays: 8
+  seedCost: 50
+  sellValue: 120
   growthStagePrefabs:
-  - {fileID: 1279336675079896, guid: 58ef45e18e1b9f540a07538f4749f29a, type: 3}
-  - {fileID: 1279336675079896, guid: 58ef45e18e1b9f540a07538f4749f29a, type: 3}
-  - {fileID: 1638431593621700, guid: 3536ab62b0860a943b3f8b133d4b3ebe, type: 3}
-  - {fileID: 1396010965316902, guid: 45d3ceaa5c1179d44ac4bcb54904d21f, type: 3}
+  - {fileID: 3787557770663369008, guid: 08a921c4f26e66348b4078dbaa0c6ffe, type: 3}
+  - {fileID: 3787557770663369008, guid: 08a921c4f26e66348b4078dbaa0c6ffe, type: 3}
+  - {fileID: 122780094295654887, guid: 17e5a2e6780bfae488751b970c330220, type: 3}
+  - {fileID: 6832347288266076990, guid: 3ec1766fd50ac784a9469ac31a9921b8, type: 3}
   modelRotationOffset: {x: 0, y: 0, z: 0}
   modelBaseScale: 2.8
   harvestXP: 5

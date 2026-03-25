@@ -15,15 +15,15 @@ MonoBehaviour:
   cropId: sunflower
   cropName: Sunflower
   icon: {fileID: 21300000, guid: 730f70416325d489aacc417ebfb417aa, type: 3}
-  unlockLevel: 1
-  seedCost: 8
-  sellValue: 15
-  growTimeSeconds: 480
+  growingSeason: 4
+  growthDays: 5
+  seedCost: 30
+  sellValue: 75
   growthStagePrefabs:
-  - {fileID: 1612608992061386, guid: 6fe2d4acc42e2c04fadc916ead4a9a5a, type: 3}
-  - {fileID: 1612608992061386, guid: 6fe2d4acc42e2c04fadc916ead4a9a5a, type: 3}
-  - {fileID: 1612608992061386, guid: 6fe2d4acc42e2c04fadc916ead4a9a5a, type: 3}
-  - {fileID: 1612608992061386, guid: 6fe2d4acc42e2c04fadc916ead4a9a5a, type: 3}
+  - {fileID: 2392846725450360020, guid: b81961b2f292e1940a8577e4b0ab04f0, type: 3}
+  - {fileID: 2012802999748778170, guid: 231a3b34868759e43a6aec89806e6ca6, type: 3}
+  - {fileID: 5871908125836082150, guid: 7b31c5967f6e06644a5030c1bd3bb0c5, type: 3}
+  - {fileID: 4787041680083168241, guid: 3d0b16bfb400ff84ab4b504c9e30f69a, type: 3}
   modelRotationOffset: {x: 0, y: -90, z: 0}
   modelBaseScale: 1.8
   harvestXP: 5

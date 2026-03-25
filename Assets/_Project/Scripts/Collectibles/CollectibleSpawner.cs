@@ -119,12 +119,16 @@ public class CollectibleSpawner : MonoBehaviour
     private CropData PickUnlockedCrop()
     {
         if (cropDatabase == null) return null;
-        int playerLevel = GameManager.Instance?.Progression?.CurrentLevel ?? 1;
-        List<CropData> unlocked = new List<CropData>();
+        Season current = GameTimeManager.Instance?.CurrentSeason ?? Season.Spring;
+        var available = new List<CropData>();
         foreach (var crop in cropDatabase.GetAllCrops())
-            if (crop != null && crop.UnlockLevel <= playerLevel)
-                unlocked.Add(crop);
-        return unlocked.Count > 0 ? unlocked[Random.Range(0, unlocked.Count)] : null;
+            if (crop != null && crop.CanGrowIn(current))
+                available.Add(crop);
+        // Fall back to all crops if none match (e.g. winter)
+        if (available.Count == 0)
+            foreach (var crop in cropDatabase.GetAllCrops())
+                if (crop != null) available.Add(crop);
+        return available.Count > 0 ? available[Random.Range(0, available.Count)] : null;
     }
 
     // ── Visual creation ───────────────────────────────────────────────────────

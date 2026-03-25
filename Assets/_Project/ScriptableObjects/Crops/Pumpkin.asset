@@ -15,15 +15,15 @@ MonoBehaviour:
   cropId: pumpkin
   cropName: Pumpkin
   icon: {fileID: 21300000, guid: 93d85586891b54ed59270cda34fb0d7d, type: 3}
-  unlockLevel: 7
-  seedCost: 45
-  sellValue: 80
-  growTimeSeconds: 1800
+  growingSeason: 4
+  growthDays: 8
+  seedCost: 60
+  sellValue: 150
   growthStagePrefabs:
-  - {fileID: 1482622457389426, guid: 01b831e6d82274540a0966e6c3900187, type: 3}
-  - {fileID: 1482622457389426, guid: 01b831e6d82274540a0966e6c3900187, type: 3}
-  - {fileID: 1421407134049668, guid: 160cd81b94a4a9b47a9649e44fe75a15, type: 3}
-  - {fileID: 1421407134049668, guid: 160cd81b94a4a9b47a9649e44fe75a15, type: 3}
+  - {fileID: 1388560328946554952, guid: 7ffc9dc67471e7c42897f96425f2eabb, type: 3}
+  - {fileID: 7878639339383245117, guid: 5f3cdfe4029cff74a818795b707612b2, type: 3}
+  - {fileID: 7241566696034782566, guid: 20bd6838fb4da5e4ab937c6a350e940a, type: 3}
+  - {fileID: 6673795607375077581, guid: 1e7b2b3e10d39ac47b04c07a34666326, type: 3}
   modelRotationOffset: {x: 0, y: 0, z: 0}
   modelBaseScale: 1.6
   harvestXP: 8
