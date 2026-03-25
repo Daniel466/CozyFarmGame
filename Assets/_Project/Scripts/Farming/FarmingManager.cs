@@ -150,6 +150,18 @@ public class FarmingManager : MonoBehaviour
         return found ? nearest : -1f;
     }
 
+    /// <summary>Removes a planted crop without adding it to inventory (player used the Remove tool).</summary>
+    public bool RemoveCrop(Vector2Int coord)
+    {
+        FarmTile tile = grid.GetTile(coord);
+        if (tile == null || !tile.IsPlanted) return false;
+
+        tile.Harvest(); // clears planted state
+        RemoveCropVisual(coord);
+        AudioManager.Instance?.PlayRemove();
+        return true;
+    }
+
     // ── Visual refresh (called by RealTimeManager every second) ──────────────
 
     /// <summary>
