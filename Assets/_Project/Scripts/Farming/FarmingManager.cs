@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Handles player farming actions: tilling, planting, watering, and harvesting.
-/// Growth is day-based — crops advance when the day changes, not in real time.
-/// All actions check energy via EnergyManager and tool via ToolManager.
+/// Handles player farming actions: tilling, planting, and harvesting.
+/// Growth is real-time — FarmTile tracks elapsed seconds since planting.
+/// No energy, no seasons, no watering.
 /// </summary>
 public class FarmingManager : MonoBehaviour
 {
@@ -14,16 +14,11 @@ public class FarmingManager : MonoBehaviour
     [SerializeField] private GameObject cropVisualPrefab;
     [SerializeField] private GameObject harvestReadyFXPrefab;
     [SerializeField] private GameObject harvestFXPrefab;
-    [SerializeField] private GameObject waterFXPrefab;
     [SerializeField] private GameObject plantFXPrefab;
 
-    [Header("Debug")]
-    [SerializeField] private bool skipEnergyCheck = false; // enable in Inspector for testing
-
     private FarmGrid grid;
-    private Dictionary<Vector2Int, FarmTile>   tileCache    = new();
-    private Dictionary<Vector2Int, GameObject> cropVisuals  = new();
-    private Dictionary<Vector2Int, GameObject> tileMarkers  = new();
+    private Dictionary<Vector2Int, FarmTile>   tileCache   = new();
+    private Dictionary<Vector2Int, GameObject> cropVisuals = new();
 
     private void Awake()
     {
@@ -34,53 +29,8 @@ public class FarmingManager : MonoBehaviour
     private void Start()
     {
         if (GameManager.Instance == null) { Debug.LogError("[FarmingManager] GameManager missing!"); enabled = false; return; }
-
         grid      = GameManager.Instance.FarmGrid;
         tileCache = grid.GetAllTiles();
-
-        if (GameTimeManager.Instance != null)
-        {
-            GameTimeManager.Instance.OnDayChanged     += OnDayChanged;
-            GameTimeManager.Instance.OnSeasonChanged  += OnSeasonChanged;
-        }
-    }
-
-    private void OnDestroy()
-    {
-        if (GameTimeManager.Instance != null)
-        {
-            GameTimeManager.Instance.OnDayChanged    -= OnDayChanged;
-            GameTimeManager.Instance.OnSeasonChanged -= OnSeasonChanged;
-        }
-    }
-
-    // ── Day events ───────────────────────────────────────────────────────────
-
-    private void OnDayChanged(int day, Season season, int year)
-    {
-        foreach (var tile in tileCache.Values)
-            tile.AdvanceDay();
-    }
-
-    private void OnSeasonChanged(Season oldSeason, Season newSeason)
-    {
-        int killed = 0;
-        foreach (var kvp in tileCache)
-        {
-            bool wasPlanted = kvp.Value.IsPlanted && !kvp.Value.IsReadyToHarvest;
-            kvp.Value.OnSeasonEnd();
-
-            if (wasPlanted && !kvp.Value.IsPlanted)
-            {
-                killed++;
-                RemoveCropVisual(kvp.Key);
-                RemoveTileMarker(kvp.Key);
-            }
-        }
-
-        if (killed > 0)
-            HUDManager.Instance?.ShowNotification(
-                $"{killed} crop{(killed > 1 ? "s" : "")} died at season end.", 4f);
     }
 
     // ── Farming actions ──────────────────────────────────────────────────────
@@ -89,8 +39,6 @@ public class FarmingManager : MonoBehaviour
     {
         FarmTile tile = grid.GetTile(coord);
         if (tile == null || tile.IsTilled) return false;
-
-        if (!SpendEnergy(ToolManager.EnergyCostHoe)) return false;
 
         tile.Till();
         AudioManager.Instance?.PlayTill();
@@ -102,21 +50,16 @@ public class FarmingManager : MonoBehaviour
         FarmTile tile = grid.GetTile(coord);
         if (tile == null || tile.IsPlanted) return false;
 
-        // Auto-till if needed so player doesn't need a separate till step
+        // Auto-till if needed
         if (!tile.IsTilled) tile.Till();
 
-        // Season check
-        if (!crop.CanGrowIn(GameTimeManager.Instance.CurrentSeason))
+        if (!GameManager.Instance.Economy.SpendCoins(crop.SeedCost)) return false;
+
+        if (!tile.Plant(crop))
         {
-            HUDManager.Instance?.ShowNotification(
-                $"{crop.CropName} does not grow in {GameTimeManager.Instance.CurrentSeason.DisplayName()}.", 3f);
+            GameManager.Instance.Economy.AddCoins(crop.SeedCost); // refund
             return false;
         }
-
-        if (!GameManager.Instance.Economy.SpendCoins(crop.SeedCost)) return false;
-        if (!SpendEnergy(ToolManager.EnergyCostPlant)) { GameManager.Instance.Economy.AddCoins(crop.SeedCost); return false; }
-
-        if (!tile.Plant(crop)) return false;
 
         Vector3 worldPos = grid.GridToWorld(coord);
 
@@ -127,7 +70,6 @@ public class FarmingManager : MonoBehaviour
             cropVisuals[coord] = visual;
         }
 
-        GameManager.Instance.Progression.AddXP(crop.PlantXP);
         AudioManager.Instance?.PlayPlant();
 
         if (plantFXPrefab != null)
@@ -139,51 +81,10 @@ public class FarmingManager : MonoBehaviour
         return true;
     }
 
-    public bool WaterTile(Vector2Int coord, bool playEffects = true)
-    {
-        FarmTile tile = grid.GetTile(coord);
-        if (tile == null || !tile.IsPlanted || tile.IsWatered) return false;
-
-        // Watering can capacity check (skip if playEffects=false, e.g. well auto-water)
-        if (playEffects)
-        {
-            if (ToolManager.Instance != null && !ToolManager.Instance.TryUseWateringCan()) return false;
-            if (!SpendEnergy(ToolManager.EnergyCostWater)) return false;
-        }
-
-        tile.Water();
-
-        Vector3 worldPos = grid.GridToWorld(coord);
-        SpawnTileMarker(coord, worldPos, new Color(0.15f, 0.35f, 0.9f, 0.12f));
-
-        if (playEffects)
-        {
-            AudioManager.Instance?.PlayWater();
-
-            if (cropVisuals.TryGetValue(coord, out GameObject visual) && visual != null)
-                visual.GetComponent<CropGrowthVisual>()?.PlayWaterBounce();
-
-            if (waterFXPrefab != null)
-            {
-                var fx = Instantiate(waterFXPrefab, worldPos + Vector3.up * 0.1f, Quaternion.identity);
-                Destroy(fx, 3f);
-            }
-
-            GameManager.Instance.Progression.AddXP(tile.PlantedCrop?.WaterXP ?? 1);
-        }
-
-        return true;
-    }
-
     public CropData HarvestTile(Vector2Int coord)
     {
         FarmTile tile = grid.GetTile(coord);
         if (tile == null || !tile.IsReadyToHarvest) return null;
-
-        if (!SpendEnergy(ToolManager.EnergyCostHarvest)) return null;
-
-        CropData crop = tile.PlantedCrop;
-        int xp        = crop.HarvestXP;
 
         CropData harvested = tile.Harvest();
         if (harvested == null) return null;
@@ -197,10 +98,7 @@ public class FarmingManager : MonoBehaviour
         }
 
         GameManager.Instance.Inventory.AddItem(harvested, 1);
-        GameManager.Instance.Progression.AddXP(xp);
         AudioManager.Instance?.PlayHarvest();
-
-        RemoveTileMarker(coord);
 
         Vector3 worldPos = grid.GridToWorld(coord);
         if (harvestFXPrefab != null)
@@ -215,21 +113,16 @@ public class FarmingManager : MonoBehaviour
     /// <summary>Restores a planted tile's visual state after loading a save.</summary>
     public void RestoreFromSave(Vector2Int coord, FarmTile tile)
     {
+        if (cropVisualPrefab == null) return;
         Vector3 worldPos = grid.GridToWorld(coord);
-
-        if (cropVisualPrefab != null)
-        {
-            GameObject visual = Instantiate(cropVisualPrefab, worldPos, Quaternion.identity);
-            visual.GetComponent<CropGrowthVisual>()?.Initialise(tile, harvestReadyFXPrefab);
-            cropVisuals[coord] = visual;
-        }
-
-        if (tile.IsWatered)
-            SpawnTileMarker(coord, worldPos, new Color(0.15f, 0.35f, 0.9f, 0.12f));
+        GameObject visual = Instantiate(cropVisualPrefab, worldPos, Quaternion.identity);
+        visual.GetComponent<CropGrowthVisual>()?.Initialise(tile, harvestReadyFXPrefab);
+        cropVisuals[coord] = visual;
     }
 
     // ── Queries ──────────────────────────────────────────────────────────────
 
+    /// <summary>Number of tiles currently planted with this crop (including ready-to-harvest).</summary>
     public int GetPlantedCount(string cropId)
     {
         int count = 0;
@@ -238,63 +131,42 @@ public class FarmingManager : MonoBehaviour
         return count;
     }
 
-    public int GetRemainingDays(string cropId)
+    /// <summary>
+    /// Nearest remaining seconds until harvest for this crop.
+    /// Returns 0 if any tile is ready, -1 if no tiles planted.
+    /// </summary>
+    public float GetNearestRemainingSeconds(string cropId)
     {
-        int nearest = int.MaxValue;
-        bool found  = false;
+        float nearest = float.MaxValue;
+        bool  found   = false;
         foreach (var tile in tileCache.Values)
         {
             if (!tile.IsPlanted || tile.PlantedCrop?.CropId != cropId) continue;
             found = true;
-            if (tile.IsReadyToHarvest) return 0;
-            int rem = tile.GetRemainingDays();
+            if (tile.IsReadyToHarvest) return 0f;
+            float rem = tile.GetRemainingSeconds();
             if (rem < nearest) nearest = rem;
         }
-        return found ? nearest : -1;
+        return found ? nearest : -1f;
+    }
+
+    // ── Visual refresh (called by RealTimeManager every second) ──────────────
+
+    /// <summary>
+    /// Asks the CropGrowthVisual on this tile to re-evaluate its growth stage.
+    /// CropGrowthVisual only rebuilds when the stage changes, so this is cheap.
+    /// </summary>
+    public void RefreshVisual(Vector2Int coord, FarmTile tile)
+    {
+        if (!cropVisuals.TryGetValue(coord, out GameObject visual) || visual == null) return;
+        visual.GetComponent<CropGrowthVisual>()?.Refresh(tile);
     }
 
     // ── Helpers ──────────────────────────────────────────────────────────────
-
-    private bool SpendEnergy(int amount)
-    {
-        if (skipEnergyCheck) return true;
-        return EnergyManager.Instance == null || EnergyManager.Instance.TrySpend(amount);
-    }
 
     private void RemoveCropVisual(Vector2Int coord)
     {
         if (cropVisuals.TryGetValue(coord, out GameObject v) && v != null) Destroy(v);
         cropVisuals.Remove(coord);
-    }
-
-    private void RemoveTileMarker(Vector2Int coord)
-    {
-        if (tileMarkers.TryGetValue(coord, out GameObject m) && m != null) Destroy(m);
-        tileMarkers.Remove(coord);
-    }
-
-    private void SpawnTileMarker(Vector2Int coord, Vector3 worldPos, Color color)
-    {
-        RemoveTileMarker(coord);
-
-        GameObject marker = GameObject.CreatePrimitive(PrimitiveType.Quad);
-        marker.name = "TileMarker";
-        marker.transform.position  = worldPos + Vector3.up * 0.02f;
-        marker.transform.rotation  = Quaternion.Euler(90f, 0f, 0f);
-        marker.transform.localScale = new Vector3(1.2f, 1.2f, 1f);
-        Destroy(marker.GetComponent<Collider>());
-
-        var shader = Shader.Find("Universal Render Pipeline/Unlit") ?? Shader.Find("Standard");
-        var mat    = new Material(shader);
-        mat.SetFloat("_Surface",  1f);
-        mat.SetFloat("_SrcBlend", (float)UnityEngine.Rendering.BlendMode.SrcAlpha);
-        mat.SetFloat("_DstBlend", (float)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-        mat.SetFloat("_ZWrite",   0f);
-        mat.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
-        mat.SetColor("_BaseColor", color);
-        mat.color = color;
-        marker.GetComponent<Renderer>().material = mat;
-
-        tileMarkers[coord] = marker;
     }
 }

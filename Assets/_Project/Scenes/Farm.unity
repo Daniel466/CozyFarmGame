@@ -2562,6 +2562,8 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 256
+  hoverYOffset: 0.08
+  debugRaycast: 0
   selectedCrop: {fileID: 0}
   playerController: {fileID: 112115798}
 --- !u!114 &112115798
@@ -20681,7 +20683,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BuildingManager
   groundLayer:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 0
 --- !u!114 &919467187
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20761,9 +20763,7 @@ MonoBehaviour:
   cropVisualPrefab: {fileID: 8905606864023788519, guid: bf34193840c304f9e9b5ba522c9d516d, type: 3}
   harvestReadyFXPrefab: {fileID: 1497030318103322, guid: 3313c584bfb0ca54584fe5b29871dfc2, type: 3}
   harvestFXPrefab: {fileID: 1575721338728490, guid: 4171bb92c5c591848b14be1db6f3efe2, type: 3}
-  waterFXPrefab: {fileID: 1932552764689772, guid: 55c7caedf64d935419e00dac831d338a, type: 3}
   plantFXPrefab: {fileID: 1696364401450348, guid: d599d264aedd3aa4684f39e078823d4e, type: 3}
-  growthSpeedMultiplier: 60
 --- !u!114 &919467192
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20779,9 +20779,6 @@ MonoBehaviour:
   gridWidth: 4
   gridHeight: 4
   tileSize: 4
-  gridOrigin: {x: -6, y: 0.2, z: 13}
-  normalTilePrefab: {fileID: 0}
-  tilledTilePrefab: {fileID: 0}
 --- !u!114 &919467193
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36920,6 +36917,7 @@ MonoBehaviour:
   shopPanel: {fileID: 1162304162}
   itemGrid: {fileID: 274207062}
   cropDatabase: {fileID: 11400000, guid: 583ce83ef71ab4cd1a0eefb5a3219a3c, type: 2}
+  isOpen: 0
 --- !u!114 &1563280016
 MonoBehaviour:
   m_ObjectHideFlags: 0

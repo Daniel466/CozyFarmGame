@@ -1,271 +1,246 @@
-# Game Design Document
-## Harvest & Homestead — v2.1
-*Updated: March 2026 | Direction: Life Sim x Farming Simulator*
+# Solo Farm Automation Game — GDD v1.0
+*Updated: March 2026 | Direction: Cozy Farming Simulation with Automation*
 
 ---
 
-## 1. Overview
+## 1. Game Overview
 
 | Field | Detail |
 |-------|--------|
-| Genre | 3D Life Sim / Farming Simulator hybrid |
-| Platform | PC (Windows) — itch.io launch |
-| Engine | Unity 6 (URP) |
-| Inspiration | Stardew Valley, Story of Seasons, Farming Simulator 25 |
-| Target Audience | Players who want a relaxing but deep farming experience |
+| Genre | Cozy Farming Simulation with Automation |
+| Engine | Unity 6.3 LTS |
+| Primary Platform | PC (Keyboard / Mouse) |
+| Secondary Platform | iPadOS (touch input adaptation later) |
+| Perspective | Third-person, Farm Together-style camera |
+| World Type | Single isolated expandable farm |
+| Core Theme | Build, automate, and expand a relaxing large-scale farm using AI helpers |
+| Multiplayer | Single player v1 — co-op hook planned later |
 
 ### Elevator Pitch
-You inherit a neglected farm. Work the land through seasons, invest in equipment, manage your crops and economy, and build something you are proud of. The heart of a life sim with the depth of a farming simulator.
+Start farming by hand. Hire workers and a companion to automate the grind. Watch your farm run itself while you focus on expanding and optimising. No pressure, no fail states — just building something you're proud of.
 
 ---
 
-## 2. Core Fantasy
+## 2. Core Gameplay Loop
 
-Start with one small field and hand tools. Over time expand to multiple plots, upgrade equipment, and grow a thriving farm operation. The game rewards planning, patience, and good decisions — not grinding.
-
----
-
-## 3. Core Loop
-
-**Each day:**
-- Wake up
-- Work the farm (till, plant, water, harvest)
-- Drop harvested goods in the shipping crate
-- Sleep to advance to the next day
-
-**Each season (28 days):**
-- Only season-appropriate crops can be planted
-- Unharvested crops die at season end
-- Market prices shift with the season
-- Winter: forage for items instead of farming
-
-**Year arc:**
-- Year 1: build the farm, pay off debt by season end
-- Year 2+: expand plots, upgrade tools, build processing buildings
-
-*Note: Weather system is planned for Phase 2. Not in Phase 1.*
+Plant Crops → Grow in Real-Time → Harvest → Sell → Earn Money → Expand Farm → Hire Helpers → Automate Tasks → Repeat
 
 ---
 
-## 4. Systems — Phase 1
+## 3. Grid System
 
-### 4a. Time
-- The day advances only when the player sleeps (bed interaction)
-- Passing out at midnight: lose 100 coin penalty, wake up next morning
-- No offline growth — game time only passes when playing
-- Auto-saves on sleep and on quit (single save slot)
-
-### 4b. Energy
-
-| Action | Energy Cost |
-|--------|------------|
-| Tilling | 10 |
-| Planting | 4 |
-| Watering | 2 |
-| Harvesting | 8 |
-
-- Max energy: 100 per day, fully restored on sleep
-- At 0 energy all farm actions are blocked — player must eat or sleep
-- Eating food items restores 20 energy
-- **Typical full day:** 10 tiles tilled (100e) or 20 tiles watered (40e) + 5 harvested (40e) + 5 planted (20e) = 100e. Balanced.
-
-### 4c. Seasons
-- 4 seasons: Spring / Summer / Fall / Winter — 28 days each
-- Crops are season-locked (see crop table)
-- Season end: unharvested crops die, all tilled empty tiles reset
-- Season change announced with a full-screen UI moment
-- **Winter:** no crops grow — player forages instead (see 4i)
-
-### 4d. Crops
-
-| Crop | Season | Days | Seed Cost | Sell Value | Profit/Tile |
-|------|--------|------|-----------|------------|-------------|
-| Carrot | Spring | 4 | 20 | 50 | 30 |
-| Potato | Spring | 6 | 30 | 80 | 50 |
-| Strawberry | Spring | 8 | 50 | 120 | 70 |
-| Tomato | Summer | 5 | 35 | 90 | 55 |
-| Corn | Summer | 7 | 45 | 110 | 65 |
-| Watermelon | Summer | 10 | 80 | 200 | 120 |
-| Pumpkin | Fall | 8 | 60 | 150 | 90 |
-| Sunflower | Fall | 5 | 30 | 75 | 45 |
-| Wheat | Fall | 4 | 15 | 40 | 25 |
-| Leek | Fall + Winter | 6 | 25 | 65 | 40 |
-
-- 4 growth stages: Seedling / Young / Mature / Ripe
-- Watered crops grow 1 day per day. Unwatered crops pause growth (no death)
-- Leek is the only Winter crop — gives players a reason to farm in Winter
-
-### 4e. Tools
-
-| Tool | Key | Action | Energy | Notes |
-|------|-----|--------|--------|-------|
-| Hoe | 1 | Tills one tile | 10 | Required before planting |
-| Watering Can | 2 | Waters one tile | 2 | Capacity: 20 uses, refill at well |
-| Sickle | 3 | Harvests ripe crop | 8 | Must be equipped |
-| — | — | Plant seed | 4 | No tool needed, uses selected crop from inventory |
-
-- Tool toolbar always visible at bottom of HUD
-- Watering can shows remaining capacity as a number badge
-- Bare hands (no tool): can interact with buildings and objects only
-- Tile hover highlight changes by equipped tool:
-  - Hoe → brown highlight on untilled tiles
-  - Watering Can → blue highlight on unwatered planted tiles
-  - Sickle → gold highlight on ripe tiles
-
-### 4f. Farm Grid
-- Start: one 10×10 plot (100 tiles)
-- Practical active area: ~20–30 tiles given energy limits
-- Second plot unlocks start of Year 2
-- Tilled but unplanted tiles reset at season end
-
-### 4g. Economy
-- Coins are the only Phase 1 currency
-- **Shipping crate** (free, starter): drop goods in, paid next morning
-- Prices vary by season — selling out of season earns up to 50% more
-- **Silo**: store harvested crops to sell in a later season at higher prices
-- Starting coins: 500
-- Farm debt: 2000 coins owed by end of Year 1
-  - Debt not paid → rolls over to Year 2 with 20% penalty added (not game over)
-  - First-time players who struggle in Spring can still recover in Summer/Fall
-
-### 4h. Progression
-- **Farm level based on total shipping revenue only** (coins earned via the crate)
-- Buying and selling without farming does not count
-- "Total Shipped" displayed as farm milestone tracker on HUD
-- Levels unlock buildings and bonuses — no XP, no level grinding
-
-### 4i. Winter Foraging
-- Winter has no plantable crops (except Leek)
-- Enhanced collectibles spawn around the farm: pinecones, winter berries, frost mushrooms
-- Higher spawn rate and higher coin value than normal collectibles (15–40 coins each)
-- Foraging gives players 28 days of meaningful activity without complex systems
-- Foraged seeds can drop as rare finds — safety net for players who run low on coins
-
-### 4j. Fail States
-
-| Situation | Outcome |
-|-----------|---------|
-| 0 coins, can't buy seeds | Foraged seeds drop in winter; collectibles always provide some income |
-| Debt not paid by Year 1 end | Debt rolls over + 20% penalty; game continues |
-| Pass out (midnight) | Wake up next day, lose 100 coins |
-| Run out of energy | Farm actions blocked; eat or sleep to continue |
-
-- No game over states in Phase 1 — the game always lets you continue
-- No way to sell tools or buildings — no softlock risk
-
-### 4k. Save System
-- Auto-saves on sleep (every day advance)
-- Auto-saves on quit
-- Single save slot
-- Saves: coins, farm time (day/season/year), energy, tool state, inventory, all tiles, all buildings
-
----
-
-## 5. Systems — Phase 2 (Planned)
-
-- Weather: sunny (default) / rainy (auto-waters all tiles) — 30% rain chance per day
-- Tool upgrades via blacksmith NPC
-- Crop quality tiers (Standard / Premium / Artisan)
-- Livestock: chickens (eggs), cows (milk)
-- 2–3 NPCs with basic shop and dialogue
-- Shipping contracts (bonus pay for bulk orders)
-- Soil quality and fertilizer
-
----
-
-## 6. Systems — Phase 3 (Full vision)
-
-- Processing buildings (mill, press, dairy)
-- Full NPC town with relationships
-- Tractor and machinery
-- Multiple farm plots with distinct soil types
-- Marriage / story arc
-
----
-
-## 7. Buildings — Phase 1
-
-| Building | Cost | Function |
-|----------|------|----------|
-| Farmhouse | Free (starter) | Sleep to advance day |
-| Shipping Crate | Free (starter) | Drop off goods, paid next morning |
-| Water Well | 300 coins | Refill watering can to full |
-| Barn | 500 coins | Increases carry capacity (+20 crop slots) |
-| Silo | 800 coins | Store harvested crops to sell later at better prices |
-| Greenhouse | 1500 coins | Grow any crop regardless of season |
-
----
-
-## 8. Player
-
-- Synty POLYGON character with Mixamo animations
-- Animations: Idle, Walk, Till, Plant, Water, Harvest
-- Energy bar in HUD
-- Tool toolbar in HUD (always visible, shows can capacity)
-
----
-
-## 9. Camera
-
-- Isometric third-person (Stardew / Farm Together style)
-- WASD moves player, scroll zooms, Q/E rotates
-- Camera follows player with soft lag
-
----
-
-## 10. Controls
-
-| Action | Input |
-|--------|-------|
-| Move | WASD |
-| Use tool / interact | Left Click |
-| Switch tool | 1 / 2 / 3 |
-| Open inventory | Tab |
-| Open shop | B |
-| Toggle build mode | G |
-| Sleep (near bed) | E |
-| Zoom | Scroll Wheel |
-| Rotate camera | Q / E |
-| Pause | Escape |
-
----
-
-## 11. Audio
-
-| Element | Style |
+| Setting | Value |
 |---------|-------|
-| Music | Acoustic, seasonal — gentle spring, warm summer, melancholic fall, sparse winter |
-| Tilling | Earthy thud |
-| Watering | Gentle splash |
-| Planting | Soft pat |
-| Harvesting | Satisfying pop |
-| Season change | Warm chime |
-| Ambience | Birds, wind, seasonal sounds layered under music |
+| Starting Grid Size | 20x20 tiles |
+| Tile Size | 1x1 Unity units |
+| Tile Types | Grass / Soil / Occupied (buildings) |
 
-*Full audio spec (track count, looping, volume priorities) to be defined when sourcing assets.*
-
----
-
-## 12. Economy Stress Test
-
-| Scenario | Math |
-|----------|------|
-| Debt target | 2000 coins by end of Year 1 (112 days) |
-| Spring max (Strawberry) | 20 tiles × 70 profit × 3 harvests = 4200 coins |
-| Summer max (Tomato) | 20 tiles × 55 profit × 5 harvests = 5500 coins |
-| Fall max (Pumpkin) | 20 tiles × 90 profit × 3 harvests = 5400 coins |
-| New player (Carrot only) | 10 tiles × 30 profit × 7 harvests = 2100 coins (Spring alone clears debt) |
-
-Debt is achievable even for a cautious first-time player in Spring alone. The 20% rollover penalty is a soft lesson, not a punishment.
+**Features:**
+- Grid snapping
+- Area drag actions (drag to till / plant / harvest multiple tiles)
+- Tile highlighting (colour by action type)
 
 ---
 
-## 13. Out of Scope for Phase 1
+## 4. Crop System
 
-- Weather system (Phase 2)
-- Multiplayer
-- Mobile / controller support
-- NPCs (Phase 2)
-- Crafting / processing (Phase 3)
-- Livestock (Phase 2)
-- Character customisation
+**Starter Crops (Milestone 1):**
+- Wheat
+- Carrot
+- Corn
+
+**Full Starter Set Goal (later):** 6-10 crops total
+
+**Growth Model:**
+- Real-time growth
+- Offline growth supported (timestamp-based)
+- 4 growth stages:
+  - Stage 1: Seed
+  - Stage 2: Sprout
+  - Stage 3: Growing
+  - Stage 4: Ready
+- Growth timing: minutes to ~1 hour depending on crop
+- Crops do not die if not harvested — stay Ready until collected
+
+---
+
+## 5. Inventory System
+
+| Setting | Value |
+|---------|-------|
+| Type | Stack-based |
+| Initial Capacity | Unlimited stacks |
+| Stores | Crop items, Seeds |
+
+**Future:** storage buildings expand or limit capacity
+
+---
+
+## 6. Sell Box System
+
+- Sell Box placed near farmhouse
+- Player interacts to open sell panel
+- Items removed from inventory, money added to funds
+- **Future automation:**
+  - Companion delivers items to Sell Box
+  - Workers deliver harvested goods to Sell Box
+
+---
+
+## 7. Storage Shed
+
+- First unlockable building
+- Size: 2x2 tiles
+- Purpose: store large quantities of items, support future logistics systems
+
+---
+
+## 8. Building Placement System
+
+| Feature | Detail |
+|---------|--------|
+| Placement Mode | Instant grid snapping |
+| Rotation | 90 degree steps |
+| Validation | Multi-tile footprint check |
+| Preview | Green = valid, Red = invalid |
+
+---
+
+## 9. Worker System
+
+- Initial worker count: 1
+- **First worker abilities:**
+  - Harvest ripe crops
+  - Deliver harvested items to Sell Box
+
+**Worker States:**
+Idle → Move → Harvest → Deliver → Return
+
+**Movement:** Tile-based A* pathfinding
+**Obstacles:** Buildings, water, locked tiles
+
+---
+
+## 10. Companion System
+
+- Type: Human companion
+- **First ability:** periodically sells items from inventory
+- **Idle behaviour:** remains near farmhouse, moves only when selling
+- **Future upgrades:**
+  - Carry more items
+  - Faster delivery
+  - Additional helper tasks
+
+---
+
+## 11. Tool System
+
+- All tools are instant-use
+- **Supports area drag** — hold and drag across tiles to apply action to multiple tiles
+
+**Starter Tools:**
+
+| Tool | Action |
+|------|--------|
+| Hoe | Till tile(s) |
+| Seed | Plant selected crop |
+| Harvest | Harvest ripe crop(s) |
+| Remove | Remove crop or building |
+| Build | Enter building placement mode |
+
+---
+
+## 12. Real-Time Manager
+
+- **Tick rate:** every 1 second
+- **Handles:**
+  - Crop growth timing
+  - Companion task triggers
+  - Worker state checks
+  - Autosave timing
+
+---
+
+## 13. Save System
+
+- **Auto-save only** (no manual save)
+- **Save triggers:**
+  - Every 90 seconds
+  - On key events (sell, hire worker, place building)
+  - On exit
+- **Saved data:** grid state, crops + timestamps, inventory, buildings, workers, money, lifetime earnings
+
+---
+
+## 14. UI Layout
+
+**Main HUD (bottom of screen):**
+- Tool bar
+- Selected crop indicator
+- Inventory access button
+
+**Additional UI:**
+- Inventory window
+- Storage window
+- Sell interface
+- Milestone / unlock notifications
+
+---
+
+## 15. Pathfinding System
+
+- Worker navigation uses tile-based A* pathfinding
+- Movement restricted to walkable tiles
+- **Obstacles:** buildings, water, locked tiles
+
+---
+
+## 16. Platform Strategy
+
+| Platform | Input |
+|----------|-------|
+| PC (primary) | Keyboard + Mouse |
+| iPadOS (secondary, later) | Touch input |
+
+- Unity New Input System throughout
+- Supports: keyboard, mouse, controller, future touch
+
+---
+
+## 17. First Playable Milestone
+
+**Includes:**
+- [ ] Player movement + camera
+- [ ] 20x20 grid system
+- [ ] Crop planting (Wheat, Carrot, Corn)
+- [ ] Real-time growth with 4 stages
+- [ ] Harvesting
+- [ ] Sell Box interaction
+- [ ] Inventory
+- [ ] Autosave
+
+---
+
+## 18. Future Expansion Systems
+
+- Multiple workers with specialisations
+- Expanded storage and logistics
+- Additional crops (6-10 total)
+- Advanced buildings (barn, greenhouse, silo)
+- Automation upgrades (worker speed, carry capacity)
+- Farm expansion zones (unlock more land)
+- Companion upgrades
+- iPad touch input
+
+---
+
+## 19. Out of Scope for Phase 1
+
+- Seasons or weather
+- Energy system
+- Debt or fail states
+- NPCs / dialogue
+- Multiplayer / co-op
+- Crop quality tiers
+- Crafting / processing
+- Controller support

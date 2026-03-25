@@ -376,17 +376,7 @@ public class HUDBuilder : Editor
             new Vector2(0f, 15f), new Vector2(0f, 25f),
             "Press B to close", 16, new Color(0.6f, 0.6f, 0.6f), TextAlignmentOptions.Center);
 
-        if (cropDB == null)
-            Debug.LogWarning("[HUDBuilder] CropDatabase not found at expected path — ShopUI will be empty at runtime.");
-
-        // Add ShopUI component and wire via SerializedObject
-        var shopUI = canvasGO.AddComponent<ShopUI>();
-        var so = new SerializedObject(shopUI);
-        so.FindProperty("shopPanel").objectReferenceValue = shopPanel;
-        so.FindProperty("itemGrid").objectReferenceValue = content;
-        so.FindProperty("cropDatabase").objectReferenceValue = cropDB;
-        so.ApplyModifiedProperties();
-        EditorUtility.SetDirty(shopUI);
+        // ShopUI removed — milestone unlock shop wired separately
     }
 
     private static void BuildInventoryPanel(GameObject canvasGO)

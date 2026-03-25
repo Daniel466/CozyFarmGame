@@ -15,8 +15,7 @@ MonoBehaviour:
   cropId: corn
   cropName: Corn
   icon: {fileID: 21300000, guid: 0a00dfc5265694233aa4e9bedb3279cb, type: 3}
-  growingSeason: 2
-  growthDays: 7
+  growthTimeSeconds: 300
   seedCost: 45
   sellValue: 110
   growthStagePrefabs:
@@ -26,6 +25,3 @@ MonoBehaviour:
   - {fileID: 5683630738333270662, guid: 0f697cadf44a4f44dbd9a028df0c6550, type: 3}
   modelRotationOffset: {x: 0, y: 0, z: 0}
   modelBaseScale: 1
-  harvestXP: 5
-  plantXP: 2
-  waterXP: 1

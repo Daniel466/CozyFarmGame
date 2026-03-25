@@ -2,16 +2,23 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Manages the farm grid of tiles. Each tile can be tilled, planted, watered and harvested.
+/// Manages the 20x20 farm grid. Tiles are 1x1 Unity units, centred on the GameObject.
+/// A flat BoxCollider on the FarmInteract layer receives all player raycasts.
 /// </summary>
 public class FarmGrid : MonoBehaviour
 {
     [Header("Grid Settings")]
-    [SerializeField] private int gridWidth  = 10;   // Phase 1: one 10x10 plot (100 tiles)
-    [SerializeField] private int gridHeight = 10;
-    [SerializeField] private float tileSize = 1.5f; // 1.5 matches Poly Universal Pack crop model scale
+    [SerializeField] private int gridWidth  = 20;
+    [SerializeField] private int gridHeight = 20;
+    [SerializeField] private float tileSize = 1f;
 
     private Dictionary<Vector2Int, FarmTile> tiles = new Dictionary<Vector2Int, FarmTile>();
+
+    private const string FARM_INTERACT_LAYER = "FarmInteract";
+
+    public int   Width    => gridWidth;
+    public int   Height   => gridHeight;
+    public float TileSize => tileSize;
 
     private void Start()
     {
@@ -19,11 +26,22 @@ public class FarmGrid : MonoBehaviour
         CreateGroundCollider();
     }
 
-    private const string FARM_INTERACT_LAYER = "FarmInteract";
+    private void GenerateGrid()
+    {
+        for (int x = 0; x < gridWidth; x++)
+        {
+            for (int z = 0; z < gridHeight; z++)
+            {
+                Vector2Int coord    = new Vector2Int(x, z);
+                Vector3    worldPos = GridToWorld(coord);
+                tiles[coord] = new FarmTile(coord, worldPos);
+            }
+        }
+    }
 
     /// <summary>
-    /// Spawns an invisible flat box collider covering the entire grid so raycasts always register.
-    /// Sits on the "FarmInteract" layer — PlayerInteraction.groundLayer must include this layer.
+    /// Spawns an invisible flat BoxCollider covering the entire grid so raycasts always register.
+    /// Placed on the FarmInteract layer — PlayerInteraction.groundLayer must include this layer.
     /// </summary>
     private void CreateGroundCollider()
     {
@@ -34,47 +52,18 @@ public class FarmGrid : MonoBehaviour
         int layerIndex = LayerMask.NameToLayer(FARM_INTERACT_LAYER);
         if (layerIndex < 0)
         {
-            Debug.LogError($"[FarmGrid] Layer '{FARM_INTERACT_LAYER}' not found! " +
-                           "Add it in Project Settings > Tags and Layers. Falling back to Default.");
+            Debug.LogError($"[FarmGrid] Layer '{FARM_INTERACT_LAYER}' not found. " +
+                           "Add it in Project Settings > Tags and Layers.");
             layerIndex = 0;
         }
         go.layer = layerIndex;
 
-        var col = go.AddComponent<BoxCollider>();
-        float w = gridWidth  * tileSize;
-        float h = gridHeight * tileSize;
-        col.size   = new Vector3(w, 0.02f, h);
-        col.center = Vector3.zero; // grid is centred on transform
+        var col    = go.AddComponent<BoxCollider>();
+        col.size   = new Vector3(gridWidth * tileSize, 0.02f, gridHeight * tileSize);
+        col.center = Vector3.zero; // grid is centred on transform.position
     }
 
-    private void GenerateGrid()
-    {
-        for (int x = 0; x < gridWidth; x++)
-        {
-            for (int z = 0; z < gridHeight; z++)
-            {
-                Vector2Int coord = new Vector2Int(x, z);
-                Vector3 worldPos = GridToWorld(coord);
-
-                FarmTile tile = new FarmTile(coord, worldPos);
-                tiles[coord] = tile;
-            }
-        }
-    }
-
-    public FarmTile GetTile(Vector2Int coord)
-    {
-        tiles.TryGetValue(coord, out FarmTile tile);
-        return tile;
-    }
-
-    public FarmTile GetTileAtWorldPos(Vector3 worldPos)
-    {
-        Vector2Int coord = WorldToGrid(worldPos);
-        return GetTile(coord);
-    }
-
-    // Grid is centred on transform.position so you can position it by placing the GameObject at the pad centre.
+    // Grid is centred on transform.position.
     private Vector3 GridOffset => new Vector3(
         (gridWidth  - 1) * tileSize * 0.5f,
         0f,
@@ -97,55 +86,55 @@ public class FarmGrid : MonoBehaviour
         return new Vector2Int(x, z);
     }
 
-    public bool IsValidCoord(Vector2Int coord)
+    public bool IsValidCoord(Vector2Int coord) =>
+        coord.x >= 0 && coord.x < gridWidth &&
+        coord.y >= 0 && coord.y < gridHeight;
+
+    public FarmTile GetTile(Vector2Int coord)
     {
-        return coord.x >= 0 && coord.x < gridWidth && coord.y >= 0 && coord.y < gridHeight;
+        tiles.TryGetValue(coord, out FarmTile tile);
+        return tile;
     }
+
+    public FarmTile GetTileAtWorldPos(Vector3 worldPos) =>
+        GetTile(WorldToGrid(worldPos));
 
     public Dictionary<Vector2Int, FarmTile> GetAllTiles() => tiles;
 
-    public float TileSize => tileSize;
-
 #if UNITY_EDITOR
-    /// <summary>
-    /// Draws the grid in the Scene view so you can visually align it with flower beds.
-    /// Yellow = grid outline, White = individual tile borders.
-    /// </summary>
     private void OnDrawGizmos()
     {
-        // Draw outer grid boundary in yellow
-        UnityEditor.Handles.color = Color.yellow;
         Vector3 gridStart = GridToWorld(Vector2Int.zero);
-        Vector3 origin = gridStart - new Vector3(tileSize * 0.5f, 0, tileSize * 0.5f);
-        float w = gridWidth * tileSize;
-        float h = gridHeight * tileSize;
+        Vector3 origin    = gridStart - new Vector3(tileSize * 0.5f, 0, tileSize * 0.5f);
+        float   w         = gridWidth  * tileSize;
+        float   h         = gridHeight * tileSize;
 
         // Outer border
-        UnityEditor.Handles.DrawLine(origin, origin + new Vector3(w, 0, 0));
-        UnityEditor.Handles.DrawLine(origin + new Vector3(w, 0, 0), origin + new Vector3(w, 0, h));
-        UnityEditor.Handles.DrawLine(origin + new Vector3(w, 0, h), origin + new Vector3(0, 0, h));
-        UnityEditor.Handles.DrawLine(origin + new Vector3(0, 0, h), origin);
+        UnityEditor.Handles.color = Color.yellow;
+        UnityEditor.Handles.DrawLine(origin,                          origin + new Vector3(w, 0, 0));
+        UnityEditor.Handles.DrawLine(origin + new Vector3(w, 0, 0),  origin + new Vector3(w, 0, h));
+        UnityEditor.Handles.DrawLine(origin + new Vector3(w, 0, h),  origin + new Vector3(0, 0, h));
+        UnityEditor.Handles.DrawLine(origin + new Vector3(0, 0, h),  origin);
 
-        // Individual tile lines
-        UnityEditor.Handles.color = new Color(1, 1, 1, 0.3f);
+        // Tile lines
+        UnityEditor.Handles.color = new Color(1, 1, 1, 0.2f);
         for (int x = 0; x <= gridWidth; x++)
         {
-            Vector3 start = origin + new Vector3(x * tileSize, 0, 0);
-            Vector3 end = start + new Vector3(0, 0, h);
-            UnityEditor.Handles.DrawLine(start, end);
+            Vector3 s = origin + new Vector3(x * tileSize, 0, 0);
+            UnityEditor.Handles.DrawLine(s, s + new Vector3(0, 0, h));
         }
         for (int z = 0; z <= gridHeight; z++)
         {
-            Vector3 start = origin + new Vector3(0, 0, z * tileSize);
-            Vector3 end = start + new Vector3(w, 0, 0);
-            UnityEditor.Handles.DrawLine(start, end);
+            Vector3 s = origin + new Vector3(0, 0, z * tileSize);
+            UnityEditor.Handles.DrawLine(s, s + new Vector3(w, 0, 0));
         }
 
-        // Draw centre cross on tile (0,0) — this is where the FarmGrid GameObject sits
+        // Origin marker
         UnityEditor.Handles.color = Color.red;
-        Vector3 tile00 = transform.position;
-        UnityEditor.Handles.DrawLine(tile00 - Vector3.right * 0.5f, tile00 + Vector3.right * 0.5f);
-        UnityEditor.Handles.DrawLine(tile00 - Vector3.forward * 0.5f, tile00 + Vector3.forward * 0.5f);
+        UnityEditor.Handles.DrawLine(transform.position - Vector3.right   * 0.5f,
+                                     transform.position + Vector3.right   * 0.5f);
+        UnityEditor.Handles.DrawLine(transform.position - Vector3.forward * 0.5f,
+                                     transform.position + Vector3.forward * 0.5f);
     }
 #endif
 }

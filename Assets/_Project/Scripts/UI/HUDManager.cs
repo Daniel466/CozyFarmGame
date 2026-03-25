@@ -257,8 +257,8 @@ public class HUDManager : MonoBehaviour
         var fm = FarmingManager.Instance;
         if (fm == null) { selectedCropStatsText.text = ""; return; }
 
-        int count   = fm.GetPlantedCount(currentSelectedCrop.CropId);
-        int days    = fm.GetRemainingDays(currentSelectedCrop.CropId);
+        int   count = fm.GetPlantedCount(currentSelectedCrop.CropId);
+        float secs  = fm.GetNearestRemainingSeconds(currentSelectedCrop.CropId);
 
         if (count == 0)
         {
@@ -267,7 +267,7 @@ public class HUDManager : MonoBehaviour
         }
 
         string countStr = count == 1 ? "1 planted" : $"{count} planted";
-        string timerStr = days <= 0 ? ", Ready!" : $", {days}d left";
+        string timerStr = secs <= 0f ? ", Ready!" : $", {FormatTime(secs)}";
         selectedCropStatsText.text = countStr + timerStr;
     }
 
@@ -329,30 +329,18 @@ public class HUDManager : MonoBehaviour
                 tileInfoTimeText.text = "";
             else
             {
-                int days = tile.GetRemainingDays();
-                tileInfoTimeText.text = days > 0 ? $"{days} day{(days == 1 ? "" : "s")} remaining" : "";
+                float secs = tile.GetRemainingSeconds();
+                tileInfoTimeText.text = secs > 0f ? $"{FormatTime(secs)} remaining" : "";
             }
         }
 
         if (tileInfoWaterText)
-        {
-            if (!planted || tile.IsReadyToHarvest)
-            {
-                tileInfoWaterText.text = "";
-            }
-            else
-            {
-                tileInfoWaterText.text = tile.IsWatered ? "Watered" : "Needs Water";
-                tileInfoWaterText.color = tile.IsWatered
-                    ? new Color(0.3f, 0.85f, 1.0f)
-                    : new Color(1.0f, 0.6f, 0.2f);
-            }
-        }
+            tileInfoWaterText.text = "";
 
         // Progress bar
         if (tileInfoProgressFill != null)
         {
-            float prog = !planted ? 0f : (tile.IsReadyToHarvest ? 1f : tile.GrowthProgress);
+            float prog = !planted ? 0f : (tile.IsReadyToHarvest ? 1f : tile.GetGrowthProgress());
             tileInfoProgressFill.anchorMax = new Vector2(prog, 1f);
             var fillImg = tileInfoProgressFill.GetComponent<Image>();
             if (fillImg) fillImg.color = tile.IsReadyToHarvest
@@ -365,8 +353,6 @@ public class HUDManager : MonoBehaviour
         {
             if (tile.IsReadyToHarvest)
                 tileInfoActionHint.text = "Left click - harvest";
-            else if (planted && !tile.IsWatered)
-                tileInfoActionHint.text = "Right click - water";
             else if (planted)
                 tileInfoActionHint.text = "";
             else

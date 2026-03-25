@@ -171,10 +171,9 @@ public class PlayerInteraction : MonoBehaviour
         }
         else if (tile.IsPlanted)
         {
-            int days = tile.GetRemainingDays();
-            string timeStr  = days <= 0 ? "Ready!" : $"{days} day{(days == 1 ? "" : "s")} left";
-            string waterHint = tile.IsWatered ? "" : "  -  Right Click to Water";
-            HUDManager.Instance?.SetContextHint($"Growing: {timeStr}{waterHint}");
+            float secs = tile.GetRemainingSeconds();
+            string timeStr = FormatGrowTime(secs);
+            HUDManager.Instance?.SetContextHint($"Growing: {timeStr}");
             HUDManager.Instance?.ShowTileInfo(tile);
         }
         else
@@ -339,19 +338,7 @@ public class PlayerInteraction : MonoBehaviour
         FarmTile tile = grid.GetTile(coord);
         if (tile == null) yield break;
 
-        if (isWater)
-        {
-            if (!tile.IsPlanted || tile.IsWatered)
-            {
-                HUDManager.Instance?.ShowNotification(tile.IsWatered ? "Already watered!" : "Nothing planted here!");
-                yield break;
-            }
-            playerController?.TriggerWater();
-            yield return new WaitForSeconds(waterActionDelay);
-            farming.WaterTile(coord);
-            playerController?.EndAction();
-        }
-        else if (tile.IsReadyToHarvest)
+        if (tile.IsReadyToHarvest)
         {
             playerController?.TriggerHarvest();
             yield return new WaitForSeconds(harvestActionDelay);
@@ -417,8 +404,6 @@ public class PlayerInteraction : MonoBehaviour
         string desired;
         if (BuildModeUI.Instance != null && BuildModeUI.Instance.IsOpen)
             desired = "Build Mode";
-        else if (Input.GetMouseButton(1))
-            desired = "Watering Can";
         else if (selectedCrop != null)
             desired = $"Planting: {selectedCrop.CropName}";
         else

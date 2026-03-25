@@ -31,9 +31,4 @@ public class CropDatabase : ScriptableObject
     }
 
     public List<CropData> GetAllCrops() => crops;
-
-    public List<CropData> GetCropsForSeason(Season season)
-    {
-        return crops.FindAll(c => c != null && c.CanGrowIn(season));
-    }
 }

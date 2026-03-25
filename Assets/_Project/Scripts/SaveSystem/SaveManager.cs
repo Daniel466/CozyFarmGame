@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -19,13 +18,8 @@ public class SaveManager : MonoBehaviour
         var data = new GameSaveData();
 
         // Economy
-        data.coins = GameManager.Instance.Economy.Coins;
-
-        // Time
-        data.time = GameManager.Instance.TimeManager?.ToSaveData() ?? new TimeSaveData { day = 1, season = 0, year = 1 };
-
-        // Energy
-        data.energy = GameManager.Instance.EnergyManager?.ToSaveData() ?? EnergyManager.MaxEnergy;
+        data.coins           = GameManager.Instance.Economy.Coins;
+        data.lifetimeEarnings = GameManager.Instance.Economy.LifetimeEarnings;
 
         // Tools
         data.tools = GameManager.Instance.ToolManager?.ToSaveData() ?? new ToolSaveData();
@@ -35,7 +29,7 @@ public class SaveManager : MonoBehaviour
         foreach (var kvp in GameManager.Instance.Inventory.GetAllItems())
             data.inventoryItems.Add(new InventorySaveItem { cropId = kvp.Key, quantity = kvp.Value.quantity });
 
-        // Farm tiles — only planted tiles
+        // Farm tiles — only planted or tilled tiles
         data.tiles = new List<FarmTileSaveData>();
         foreach (var tile in GameManager.Instance.FarmGrid.GetAllTiles().Values)
             if (tile.IsPlanted || tile.IsTilled)
@@ -59,11 +53,8 @@ public class SaveManager : MonoBehaviour
             }
         }
 
-        // Dog
-        data.dogHappiness = DogManager.Instance?.ActiveDog?.Happiness ?? 0.5f;
-
         File.WriteAllText(SavePath, JsonUtility.ToJson(data, prettyPrint: true));
-        Debug.Log($"[Save] Saved — Day {data.time.day}, {(Season)data.time.season}, Year {data.time.year} | Coins: {data.coins}");
+        Debug.Log($"[Save] Saved — Coins: {data.coins}, Lifetime: {data.lifetimeEarnings}");
     }
 
     public void LoadGame()
@@ -79,13 +70,7 @@ public class SaveManager : MonoBehaviour
 
         // Economy
         GameManager.Instance.Economy.SetCoins(data.coins);
-
-        // Time
-        if (data.time != null)
-            GameManager.Instance.TimeManager?.LoadFromSaveData(data.time);
-
-        // Energy
-        GameManager.Instance.EnergyManager?.LoadFromSaveData(data.energy);
+        GameManager.Instance.Economy.SetLifetimeEarnings(data.lifetimeEarnings);
 
         // Tools
         if (data.tools != null)
@@ -133,16 +118,11 @@ public class SaveManager : MonoBehaviour
             }
         }
 
-        // Dog
-        if (DogManager.Instance?.ActiveDog != null)
-            DogManager.Instance.ActiveDog.SetHappiness(data.dogHappiness);
-
-        Debug.Log($"[Save] Loaded — Day {data.time?.day}, Coins {data.coins}");
+        Debug.Log($"[Save] Loaded — Coins: {data.coins}");
     }
 
     private void NewGame()
     {
-        // Starting state for a fresh save
         GameManager.Instance.Economy.SetCoins(500);
         Debug.Log("[Save] New game started — 500 coins.");
     }
@@ -157,14 +137,12 @@ public class SaveManager : MonoBehaviour
 [System.Serializable]
 public class GameSaveData
 {
-    public int           coins;
-    public TimeSaveData  time;
-    public int           energy;
-    public ToolSaveData  tools;
-    public float         dogHappiness = 0.5f;
-    public List<InventorySaveItem> inventoryItems;
-    public List<FarmTileSaveData>  tiles;
-    public List<BuildingSaveData>  buildings;
+    public int    coins;
+    public int    lifetimeEarnings;
+    public ToolSaveData              tools;
+    public List<InventorySaveItem>   inventoryItems;
+    public List<FarmTileSaveData>    tiles;
+    public List<BuildingSaveData>    buildings;
 }
 
 [System.Serializable]

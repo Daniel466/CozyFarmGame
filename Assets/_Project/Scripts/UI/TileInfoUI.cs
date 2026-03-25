@@ -58,9 +58,8 @@ public class TileInfoUI : MonoBehaviour
 
         int stage = tile.GetGrowthStage();
         string stageName = stage >= 0 && stage < stageNames.Length ? stageNames[stage] : "";
-        string wateredStr = tile.IsWatered ? "💧 Watered" : "🏜️ Needs water";
 
-        if (statusText) statusText.text = $"{stageName}\n{wateredStr}";
-        if (growthSlider) growthSlider.value = tile.GrowthProgress;
+        if (statusText) statusText.text = stageName;
+        if (growthSlider) growthSlider.value = tile.GetGrowthProgress();
     }
 }

@@ -10,8 +10,10 @@ public class EconomyManager : MonoBehaviour
     [SerializeField] private int startingCoins = 150; // Enough for ~10 carrots — feels like a fresh start
 
     private int coins;
+    private int lifetimeEarnings;
 
-    public int Coins => coins;
+    public int Coins            => coins;
+    public int LifetimeEarnings => lifetimeEarnings;
     public UnityEvent<int> OnCoinsChanged = new UnityEvent<int>();
 
     private bool initialized;
@@ -52,5 +54,15 @@ public class EconomyManager : MonoBehaviour
         coins = amount;
         initialized = true; // prevent Start from overwriting loaded value
         OnCoinsChanged?.Invoke(coins);
+    }
+
+    public void SetLifetimeEarnings(int amount)
+    {
+        lifetimeEarnings = amount;
+    }
+
+    public void AddLifetimeEarnings(int amount)
+    {
+        lifetimeEarnings += amount;
     }
 }
