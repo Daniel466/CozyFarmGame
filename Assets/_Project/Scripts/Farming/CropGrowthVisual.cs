@@ -32,12 +32,16 @@ public class CropGrowthVisual : MonoBehaviour
 
     public void Initialise(FarmTile farmTile, GameObject readyFX = null)
     {
-        tile         = farmTile;
+        tile          = farmTile;
         readyFXPrefab = readyFX;
+        // Run immediately so the correct stage shows on spawn
+        Refresh(farmTile);
     }
 
-    private void Update()
+    /// <summary>Called by RealTimeManager every second to update stage and ready FX.</summary>
+    public void Refresh(FarmTile farmTile)
     {
+        tile = farmTile;
         if (tile == null || !tile.IsPlanted) return;
 
         int stage = tile.GetGrowthStage();

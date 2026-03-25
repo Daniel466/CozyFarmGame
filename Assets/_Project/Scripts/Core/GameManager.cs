@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     public SaveManager        SaveManager     { get; private set; }
     public BuildingManager    BuildingManager { get; private set; }
     public ToolManager        ToolManager     { get; private set; }
+    public RealTimeManager    RealTime        { get; private set; }
 
     private void Awake()
     {
@@ -30,6 +31,7 @@ public class GameManager : MonoBehaviour
 
         BuildingManager = FindFirstObjectByType<BuildingManager>();
         ToolManager     = FindFirstObjectByType<ToolManager>();
+        RealTime        = GetComponent<RealTimeManager>();
 
         if (FarmGrid  == null) Debug.LogError("[GameManager] FarmGrid missing!");
         if (Inventory == null) Debug.LogError("[GameManager] InventoryManager missing!");
