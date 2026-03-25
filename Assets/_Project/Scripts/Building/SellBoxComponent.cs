@@ -49,10 +49,9 @@ public class SellBoxComponent : MonoBehaviour
     {
         if (GameManager.Instance?.Inventory == null) return;
 
-        int earned = GameManager.Instance.Inventory.SellAll(); // AddCoins called internally
+        int earned = GameManager.Instance.Inventory.SellAll(); // AddCoins called internally (tracks lifetime earnings)
         if (earned > 0)
         {
-            GameManager.Instance.Economy.AddLifetimeEarnings(earned);
             GameManager.Instance.RealTime?.ResetAutosaveTimer();
             AudioManager.Instance?.PlaySell();
             HUDManager.Instance?.ShowNotification($"Sold everything for {earned} coins!");

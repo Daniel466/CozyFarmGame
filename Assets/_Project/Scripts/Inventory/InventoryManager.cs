@@ -57,6 +57,13 @@ public class InventoryManager : MonoBehaviour
 
     public Dictionary<string, InventoryItem> GetAllItems() => items;
 
+    /// <summary>Clears all items from the inventory. Used before loading saved data.</summary>
+    public void Clear()
+    {
+        items.Clear();
+        OnInventoryChanged?.Invoke();
+    }
+
     public void ExpandSlots(int additionalSlots)
     {
         maxSlots += additionalSlots;

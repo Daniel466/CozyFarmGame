@@ -13,6 +13,9 @@ public class PlayerMotor : MonoBehaviour
     [SerializeField] private float rotationSpeed = 20f;
     [SerializeField] private float gravity       = -9.81f;
 
+    [Header("Ground Detection")]
+    [SerializeField] private LayerMask groundLayerMask = ~0;
+
     private CharacterController _cc;
     private Vector3 _velocity;
 
@@ -36,7 +39,7 @@ public class PlayerMotor : MonoBehaviour
     private void SnapToGround()
     {
         Vector3 rayOrigin = transform.position + Vector3.up * 3f;
-        if (!Physics.Raycast(rayOrigin, Vector3.down, out RaycastHit hit, 10f)) return;
+        if (!Physics.Raycast(rayOrigin, Vector3.down, out RaycastHit hit, 10f, groundLayerMask)) return;
 
         // CC capsule bottom = center.y - height/2. We want that to sit on the hit surface.
         float capsuleBottomOffset = _cc.center.y - _cc.height * 0.5f;

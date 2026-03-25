@@ -137,6 +137,11 @@ public class BuildingManager : MonoBehaviour
     {
         if (ghostObject != null)
         {
+            // Clean up leaked materials before destroying
+            foreach (var r in ghostObject.GetComponentsInChildren<Renderer>())
+            {
+                if (r.material != null) Destroy(r.material);
+            }
             Destroy(ghostObject);
             ghostObject = null;
         }
@@ -255,6 +260,10 @@ public class BuildingManager : MonoBehaviour
                 Vector2Int cell = coord + new Vector2Int(x, y);
                 if (placedBuildings.ContainsKey(cell)) return false;
                 if (!grid.IsValidCoord(cell)) return false;
+
+                // Prevent placing on tilled or planted tiles
+                FarmTile tile = grid.GetTile(cell);
+                if (tile != null && (tile.IsTilled || tile.IsPlanted)) return false;
             }
         }
         return true;

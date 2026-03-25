@@ -83,7 +83,10 @@ public class CropGrowthVisual : MonoBehaviour
     private void UpdateVisual(int stage)
     {
         if (currentModel != null)
+        {
+            currentModel.transform.DOKill(); // kill active tweens before destroying
             Destroy(currentModel);
+        }
 
         float stageScale = StageScales[Mathf.Clamp(stage, 0, StageScales.Length - 1)];
         float baseScale  = tile.PlantedCrop != null ? tile.PlantedCrop.ModelBaseScale : 1f;

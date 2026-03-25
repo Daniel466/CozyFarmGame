@@ -33,7 +33,7 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
 
     [Header("Hover")]
-    [SerializeField] private float hoverYOffset = 0.08f;
+    [SerializeField] private float hoverYOffset = 0.05f;
 
     [Header("Tool")]
     [SerializeField] private FarmTool activeTool  = FarmTool.Hoe;
@@ -57,8 +57,6 @@ public class PlayerInteraction : MonoBehaviour
     private static readonly Color ColourInvalid = new Color(0.5f, 0.5f,  0.5f, 0.30f); // grey   — can't act here
 
     private const float PulsePeriod   = 2.0f;
-    private const float PulseScaleMin = 0.97f;
-    private const float PulseScaleMax = 1.03f;
 
     // ── Area drag ─────────────────────────────────────────────────────────────
 
@@ -325,6 +323,8 @@ public class PlayerInteraction : MonoBehaviour
 
     private void UpdateHoverHighlight()
     {
+        if (hoverRoot == null) return;
+
         if (IsInBuildMode) { hoverRoot.SetActive(false); return; }
 
         Vector2Int? coord = GetHoveredTileCoord();
@@ -342,13 +342,15 @@ public class PlayerInteraction : MonoBehaviour
         hoverRoot.transform.position = grid.GridToWorld(coord.Value) + Vector3.up * hoverYOffset;
         hoverRoot.SetActive(true);
 
-        hoverMaterial.SetColor("_BaseColor", GetHoverColour(tile));
+        // Pulse the alpha instead of scaling — no wobble, same visual feedback
+        Color baseColour = GetHoverColour(tile);
+        float t = 0.5f + 0.5f * Mathf.Sin(Time.time * (Mathf.PI * 2f / PulsePeriod));
+        float pulseAlpha = Mathf.Lerp(baseColour.a * 0.6f, baseColour.a, t);
+        baseColour.a = pulseAlpha;
+        hoverMaterial.SetColor(colorPropertyId, baseColour);
 
         UpdateContextHint(tile);
         HUDManager.Instance?.ShowTileInfo(tile);
-
-        float t = 0.5f + 0.5f * Mathf.Sin(Time.time * (Mathf.PI * 2f / PulsePeriod));
-        hoverRoot.transform.localScale = Vector3.one * Mathf.Lerp(PulseScaleMin, PulseScaleMax, t);
     }
 
     private Color GetHoverColour(FarmTile tile)
@@ -431,7 +433,7 @@ public class PlayerInteraction : MonoBehaviour
         int earned = GameManager.Instance.Inventory.SellAll();
         if (earned > 0)
         {
-            GameManager.Instance.Economy.AddLifetimeEarnings(earned);
+            // lifetime earnings already tracked inside AddCoins()
             GameManager.Instance.RealTime?.ResetAutosaveTimer();
         }
         HUDManager.Instance?.ShowNotification(earned > 0
@@ -489,46 +491,97 @@ public class PlayerInteraction : MonoBehaviour
     private void CreateHoverHighlight()
     {
         hoverRoot = new GameObject("TileHoverHighlight");
+        hoverRoot.hideFlags = HideFlags.DontSave; // don't serialize into scene
 
-        var shader = Shader.Find("Universal Render Pipeline/Unlit")
-                  ?? Shader.Find("Unlit/Color")
-                  ?? Shader.Find("Standard");
-        hoverMaterial = new Material(shader);
-        hoverMaterial.SetFloat("_Surface",  1f);
-        hoverMaterial.SetFloat("_Blend",    0f);
-        hoverMaterial.SetFloat("_SrcBlend", (float)UnityEngine.Rendering.BlendMode.SrcAlpha);
-        hoverMaterial.SetFloat("_DstBlend", (float)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-        hoverMaterial.SetFloat("_ZWrite",   0f);
-        hoverMaterial.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
-        hoverMaterial.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-        hoverMaterial.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
-        hoverMaterial.SetColor("_BaseColor", ColourValid);
+        hoverMaterial = CreateTransparentMaterial();
+        hoverMaterial.SetColor(colorPropertyId, ColourValid);
 
         float tile  = grid != null ? grid.TileSize : 1f;
         float thick = tile * 0.06f;
         float half  = tile * 0.5f;
+        float inner = half - thick * 0.5f; // side edges inset to avoid corner overlap
 
-        CreateEdge(new Vector3( 0,    0,  half), new Vector3(tile,  thick, 1f));
-        CreateEdge(new Vector3( 0,    0, -half), new Vector3(tile,  thick, 1f));
-        CreateEdge(new Vector3(-half, 0,  0),    new Vector3(thick, tile - 2f * thick, 1f));
-        CreateEdge(new Vector3( half, 0,  0),    new Vector3(thick, tile - 2f * thick, 1f));
+        // Top & bottom edges span full tile width
+        CreateEdge(new Vector3( 0,     0,  half),  new Vector3(tile, thick, 1f));  // top
+        CreateEdge(new Vector3( 0,     0, -half),  new Vector3(tile, thick, 1f));  // bottom
+        // Side edges shortened to fit between top & bottom (no overlap at corners)
+        CreateEdge(new Vector3(-half,  0,  0),     new Vector3(thick, tile - thick * 2f, 1f)); // left
+        CreateEdge(new Vector3( half,  0,  0),     new Vector3(thick, tile - thick * 2f, 1f)); // right
 
         hoverRoot.SetActive(false);
+    }
+
+    private static readonly int colorPropertyId = Shader.PropertyToID("_BaseColor");
+    private static readonly int colorPropertyIdFallback = Shader.PropertyToID("_Color");
+
+    /// <summary>
+    /// Creates a transparent unlit material compatible with Unity 6 URP.
+    /// Falls back gracefully to built-in shaders if URP is unavailable.
+    /// </summary>
+    private Material CreateTransparentMaterial()
+    {
+        var shader = Shader.Find("Universal Render Pipeline/Unlit");
+        bool isURP = shader != null;
+
+        if (!isURP)
+        {
+            shader = Shader.Find("Unlit/Transparent Colored")
+                  ?? Shader.Find("Unlit/Color")
+                  ?? Shader.Find("Standard");
+        }
+
+        var mat = new Material(shader);
+
+        if (isURP)
+        {
+            // URP Unlit transparency setup for Unity 6
+            mat.SetFloat("_Surface", 1f);  // 0 = opaque, 1 = transparent
+            mat.SetFloat("_Blend", 0f);    // 0 = alpha, 1 = premultiply, 2 = additive, 3 = multiply
+            mat.SetFloat("_SrcBlend", (float)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            mat.SetFloat("_DstBlend", (float)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            mat.SetFloat("_SrcBlendAlpha", (float)UnityEngine.Rendering.BlendMode.One);
+            mat.SetFloat("_DstBlendAlpha", (float)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            mat.SetFloat("_ZWrite", 0f);
+            mat.SetFloat("_AlphaClip", 0f);
+            mat.SetFloat("_Cull", 0f); // render both sides
+
+            mat.SetOverrideTag("RenderType", "Transparent");
+            mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+            mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+            mat.DisableKeyword("_ALPHATEST_ON");
+            mat.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
+        }
+        else
+        {
+            // Built-in shader fallback
+            mat.SetOverrideTag("RenderType", "Transparent");
+            mat.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
+        }
+
+        return mat;
     }
 
     private void CreateEdge(Vector3 localPos, Vector3 localScale)
     {
         var go = GameObject.CreatePrimitive(PrimitiveType.Quad);
+        go.name = "HoverEdge";
         go.transform.SetParent(hoverRoot.transform, false);
         go.transform.localPosition = localPos;
         go.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
         go.transform.localScale    = localScale;
         go.layer = 2; // Ignore Raycast
+        go.hideFlags = HideFlags.DontSave;
         Destroy(go.GetComponent<Collider>());
         var r = go.GetComponent<Renderer>();
         r.material          = hoverMaterial;
         r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         r.receiveShadows    = false;
+    }
+
+    private void OnDestroy()
+    {
+        if (hoverRoot != null) Destroy(hoverRoot);
+        if (hoverMaterial != null) Destroy(hoverMaterial);
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────

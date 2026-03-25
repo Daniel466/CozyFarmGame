@@ -45,14 +45,25 @@ public class FarmTile
         return true;
     }
 
+    /// <summary>
+    /// Harvests a ready crop, returning its CropData. Returns null if not ready.
+    /// </summary>
     public CropData Harvest()
     {
         if (!IsReadyToHarvest) return null;
         CropData harvested = PlantedCrop;
+        ClearCrop();
+        return harvested;
+    }
+
+    /// <summary>
+    /// Force-clears the planted crop regardless of growth state.
+    /// Used by the Remove tool. Tile stays tilled.
+    /// </summary>
+    public void ClearCrop()
+    {
         PlantedCrop       = null;
         plantedAtUtcTicks = 0;
-        // Tile stays tilled after harvest
-        return harvested;
     }
 
     // ── Growth queries ────────────────────────────────────────────────────────

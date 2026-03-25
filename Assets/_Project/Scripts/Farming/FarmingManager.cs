@@ -50,10 +50,11 @@ public class FarmingManager : MonoBehaviour
         FarmTile tile = grid.GetTile(coord);
         if (tile == null || tile.IsPlanted) return false;
 
-        // Auto-till if needed
-        if (!tile.IsTilled) tile.Till();
-
+        // Check affordability BEFORE modifying tile state
         if (!GameManager.Instance.Economy.SpendCoins(crop.SeedCost)) return false;
+
+        // Auto-till if needed (only after confirming we can pay)
+        if (!tile.IsTilled) tile.Till();
 
         if (!tile.Plant(crop))
         {
@@ -156,7 +157,7 @@ public class FarmingManager : MonoBehaviour
         FarmTile tile = grid.GetTile(coord);
         if (tile == null || !tile.IsPlanted) return false;
 
-        tile.Harvest(); // clears planted state
+        tile.ClearCrop(); // force-clear regardless of growth state
         RemoveCropVisual(coord);
         AudioManager.Instance?.PlayRemove();
         return true;

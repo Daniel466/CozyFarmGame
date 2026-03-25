@@ -21,6 +21,10 @@ public class SaveManager : MonoBehaviour
         data.coins           = GameManager.Instance.Economy.Coins;
         data.lifetimeEarnings = GameManager.Instance.Economy.LifetimeEarnings;
 
+        // Progression
+        data.currentXP    = GameManager.Instance.Progression.CurrentXP;
+        data.currentLevel = GameManager.Instance.Progression.CurrentLevel;
+
         // Tools
         data.tools = GameManager.Instance.ToolManager?.ToSaveData() ?? new ToolSaveData();
 
@@ -72,11 +76,15 @@ public class SaveManager : MonoBehaviour
         GameManager.Instance.Economy.SetCoins(data.coins);
         GameManager.Instance.Economy.SetLifetimeEarnings(data.lifetimeEarnings);
 
+        // Progression
+        GameManager.Instance.Progression.SetState(data.currentXP, data.currentLevel);
+
         // Tools
         if (data.tools != null)
             GameManager.Instance.ToolManager?.LoadFromSaveData(data.tools);
 
         // Inventory
+        GameManager.Instance.Inventory.Clear(); // reset before loading to prevent doubling
         if (data.inventoryItems != null)
         {
             foreach (var item in data.inventoryItems)
@@ -139,6 +147,8 @@ public class GameSaveData
 {
     public int    coins;
     public int    lifetimeEarnings;
+    public int    currentXP;
+    public int    currentLevel;
     public ToolSaveData              tools;
     public List<InventorySaveItem>   inventoryItems;
     public List<FarmTileSaveData>    tiles;

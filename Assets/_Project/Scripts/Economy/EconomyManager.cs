@@ -38,6 +38,7 @@ public class EconomyManager : MonoBehaviour
     public void AddCoins(int amount)
     {
         coins += amount;
+        if (amount > 0) lifetimeEarnings += amount;
         OnCoinsChanged?.Invoke(coins);
     }
 
