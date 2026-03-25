@@ -13,13 +13,6 @@ MonoBehaviour:
   m_Name: CropDatabase
   m_EditorClassIdentifier: Assembly-CSharp::CropDatabase
   crops:
+  - {fileID: 11400000, guid: a21c52558ff2e41a6ad242416d02dc04, type: 2}
   - {fileID: 11400000, guid: 421c59334e8b74855a57aeacfbb518ca, type: 2}
-  - {fileID: 11400000, guid: f68368be83a684c4eb38301748e5c1aa, type: 2}
-  - {fileID: 11400000, guid: 0a7cede0deb324993b94cafc13ebb7f9, type: 2}
-  - {fileID: 11400000, guid: fac65fdaf6f5948f1abefdbf20a06cff, type: 2}
-  - {fileID: 11400000, guid: 9256136b5bf6d4adfa15b256c60ac79f, type: 2}
   - {fileID: 11400000, guid: 37b5a6ad8516646ae851a760e608bac1, type: 2}
-  - {fileID: 11400000, guid: f362defbd989946279f16c1281d47fe1, type: 2}
-  - {fileID: 11400000, guid: b754a57f4454c4abfab2c9a82fa14def, type: 2}
-  - {fileID: 11400000, guid: 0735fb82cee9b4b65af0fe970ae2aba9, type: 2}
-  - {fileID: 11400000, guid: f44a47519d8f44dbf875b452cd87f466, type: 2}

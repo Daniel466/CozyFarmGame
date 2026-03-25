@@ -1,118 +1,126 @@
 # Development Roadmap — Phase 1
-*Updated: March 2026*
+*Updated: 2026-03-25*
 
 ---
 
 ## Goal
-Build a complete, playable Phase 1 — a proper farming game with seasons, energy, game-day time, and a meaningful Year 1 goal. Everything designed to expand cleanly into Phase 2.
+Build a complete, playable Phase 1 — a cozy farm automation game with real-time crop growth, a sell box, workers, and a companion. No energy, no seasons, no fail states.
+
+**Core loop:** Plant -> Grow (real-time) -> Harvest -> Sell -> Earn -> Hire Workers -> Automate -> Expand
 
 ---
 
 ## Phase 1 Build Order
 
-### Step 1 — Scene Foundation
-- [ ] Run scene migration tool (Farm -> DEMO_07_Farm)
-- [ ] Reposition FarmGrid / Grid Origin on new terrain
-- [ ] Reposition Player spawn
-- [ ] Reposition CollectibleSpawner points
-- [ ] Assign Poly Universal Pack crop models (run CropModelAssigner tool)
-- [ ] Assign Poly Universal Pack building models
+### Step 1 — Codebase Rebuild (DONE)
+- [x] Delete old systems: EnergyManager, GameTimeManager, Season, DayTransition, SleepInteraction, DogManager, DogController, ShopUI, CollectibleItem
+- [x] Rewrite FarmGrid — 20x20, tileSize 1, FarmInteract layer BoxCollider
+- [x] Rewrite FarmTile — real-time growth via DateTime.UtcNow.Ticks timestamps
+- [x] Rewrite CropData — growthTimeSeconds replaces growthDays, no season field
+- [x] Rewrite FarmingManager — till/plant/harvest/remove, no energy/water/XP
+- [x] Rewrite PlayerInteraction — FarmTool enum (Hoe/Seed/Harvest/Remove/Build), walk-to + area drag
+- [x] New RealTimeManager — 1-second tick, autosave every 90s, OnTick event
+- [x] Update EconomyManager — lifetimeEarnings replaces XP/levels
+- [x] Update SaveManager — timestamp tiles, lifetimeEarnings, no time/energy/dog data
+- [x] Update CropGrowthVisual — Refresh() called by RealTimeManager, no per-frame polling
+- [x] Trim CropDatabase — Wheat, Carrot, Corn only (3 starter crops)
+- [x] Editor tool cleanup — delete CleanDemoScene, DogAnimatorGenerator; update Toolkit
 
-### Step 2 — Time System (Core rewrite)
-- [ ] GameTimeManager — tracks Day, Season, Year
-- [ ] Sleep mechanic — bed interaction advances day
-- [ ] Season change screen / announcement
-- [ ] Day counter and season indicator in HUD
-- [ ] Remove real-time crop growth — switch to game-day based
+### Step 2 — Scene Foundation (IN PROGRESS)
+- [x] FarmSceneSetup: Full Setup creates ground plane + directional light + all systems
+- [ ] Create Farm.unity from Basic (URP) scene
+- [ ] Add Synty hybrid player character, name root "Player"
+- [ ] Run Game Systems Only to wire PlayerInteraction + FarmGrid
+- [ ] Confirm FarmInteract layer exists in Project Settings
+- [ ] Confirm player moves, tiles highlight on hover, planting works
+- [ ] Assign Poly Universal Pack stage prefabs to Wheat/Carrot/Corn CropData SOs
+- [ ] Wire AudioManager clips in Inspector
 
-### Step 3 — Energy System
-- [ ] EnergyManager — 100 energy per day, restore on sleep
-- [ ] Deduct energy on: till (10), plant (4), water (5), harvest (8)
-- [ ] Block actions at 0 energy
-- [ ] Energy bar in HUD
-- [ ] Food items restore energy (simple pickup, no cooking yet)
+### Step 3 — Real-Time Growth Verification
+- [ ] Plant crop, wait, confirm growth stages change every ~30s (test at 60x speed)
+- [ ] Confirm harvest works and adds to inventory
+- [ ] Confirm save/load preserves planted timestamps (offline growth catch-up)
 
-### Step 4 — Seasons + Crops
-- [ ] Add Season field to CropData ScriptableObject
-- [ ] Assign seasons to all 10 crops (see GDD crop table)
-- [ ] Block planting out-of-season crops
-- [ ] Crops die at season end if not harvested
-- [ ] Tilled tiles reset at season end
-- [ ] Update grow time from seconds to game-days
+### Step 4 — Economy + Sell Box
+- [ ] SellBox building — player walks up and sells all inventory
+- [ ] Coins earned shown in HUD
+- [ ] LifetimeEarnings updated on each sale
+- [ ] Milestone gates: unlock new crops/buildings at earnings thresholds
 
-### Step 5 — Tools
-- [ ] Tool system — Hoe, Watering Can, Sickle as distinct equippable items
-- [ ] Watering Can has capacity (10 uses), refill at well
-- [ ] Tool toolbar in HUD (3 slots, number key switching)
-- [ ] Tilling now requires Hoe equipped
-- [ ] Harvesting now requires Sickle equipped
+### Step 5 — HUD Pass
+- [ ] Coins display (top-centre)
+- [ ] Selected crop panel (top-left): name, planted count, time remaining
+- [ ] Context hint (bottom-centre): what current tool will do on hovered tile
+- [ ] Tool indicator (bottom-centre): current tool name
+- [ ] Notification panel: harvest ready, milestone unlocked
 
-### Step 6 — Economy Rework
-- [ ] Shipping Crate building — drop goods in, paid next morning
-- [ ] Seasonal price modifiers (out-of-season = higher price)
-- [ ] Starting coins: 500
-- [ ] Farm debt goal: 2000 coins by end of Year 1
-- [ ] Debt tracker in HUD
-- [ ] Remove old instant-sell system
+### Step 6 — Buildings Pass
+- [ ] Sell Box — functional
+- [ ] Watering Well — stub only for now (watering deferred)
+- [ ] Assign Poly Universal Pack models to all buildings in BuildingDatabase
 
-### Step 7 — Farm Grid Expansion
-- [ ] Larger starting plot (expand from current small grid)
-- [ ] Year 2 second plot unlock hook (just the unlock trigger for now)
-- [ ] Tilled tile revert on season end
+### Step 7 — Save System Verification
+- [ ] Confirm tiles save/load with plantedAtUtcTicks
+- [ ] Confirm lifetimeEarnings persists
+- [ ] Confirm buildings save/load positions
 
-### Step 8 — UI Pass
-- [ ] Day / Season / Year display (top of screen)
-- [ ] Energy bar (below coins)
-- [ ] Tool slot indicator (bottom centre)
-- [ ] Debt progress tracker
-- [ ] Season change full-screen announcement
-- [ ] Remove old XP bar and level system (replaced by coin-based progression)
+### Step 8 — Worker System
+- [ ] A* pathfinder (AStarPathfinder) — tile-based, queries FarmGrid + BuildingManager
+- [ ] WorkerAgent — states: Idle / Move / Harvest / Deliver / Return
+- [ ] WorkerManager — assigns tasks, spawns/despawns workers
+- [ ] WorkerData ScriptableObject — speed, cost, capacity
+- [ ] Workers subscribe to RealTimeManager.OnTick for state updates
+- [ ] Buy first worker via milestone unlock (lifetimeEarnings gate)
 
-### Step 9 — Buildings Pass
-- [ ] Farmhouse with bed interaction (sleep trigger)
-- [ ] Shipping Crate with inventory drop-off UI
-- [ ] Water Well refill interaction
-- [ ] Assign real Poly Universal Pack models to all buildings
+### Step 9 — Companion
+- [ ] Human helper companion — periodically sells inventory from Sell Box
+- [ ] Companion visible in scene, simple idle/walk animation
+- [ ] Unlocked at lifetimeEarnings milestone
 
 ### Step 10 — Polish + Balance
-- [ ] Tune crop day counts and prices
-- [ ] Tune energy costs
-- [ ] Ensure Year 1 debt goal is achievable but requires planning
-- [ ] Winter feel (sparse, quiet, no crops)
-- [ ] Season change ambience / music shift
+- [ ] Tune crop grow times (Wheat 120s, Carrot 180s, Corn 300s → adjust to feel)
+- [ ] Tune sell prices so progression feels rewarding
+- [ ] Ensure milestone gates feel reachable but require some play
+- [ ] Camera presets tuned to new scene scale
+- [ ] Audio fully assigned and mixed
 
 ---
 
-## What We Keep From Current Codebase
-
-| System | Status |
-|--------|--------|
-| Save system | Keep — extend for new time data |
-| Building placement | Keep |
-| ScriptableObject pattern | Keep — extend CropData / BuildingData |
-| Editor toolkit | Keep — add new tools as needed |
-| UI framework | Keep — rework individual panels |
-| Player movement | Keep |
-| Camera | Keep |
-| Audio hooks | Keep — add seasonal music |
-| Dog companion | Keep for now |
-| Collectibles loop | Keep — good filler activity |
-
-## What Gets Replaced
-
-| System | Replacement |
-|--------|-------------|
-| Real-time crop growth | Game-day growth |
-| XP + level system | Coin-based progression |
-| Instant sell (shop) | Shipping crate (paid next morning) |
-| Watering Well auto-water | Manual watering with can capacity |
-| Old FarmGrid size | Larger expandable grid |
+## Milestone Gates (lifetime earnings)
+| Earnings | Unlock |
+|----------|--------|
+| 0 | Start: Wheat, basic hoe, sell box |
+| 500 | Carrot seed, first worker slot |
+| 1500 | Corn seed |
+| 3000 | Second worker slot |
+| 5000 | Companion |
+| 10000 | Grid expansion (Phase 2 hook) |
 
 ---
 
 ## Phase 2 Preview (after Phase 1 ships)
-- Tool upgrades via blacksmith
-- Crop quality tiers
-- Chickens + eggs
-- 2-3 NPCs with shop and dialogue
-- Shipping contracts
+- Grid expansion (unlock adjacent plots)
+- More crops + buildings
+- Worker upgrades (speed, capacity)
+- 2-3 NPCs with simple dialogue
+- iPadOS touch input
+
+---
+
+## What Was Removed vs Kept
+
+| System | Status |
+|--------|--------|
+| EnergyManager | DELETED |
+| GameTimeManager, Season, DayTransition, Sleep | DELETED |
+| DogManager, DogController | DELETED |
+| CollectibleItem, CollectibleSpawner | DELETED |
+| ShopUI | DELETED |
+| XP / level system | DELETED — replaced by lifetimeEarnings milestones |
+| Watering / WaterTile | REMOVED (stub only) |
+| Save system | REWRITTEN — timestamp-based |
+| Building placement | KEPT |
+| ScriptableObject pattern | KEPT |
+| Player movement + camera | KEPT |
+| Audio hooks | KEPT |
+| Editor toolkit | KEPT + CLEANED UP |
