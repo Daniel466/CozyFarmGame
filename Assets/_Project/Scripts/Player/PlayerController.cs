@@ -29,8 +29,12 @@ public class PlayerController : MonoBehaviour
     public bool IsAutoMoving       => _autoMove  != null && _autoMove.IsActive;
     public bool IsPerformingAction => _actionLock != null && _actionLock.IsLocked;
 
+    /// <summary>Walk to a target position. Rejected while an action animation is playing.</summary>
     public void WalkTo(Vector3 target, float stopDistance, System.Action onArrived)
-        => _autoMove?.MoveTo(target, stopDistance, onArrived);
+    {
+        if (IsPerformingAction) return; // don't queue movement during action animations
+        _autoMove?.MoveTo(target, stopDistance, onArrived);
+    }
 
     public void CancelAutoMove() => _autoMove?.Cancel();
 
@@ -45,9 +49,9 @@ public class PlayerController : MonoBehaviour
 
     public void EndAction() => _actionLock?.End();
 
-    public void TriggerPlant()   { BeginAction(); _anim?.TriggerPlant(); }
-    public void TriggerWater()   { BeginAction(); _anim?.TriggerWater(); }
-    public void TriggerHarvest() { BeginAction(); _anim?.TriggerHarvest(); }
+    public void TriggerPlant()   { BeginAction(); _anim?.TriggerPlant();   _anim?.WaitForActionComplete(EndAction); }
+    public void TriggerWater()   { BeginAction(); _anim?.TriggerWater();   _anim?.WaitForActionComplete(EndAction); }
+    public void TriggerHarvest() { BeginAction(); _anim?.TriggerHarvest(); _anim?.WaitForActionComplete(EndAction); }
 
     // ── Init ──────────────────────────────────────────────────────────────────
 

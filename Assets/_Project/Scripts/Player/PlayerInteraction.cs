@@ -150,6 +150,7 @@ public class PlayerInteraction : MonoBehaviour
     private void HandleMouseDown()
     {
         if (IsInBuildMode) return;
+        if (playerController != null && playerController.IsPerformingAction) return;
 
         Vector2Int? coord = GetHoveredTileCoord();
         if (!coord.HasValue) return;
@@ -165,6 +166,7 @@ public class PlayerInteraction : MonoBehaviour
     private void HandleMouseHeld()
     {
         if (!isDragging || IsInBuildMode) return;
+        if (playerController != null && playerController.IsPerformingAction) return;
 
         Vector2Int? coord = GetHoveredTileCoord();
         if (!coord.HasValue) return;
@@ -228,11 +230,8 @@ public class PlayerInteraction : MonoBehaviour
                 if (!tile.IsTilled)
                 {
                     playerController?.TriggerPlant();
-                    StartCoroutine(DelayedAction(actionDelay, () =>
-                    {
-                        farming.TillTile(coord);
-                        playerController?.EndAction();
-                    }));
+                    // Farming action fires mid-animation; movement unlock is animation-driven
+                    StartCoroutine(DelayedAction(actionDelay, () => farming.TillTile(coord)));
                 }
                 break;
 
@@ -245,11 +244,7 @@ public class PlayerInteraction : MonoBehaviour
                 if (!tile.IsPlanted)
                 {
                     playerController?.TriggerPlant();
-                    StartCoroutine(DelayedAction(actionDelay, () =>
-                    {
-                        farming.PlantCrop(coord, selectedCrop);
-                        playerController?.EndAction();
-                    }));
+                    StartCoroutine(DelayedAction(actionDelay, () => farming.PlantCrop(coord, selectedCrop)));
                 }
                 break;
 
@@ -257,11 +252,7 @@ public class PlayerInteraction : MonoBehaviour
                 if (tile.IsReadyToHarvest)
                 {
                     playerController?.TriggerHarvest();
-                    StartCoroutine(DelayedAction(actionDelay, () =>
-                    {
-                        farming.HarvestTile(coord);
-                        playerController?.EndAction();
-                    }));
+                    StartCoroutine(DelayedAction(actionDelay, () => farming.HarvestTile(coord)));
                 }
                 break;
 
